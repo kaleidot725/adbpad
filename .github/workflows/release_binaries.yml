@@ -1,16 +1,71 @@
-name: Build Release Binaries
+name: Build and Upload Release Binaries
 
 on:
+  release:
+    types: [created, published]
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
 
 jobs:
   mac-binary:
-    uses: ./.github/workflows/build_mac_binary.yml
-    secrets: inherit
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Build dmg app
+        run: ./gradlew packageReleaseDmg
+
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} \
+            build/compose/binaries/main-release/dmg/*.dmg \
+            --repo ${{ github.repository }}
+
+      - name: Archive Artifacts (for workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macOS Release
+          path: build/compose/binaries/main-release/dmg
 
   windows-binary:
-    uses: ./.github/workflows/build_windows_binary.yml
-    secrets: inherit
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Build exe app
+        run: .\gradlew packageReleaseExe
+
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} `
+            build/compose/binaries/main-release/exe/*.exe `
+            --repo ${{ github.repository }}
+
+      - name: Archive Artifacts (for workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows Release
+          path: build/compose/binaries/main-release/exe
