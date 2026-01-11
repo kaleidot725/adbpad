@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AdbPad - ADBを使ったAndroidアプリテストを効率化するGUIツール">
+    <title>AdbPad - Android Development Made Easy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 900px;
+            margin: 2rem auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        .install-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .install-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .note strong {
+            color: #856404;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img class="logo" src="https://github.com/kaleidot725/AdbPad/assets/23740796/ab3b08b2-1267-488c-9b14-927325751232" alt="AdbPad Logo">
+        <h1>AdbPad</h1>
+        <p>ADBを使ったAndroidアプリテストを効率化するGUIツール</p>
+        <p style="margin-top: 0.5rem; font-size: 1rem;">Windows & macOS対応</p>
+    </div>
+
+    <div class="container">
+        <img class="screenshot" src="https://github.com/user-attachments/assets/086a1a56-50a0-4330-ad7f-c40cb4f39ba7" alt="AdbPad Screenshot">
+
+        <section class="section">
+            <h2>✨ 機能</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>デバイス管理</h3>
+                    <p>接続されているAndroidデバイスの一覧を表示し、簡単に切り替えができます</p>
+                </div>
+                <div class="feature-card">
+                    <h3>ADBコマンド実行</h3>
+                    <p>ADBシェルコマンドを手軽に実行できます</p>
+                </div>
+                <div class="feature-card">
+                    <h3>テキスト入力</h3>
+                    <p>Androidデバイスへのテキスト入力を送信できます</p>
+                </div>
+                <div class="feature-card">
+                    <h3>スクリーンショット</h3>
+                    <p>各テーマのスクリーンショットをキャプチャできます</p>
+                </div>
+                <div class="feature-card">
+                    <h3>バーチャルディスプレイ</h3>
+                    <p>大画面環境でのテストに便利なバーチャルディスプレイを作成できます</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>⬇️ インストール方法</h2>
+
+            <div class="install-section">
+                <h3>Homebrew経由でのインストール (macOS)</h3>
+                <div class="code-block">brew tap kaleidot725/kaleidot725<br>brew install --cask adbpad</div>
+            </div>
+
+            <div class="install-section">
+                <h3>手動インストール</h3>
+                <ol style="margin-left: 1.5rem; color: #666;">
+                    <li>Releasesページから最新のインストーラーをダウンロード</li>
+                    <li>アプリケーションを起動し、設定でADBパスを設定</li>
+                </ol>
+
+                <div class="note">
+                    <strong>macOSユーザーへの注意:</strong> このアプリはApple Developer アカウントで署名されていないため、セキュリティ警告が表示される場合があります。アプリを開くには:
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>AdbPadアイコンを右クリック（またはControlキーを押しながらクリック）し、「開く」を選択</li>
+                        <li>表示されるダイアログで再度「開く」をクリック</li>
+                        <li>または、「システム設定 > プライバシーとセキュリティ」から「このまま開く」をクリック</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn">ダウンロード</a>
+                <a href="https://github.com/kaleidot725/AdbPad" class="btn btn-secondary">GitHubで見る</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Yusuke Katsuragawa | <a href="https://github.com/kaleidot725/AdbPad">GitHub</a> | MIT License</p>
+    </footer>
+</body>
+</html>
