@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AdbPad - ADBを使ったAndroidアプリテストを効率化するGUIツール">
+    <meta name="description" content="AdbPad - A GUI tool to streamline Android app testing using ADB">
     <title>AdbPad - Android Development Made Easy</title>
     <style>
         * {
@@ -15,25 +15,30 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #e0e0e0;
+            background-color: #0d1117;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1a1a 100%);
+            border-bottom: 2px solid #3DDC84;
             color: white;
             padding: 4rem 2rem;
             text-align: center;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px rgba(61, 220, 132, 0.3));
         }
 
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
+            color: #3DDC84;
+            text-shadow: 0 0 30px rgba(61, 220, 132, 0.5);
         }
 
         .header p {
@@ -41,6 +46,7 @@
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
+            color: #c9d1d9;
         }
 
         .container {
@@ -55,7 +61,8 @@
             margin: 2rem auto;
             display: block;
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(61, 220, 132, 0.2);
+            border: 1px solid #30363d;
         }
 
         .section {
@@ -65,7 +72,8 @@
         .section h2 {
             font-size: 2rem;
             margin-bottom: 1.5rem;
-            color: #667eea;
+            color: #3DDC84;
+            text-shadow: 0 0 20px rgba(61, 220, 132, 0.3);
         }
 
         .features {
@@ -76,43 +84,52 @@
         }
 
         .feature-card {
-            background: #f8f9fa;
+            background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
             padding: 1.5rem;
             border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #3DDC84;
+            border: 1px solid #30363d;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.2);
         }
 
         .feature-card h3 {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: #3DDC84;
         }
 
         .feature-card p {
-            color: #666;
+            color: #8b949e;
         }
 
         .install-section {
-            background: #f8f9fa;
+            background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
             padding: 2rem;
             border-radius: 8px;
             margin-top: 2rem;
+            border: 1px solid #30363d;
         }
 
         .install-section h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: #333;
+            color: #3DDC84;
         }
 
         .code-block {
-            background: #2d3748;
-            color: #fff;
+            background: #0d1117;
+            color: #3DDC84;
             padding: 1rem;
             border-radius: 4px;
             overflow-x: auto;
             margin: 1rem 0;
             font-family: 'Courier New', monospace;
+            border: 1px solid #30363d;
         }
 
         .buttons {
@@ -126,47 +143,59 @@
         .btn {
             display: inline-block;
             padding: 1rem 2rem;
-            background: #667eea;
-            color: white;
+            background: #3DDC84;
+            color: #0d1117;
             text-decoration: none;
             border-radius: 5px;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(61, 220, 132, 0.3);
         }
 
         .btn:hover {
-            background: #5568d3;
+            background: #32c770;
+            box-shadow: 0 6px 20px rgba(61, 220, 132, 0.5);
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
-            background: #48bb78;
+            background: transparent;
+            color: #3DDC84;
+            border: 2px solid #3DDC84;
         }
 
         .btn-secondary:hover {
-            background: #38a169;
+            background: #3DDC84;
+            color: #0d1117;
         }
 
         .note {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: rgba(61, 220, 132, 0.1);
+            border-left: 4px solid #3DDC84;
             padding: 1rem;
             margin: 1rem 0;
             border-radius: 4px;
+            border: 1px solid #30363d;
         }
 
         .note strong {
-            color: #856404;
+            color: #3DDC84;
+        }
+
+        .note ol, .install-section ol {
+            color: #8b949e;
         }
 
         footer {
-            background: #2d3748;
-            color: white;
+            background: #0d1117;
+            border-top: 2px solid #3DDC84;
+            color: #8b949e;
             text-align: center;
             padding: 2rem;
         }
 
         footer a {
-            color: #667eea;
+            color: #3DDC84;
             text-decoration: none;
         }
 
@@ -179,67 +208,67 @@
     <div class="header">
         <img class="logo" src="https://github.com/kaleidot725/AdbPad/assets/23740796/ab3b08b2-1267-488c-9b14-927325751232" alt="AdbPad Logo">
         <h1>AdbPad</h1>
-        <p>ADBを使ったAndroidアプリテストを効率化するGUIツール</p>
-        <p style="margin-top: 0.5rem; font-size: 1rem;">Windows & macOS対応</p>
+        <p>A GUI tool to streamline Android app testing using ADB</p>
+        <p style="margin-top: 0.5rem; font-size: 1rem;">Available for Windows & macOS</p>
     </div>
 
     <div class="container">
         <img class="screenshot" src="https://github.com/user-attachments/assets/086a1a56-50a0-4330-ad7f-c40cb4f39ba7" alt="AdbPad Screenshot">
 
         <section class="section">
-            <h2>✨ 機能</h2>
+            <h2>✨ Features</h2>
             <div class="features">
                 <div class="feature-card">
-                    <h3>デバイス管理</h3>
-                    <p>接続されているAndroidデバイスの一覧を表示し、簡単に切り替えができます</p>
+                    <h3>Device Management</h3>
+                    <p>View a list of connected Android devices and switch between them effortlessly</p>
                 </div>
                 <div class="feature-card">
-                    <h3>ADBコマンド実行</h3>
-                    <p>ADBシェルコマンドを手軽に実行できます</p>
+                    <h3>ADB Command Execution</h3>
+                    <p>Run ADB shell commands with ease</p>
                 </div>
                 <div class="feature-card">
-                    <h3>テキスト入力</h3>
-                    <p>Androidデバイスへのテキスト入力を送信できます</p>
+                    <h3>Text Input</h3>
+                    <p>Send text input to your Android device</p>
                 </div>
                 <div class="feature-card">
-                    <h3>スクリーンショット</h3>
-                    <p>各テーマのスクリーンショットをキャプチャできます</p>
+                    <h3>Screenshots</h3>
+                    <p>Capture screenshots for each theme</p>
                 </div>
                 <div class="feature-card">
-                    <h3>バーチャルディスプレイ</h3>
-                    <p>大画面環境でのテストに便利なバーチャルディスプレイを作成できます</p>
+                    <h3>Virtual Display</h3>
+                    <p>Create virtual displays to test on large-screen environments</p>
                 </div>
             </div>
         </section>
 
         <section class="section">
-            <h2>⬇️ インストール方法</h2>
+            <h2>⬇️ Installation</h2>
 
             <div class="install-section">
-                <h3>Homebrew経由でのインストール (macOS)</h3>
+                <h3>Via Homebrew (macOS)</h3>
                 <div class="code-block">brew tap kaleidot725/kaleidot725<br>brew install --cask adbpad</div>
             </div>
 
             <div class="install-section">
-                <h3>手動インストール</h3>
-                <ol style="margin-left: 1.5rem; color: #666;">
-                    <li>Releasesページから最新のインストーラーをダウンロード</li>
-                    <li>アプリケーションを起動し、設定でADBパスを設定</li>
+                <h3>Manual Installation</h3>
+                <ol style="margin-left: 1.5rem;">
+                    <li>Download the latest installer from the Releases page</li>
+                    <li>Launch the application and configure the ADB path in Settings</li>
                 </ol>
 
                 <div class="note">
-                    <strong>macOSユーザーへの注意:</strong> このアプリはApple Developer アカウントで署名されていないため、セキュリティ警告が表示される場合があります。アプリを開くには:
+                    <strong>For macOS users:</strong> Since the app is not signed with an Apple Developer account, you may encounter a security warning stating that the developer cannot be verified. To open the app:
                     <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
-                        <li>AdbPadアイコンを右クリック（またはControlキーを押しながらクリック）し、「開く」を選択</li>
-                        <li>表示されるダイアログで再度「開く」をクリック</li>
-                        <li>または、「システム設定 > プライバシーとセキュリティ」から「このまま開く」をクリック</li>
+                        <li>Right-click (or Control-click) the AdbPad icon and select <strong>Open</strong></li>
+                        <li>In the dialog that appears, click <strong>Open</strong> again</li>
+                        <li>Alternatively, go to <strong>System Settings > Privacy & Security</strong> and click <strong>Open Anyway</strong></li>
                     </ol>
                 </div>
             </div>
 
             <div class="buttons">
-                <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn">ダウンロード</a>
-                <a href="https://github.com/kaleidot725/AdbPad" class="btn btn-secondary">GitHubで見る</a>
+                <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn">Download</a>
+                <a href="https://github.com/kaleidot725/AdbPad" class="btn btn-secondary">View on GitHub</a>
             </div>
         </section>
     </div>
