@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/71feae28-9d19-4dfc-9424-97ce7d0e2146
 ## Via Homebrew (macOS)
 
 ```bash
-brew tap kaleidot725/kaleidot725
+brew tap kaleidot725/tap
 brew install --cask adbpad
 ```
 
