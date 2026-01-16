@@ -133,6 +133,9 @@ private fun ScreenshotScreen(
     errorMessage: String?,
     renameResetKey: Int,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxSize(),
@@ -233,9 +236,6 @@ private fun ScreenshotScreen(
             }
 
             splitter {
-                val interactionSource = remember { MutableInteractionSource() }
-                val isHovered by interactionSource.collectIsHoveredAsState()
-
                 visiblePart {
                     Box(
                         Modifier

@@ -64,6 +64,9 @@ fun ScrcpyNewDisplayScreen(
             state.profiles.maxOfOrNull { max(it.width, it.height) }?.toFloat() ?: 1f
         }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     HorizontalSplitPane(
         splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
@@ -177,9 +180,6 @@ fun ScrcpyNewDisplayScreen(
         }
 
         splitter {
-            val interactionSource = remember { MutableInteractionSource() }
-            val isHovered by interactionSource.collectIsHoveredAsState()
-
             visiblePart {
                 Box(
                     Modifier

@@ -41,6 +41,9 @@ fun TextCommandScreen(
     onAction: (TextCommandAction) -> Unit,
     splitterState: SplitPaneState,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     HorizontalSplitPane(
         splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
@@ -100,9 +103,6 @@ fun TextCommandScreen(
         }
 
         splitter {
-            val interactionSource = remember { MutableInteractionSource() }
-            val isHovered by interactionSource.collectIsHoveredAsState()
-
             visiblePart {
                 Box(
                     Modifier
