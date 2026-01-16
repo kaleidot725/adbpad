@@ -205,6 +205,14 @@ object Language : StringResources {
         get() = getCurrentResources().commandFontScaleHugeTitle
     override val commandFontScaleHugeDetails: String
         get() = getCurrentResources().commandFontScaleHugeDetails
+    override val commandFontScaleExtraLargeTitle: String
+        get() = getCurrentResources().commandFontScaleExtraLargeTitle
+    override val commandFontScaleExtraLargeDetails: String
+        get() = getCurrentResources().commandFontScaleExtraLargeDetails
+    override val commandFontScaleMaximumTitle: String
+        get() = getCurrentResources().commandFontScaleMaximumTitle
+    override val commandFontScaleMaximumDetails: String
+        get() = getCurrentResources().commandFontScaleMaximumDetails
     override val commandRtlLayoutOnTitle: String
         get() = getCurrentResources().commandRtlLayoutOnTitle
     override val commandRtlLayoutOnDetails: String

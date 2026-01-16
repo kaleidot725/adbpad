@@ -518,6 +518,36 @@ interface NormalCommand {
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
 
+    data class FontScaleExtraLarge(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandFontScaleExtraLargeTitle
+        override val details: String get() = Language.commandFontScaleExtraLargeDetails
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system font_scale 1.5"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.UI
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class FontScaleMaximum(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandFontScaleMaximumTitle
+        override val details: String get() = Language.commandFontScaleMaximumDetails
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system font_scale 2.0"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.UI
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
     data class RtlLayoutOn(
         override val isRunning: Boolean = false,
         override val isFavorite: Boolean = false,
