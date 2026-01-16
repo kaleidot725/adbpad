@@ -2,6 +2,9 @@ package jp.kaleidot725.adbpad.ui.screen.text
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +17,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
@@ -36,11 +41,14 @@ fun TextCommandScreen(
     onAction: (TextCommandAction) -> Unit,
     splitterState: SplitPaneState,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     HorizontalSplitPane(
         splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        first(minSize = 350.dp) {
+        first(minSize = 200.dp) {
             Column {
                 TextCommandHeader(
                     searchText = state.searchText,
@@ -98,9 +106,15 @@ fun TextCommandScreen(
             visiblePart {
                 Box(
                     Modifier
-                        .width(1.dp)
+                        .width(2.dp)
                         .fillMaxHeight()
-                        .background(UserColor.getSplitterColor()),
+                        .background(
+                            if (isHovered) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                            } else {
+                                UserColor.getSplitterColor()
+                            },
+                        ),
                 )
             }
 
@@ -109,9 +123,9 @@ fun TextCommandScreen(
                     Modifier
                         .markAsHandle()
                         .cursorForHorizontalResize()
+                        .hoverable(interactionSource)
                         .width(10.dp)
-                        .fillMaxHeight()
-                        .markAsHandle(),
+                        .fillMaxHeight(),
                 )
             }
         }

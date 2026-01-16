@@ -47,6 +47,8 @@ class NormalCommandRepositoryImpl : NormalCommandRepository {
             NormalCommand.FontScaleNormal(runningCommands.any { it is NormalCommand.FontScaleNormal }),
             NormalCommand.FontScaleLarge(runningCommands.any { it is NormalCommand.FontScaleLarge }),
             NormalCommand.FontScaleHuge(runningCommands.any { it is NormalCommand.FontScaleHuge }),
+            NormalCommand.FontScaleExtraLarge(runningCommands.any { it is NormalCommand.FontScaleExtraLarge }),
+            NormalCommand.FontScaleMaximum(runningCommands.any { it is NormalCommand.FontScaleMaximum }),
             NormalCommand.RtlLayoutOn(runningCommands.any { it is NormalCommand.RtlLayoutOn }),
             NormalCommand.RtlLayoutOff(runningCommands.any { it is NormalCommand.RtlLayoutOff }),
             NormalCommand.BatterySaverOn(runningCommands.any { it is NormalCommand.BatterySaverOn }),

@@ -102,6 +102,10 @@ interface StringResources {
     val commandFontScaleLargeDetails: String
     val commandFontScaleHugeTitle: String
     val commandFontScaleHugeDetails: String
+    val commandFontScaleExtraLargeTitle: String
+    val commandFontScaleExtraLargeDetails: String
+    val commandFontScaleMaximumTitle: String
+    val commandFontScaleMaximumDetails: String
     val commandRtlLayoutOnTitle: String
     val commandRtlLayoutOnDetails: String
     val commandRtlLayoutOffTitle: String

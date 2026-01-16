@@ -2,6 +2,9 @@ package jp.kaleidot725.adbpad.ui.screen.screenshot
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -128,6 +133,9 @@ private fun ScreenshotScreen(
     errorMessage: String?,
     renameResetKey: Int,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxSize(),
@@ -139,7 +147,7 @@ private fun ScreenshotScreen(
                     .fillMaxWidth()
                     .weight(1.0f),
         ) {
-            first(minSize = 350.dp) {
+            first(minSize = 200.dp) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -208,20 +216,22 @@ private fun ScreenshotScreen(
                         )
                     }
 
-                    androidx.compose.material3.VerticalDivider(
-                        modifier = Modifier.fillMaxHeight(),
-                        color = UserColor.getSplitterColor(),
-                    )
+                    if (screenshot.file != null) {
+                        androidx.compose.material3.VerticalDivider(
+                            modifier = Modifier.fillMaxHeight(),
+                            color = UserColor.getSplitterColor(),
+                        )
 
-                    ScreenshotDetailMenu(
-                        screenshot = screenshot,
-                        onOpenDirectory = onOpenDirectory,
-                        onEditScreenshot = onEditScreenshot,
-                        modifier =
-                            Modifier
-                                .width(300.dp)
-                                .fillMaxHeight(),
-                    )
+                        ScreenshotDetailMenu(
+                            screenshot = screenshot,
+                            onOpenDirectory = onOpenDirectory,
+                            onEditScreenshot = onEditScreenshot,
+                            modifier =
+                                Modifier
+                                    .width(300.dp)
+                                    .fillMaxHeight(),
+                        )
+                    }
                 }
             }
 
@@ -229,9 +239,15 @@ private fun ScreenshotScreen(
                 visiblePart {
                     Box(
                         Modifier
-                            .width(1.dp)
+                            .width(2.dp)
                             .fillMaxHeight()
-                            .background(UserColor.getSplitterColor()),
+                            .background(
+                                if (isHovered) {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                } else {
+                                    UserColor.getSplitterColor()
+                                },
+                            ),
                     )
                 }
 
@@ -240,9 +256,9 @@ private fun ScreenshotScreen(
                         Modifier
                             .markAsHandle()
                             .cursorForHorizontalResize()
+                            .hoverable(interactionSource)
                             .width(10.dp)
-                            .fillMaxHeight()
-                            .markAsHandle(),
+                            .fillMaxHeight(),
                     )
                 }
             }

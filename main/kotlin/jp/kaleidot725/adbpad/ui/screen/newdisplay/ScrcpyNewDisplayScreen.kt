@@ -3,6 +3,9 @@ package jp.kaleidot725.adbpad.ui.screen.newdisplay
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +47,7 @@ import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayState
 import jp.kaleidot725.adbpad.ui.screen.screenshot.cursorForHorizontalResize
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
 import org.jetbrains.compose.splitpane.HorizontalSplitPane
+import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 import kotlin.math.max
 
@@ -52,19 +56,22 @@ import kotlin.math.max
 fun ScrcpyNewDisplayScreen(
     state: ScrcpyNewDisplayState,
     onAction: (ScrcpyNewDisplayAction) -> Unit,
+    splitterState: SplitPaneState,
 ) {
-    val splitPaneState = rememberSplitPaneState()
     val filteredProfiles = state.filteredProfiles
     val maxProfileDimension =
         remember(state.profiles) {
             state.profiles.maxOfOrNull { max(it.width, it.height) }?.toFloat() ?: 1f
         }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     HorizontalSplitPane(
-        splitPaneState = splitPaneState,
+        splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        first(minSize = 350.dp) {
+        first(minSize = 200.dp) {
             Box(
                 modifier =
                     Modifier
@@ -176,9 +183,15 @@ fun ScrcpyNewDisplayScreen(
             visiblePart {
                 Box(
                     Modifier
-                        .width(1.dp)
+                        .width(2.dp)
                         .fillMaxHeight()
-                        .background(UserColor.getSplitterColor()),
+                        .background(
+                            if (isHovered) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                            } else {
+                                UserColor.getSplitterColor()
+                            },
+                        ),
                 )
             }
 
@@ -187,6 +200,7 @@ fun ScrcpyNewDisplayScreen(
                     Modifier
                         .markAsHandle()
                         .cursorForHorizontalResize()
+                        .hoverable(interactionSource)
                         .width(10.dp)
                         .fillMaxHeight(),
                 )
@@ -195,6 +209,7 @@ fun ScrcpyNewDisplayScreen(
     }
 }
 
+@OptIn(ExperimentalSplitPaneApi::class)
 @Preview
 @Composable
 private fun ScrcpyNewDisplayScreenPreview() {
@@ -220,5 +235,9 @@ private fun ScrcpyNewDisplayScreenPreview() {
             ),
         )
     }
-    ScrcpyNewDisplayScreen(state = state, onAction = {})
+    ScrcpyNewDisplayScreen(
+        state = state,
+        onAction = {},
+        splitterState = rememberSplitPaneState(initialPositionPercentage = 0.3f),
+    )
 }

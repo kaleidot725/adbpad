@@ -235,8 +235,18 @@ private fun App(
     deviceSettingsStateHolder: DeviceSettingsStateHolder,
     settingStateHolder: SettingStateHolder,
 ) {
-    val textSplitPaneState = rememberSplitPaneState()
-    val screenshotSplitPaneState = rememberSplitPaneState()
+    val textSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.1f,
+        )
+    val screenshotSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.1f,
+        )
+    val scrcpyNewDisplaySplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.1f,
+        )
 
     Crossfade(state.language) {
         Surface {
@@ -310,6 +320,7 @@ private fun App(
                                     ScrcpyNewDisplayScreen(
                                         state = state,
                                         onAction = onAction,
+                                        splitterState = scrcpyNewDisplaySplitPaneState,
                                     )
                                 },
                             )

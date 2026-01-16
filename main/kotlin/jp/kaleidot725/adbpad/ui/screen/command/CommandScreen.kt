@@ -67,7 +67,6 @@ private fun CommandScreen(
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val density = LocalDensity.current
         val containerHeightPx = with(density) { maxHeight.toPx() }
-
         var outputHeightPx by remember { mutableFloatStateOf(containerHeightPx * 0.3f) }
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -105,7 +104,10 @@ private fun CommandScreen(
                 onExecute = onExecute,
                 onToggleFavorite = onToggleFavorite,
                 layoutMode = layoutMode,
-                modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
             )
 
             ResizableDivider(

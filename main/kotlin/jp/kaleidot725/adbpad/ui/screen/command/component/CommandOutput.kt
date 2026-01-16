@@ -25,7 +25,7 @@ fun CommandOutput(
         modifier =
             modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
+                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // Header
