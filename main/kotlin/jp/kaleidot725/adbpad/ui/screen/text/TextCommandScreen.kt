@@ -40,7 +40,7 @@ fun TextCommandScreen(
         splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        first(minSize = 350.dp) {
+        first(minSize = 200.dp) {
             Column {
                 TextCommandHeader(
                     searchText = state.searchText,

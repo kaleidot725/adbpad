@@ -139,7 +139,7 @@ private fun ScreenshotScreen(
                     .fillMaxWidth()
                     .weight(1.0f),
         ) {
-            first(minSize = 350.dp) {
+            first(minSize = 200.dp) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier.fillMaxSize(),

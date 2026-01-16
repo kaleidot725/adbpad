@@ -44,6 +44,7 @@ import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayState
 import jp.kaleidot725.adbpad.ui.screen.screenshot.cursorForHorizontalResize
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
 import org.jetbrains.compose.splitpane.HorizontalSplitPane
+import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 import kotlin.math.max
 
@@ -52,8 +53,8 @@ import kotlin.math.max
 fun ScrcpyNewDisplayScreen(
     state: ScrcpyNewDisplayState,
     onAction: (ScrcpyNewDisplayAction) -> Unit,
+    splitterState: SplitPaneState,
 ) {
-    val splitPaneState = rememberSplitPaneState()
     val filteredProfiles = state.filteredProfiles
     val maxProfileDimension =
         remember(state.profiles) {
@@ -61,10 +62,10 @@ fun ScrcpyNewDisplayScreen(
         }
 
     HorizontalSplitPane(
-        splitPaneState = splitPaneState,
+        splitPaneState = splitterState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        first(minSize = 350.dp) {
+        first(minSize = 200.dp) {
             Box(
                 modifier =
                     Modifier
@@ -195,6 +196,7 @@ fun ScrcpyNewDisplayScreen(
     }
 }
 
+@OptIn(ExperimentalSplitPaneApi::class)
 @Preview
 @Composable
 private fun ScrcpyNewDisplayScreenPreview() {
@@ -220,5 +222,9 @@ private fun ScrcpyNewDisplayScreenPreview() {
             ),
         )
     }
-    ScrcpyNewDisplayScreen(state = state, onAction = {})
+    ScrcpyNewDisplayScreen(
+        state = state,
+        onAction = {},
+        splitterState = rememberSplitPaneState(initialPositionPercentage = 0.3f),
+    )
 }
