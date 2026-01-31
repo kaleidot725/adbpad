@@ -295,7 +295,10 @@ object TurkishResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "Başlatma Seçenekleri"
 
     override val commandCategoryAll: String = "Hepsi"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "İletişim"
+    override val commandCategoryNavigation: String = "Gezinme"
+    override val commandCategoryTheme: String = "Tema"
+    override val commandCategoryDisplay: String = "Görüntü"
+    override val commandCategoryDevice: String = "Cihaz"
     override val commandCategoryFavorite: String = "Favori"
 }

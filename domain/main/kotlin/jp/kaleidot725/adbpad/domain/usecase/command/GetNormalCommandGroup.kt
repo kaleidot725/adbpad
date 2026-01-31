@@ -17,8 +17,11 @@ class GetNormalCommandGroup(
             }
         return NormalCommandGroup(
             all = all,
-            ui = all.filter { it.category == NormalCommandCategory.UI },
             communication = all.filter { it.category == NormalCommandCategory.COM },
+            navigation = all.filter { it.category == NormalCommandCategory.NAVIGATION },
+            theme = all.filter { it.category == NormalCommandCategory.THEME },
+            display = all.filter { it.category == NormalCommandCategory.DISPLAY },
+            device = all.filter { it.category == NormalCommandCategory.DEVICE },
             favorite = all.filter { it.isFavorite },
         )
     }

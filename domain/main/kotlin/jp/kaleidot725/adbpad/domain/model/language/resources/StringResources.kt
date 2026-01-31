@@ -291,7 +291,10 @@ interface StringResources {
     val scrcpyNewDisplayLaunchOptions: String
 
     val commandCategoryAll: String
-    val commandCategoryUi: String
     val commandCategoryCommunication: String
+    val commandCategoryNavigation: String
+    val commandCategoryTheme: String
+    val commandCategoryDisplay: String
+    val commandCategoryDevice: String
     val commandCategoryFavorite: String
 }

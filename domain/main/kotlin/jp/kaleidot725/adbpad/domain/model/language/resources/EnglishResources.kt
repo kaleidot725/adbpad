@@ -295,7 +295,10 @@ object EnglishResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "Launch Options"
 
     override val commandCategoryAll: String = "All"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "Communication"
+    override val commandCategoryNavigation: String = "Navigation"
+    override val commandCategoryTheme: String = "Theme"
+    override val commandCategoryDisplay: String = "Display"
+    override val commandCategoryDevice: String = "Device"
     override val commandCategoryFavorite: String = "Favorite"
 }

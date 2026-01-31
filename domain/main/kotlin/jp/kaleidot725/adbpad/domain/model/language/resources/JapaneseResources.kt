@@ -294,7 +294,10 @@ object JapaneseResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "起動オプション"
 
     override val commandCategoryAll: String = "すべて"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "通信"
+    override val commandCategoryNavigation: String = "ナビゲーション"
+    override val commandCategoryTheme: String = "テーマ"
+    override val commandCategoryDisplay: String = "表示"
+    override val commandCategoryDevice: String = "デバイス"
     override val commandCategoryFavorite: String = "お気に入り"
 }

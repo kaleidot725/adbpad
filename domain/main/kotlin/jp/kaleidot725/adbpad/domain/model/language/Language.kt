@@ -549,10 +549,16 @@ object Language : StringResources {
 
     override val commandCategoryAll: String
         get() = getCurrentResources().commandCategoryAll
-    override val commandCategoryUi: String
-        get() = getCurrentResources().commandCategoryUi
     override val commandCategoryCommunication: String
         get() = getCurrentResources().commandCategoryCommunication
+    override val commandCategoryNavigation: String
+        get() = getCurrentResources().commandCategoryNavigation
+    override val commandCategoryTheme: String
+        get() = getCurrentResources().commandCategoryTheme
+    override val commandCategoryDisplay: String
+        get() = getCurrentResources().commandCategoryDisplay
+    override val commandCategoryDevice: String
+        get() = getCurrentResources().commandCategoryDevice
     override val commandCategoryFavorite: String
         get() = getCurrentResources().commandCategoryFavorite
 

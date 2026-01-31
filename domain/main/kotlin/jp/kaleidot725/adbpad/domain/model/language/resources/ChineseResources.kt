@@ -293,7 +293,10 @@ object ChineseResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "启动选项"
 
     override val commandCategoryAll: String = "全部"
-    override val commandCategoryUi: String = "界面"
     override val commandCategoryCommunication: String = "通信"
+    override val commandCategoryNavigation: String = "导航"
+    override val commandCategoryTheme: String = "主题"
+    override val commandCategoryDisplay: String = "显示"
+    override val commandCategoryDevice: String = "设备"
     override val commandCategoryFavorite: String = "收藏"
 }
