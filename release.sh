@@ -89,9 +89,13 @@ fi
 # Commit the version change
 print_info "変更をコミット中..."
 git add "$BUILD_FILE"
-git commit -m "chore: bump version to ${TAG_NAME}
+if git diff --cached --quiet; then
+    print_warn "バージョンは既に ${VERSION} です。コミットをスキップします"
+else
+    git commit -m "chore: bump version to ${TAG_NAME}
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+fi
 
 # Create and push tag
 print_info "タグ ${TAG_NAME} を作成中..."
