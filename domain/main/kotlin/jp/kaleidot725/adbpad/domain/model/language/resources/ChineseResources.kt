@@ -132,6 +132,14 @@ object ChineseResources : StringResources {
     override val commandDozeModeOnDetails: String = "启用Doze模式以节省电量"
     override val commandDozeModeOffTitle: String = "Doze模式: 关闭"
     override val commandDozeModeOffDetails: String = "禁用Doze模式"
+    override val commandScreenRotation0Title: String = "屏幕旋转: 0度（竖屏）"
+    override val commandScreenRotation0Details: String = "将屏幕旋转到0度（竖屏）"
+    override val commandScreenRotation90Title: String = "屏幕旋转: 90度（横屏）"
+    override val commandScreenRotation90Details: String = "将屏幕旋转到90度（横屏）"
+    override val commandScreenRotation180Title: String = "屏幕旋转: 180度（倒竖屏）"
+    override val commandScreenRotation180Details: String = "将屏幕旋转到180度（倒竖屏）"
+    override val commandScreenRotation270Title: String = "屏幕旋转: 270度（倒横屏）"
+    override val commandScreenRotation270Details: String = "将屏幕旋转到270度（倒横屏）"
 
     override val categoryUI: String = "界面"
     override val categoryCommunication: String = "通信"
@@ -293,7 +301,10 @@ object ChineseResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "启动选项"
 
     override val commandCategoryAll: String = "全部"
-    override val commandCategoryUi: String = "界面"
     override val commandCategoryCommunication: String = "通信"
+    override val commandCategoryNavigation: String = "导航"
+    override val commandCategoryTheme: String = "主题"
+    override val commandCategoryDisplay: String = "显示"
+    override val commandCategoryDevice: String = "设备"
     override val commandCategoryFavorite: String = "收藏"
 }

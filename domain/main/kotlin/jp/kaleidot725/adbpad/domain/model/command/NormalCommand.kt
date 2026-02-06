@@ -26,7 +26,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system pointer_location 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -41,7 +41,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system pointer_location 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -57,7 +57,7 @@ interface NormalCommand {
                 ShellCommandRequest("setprop debug.layout true"),
                 ShellCommandRequest("service call activity 1599295570"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -73,7 +73,7 @@ interface NormalCommand {
                 ShellCommandRequest("setprop debug.layout false"),
                 ShellCommandRequest("service call activity 1599295570"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -88,7 +88,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system show_touches 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -103,7 +103,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system show_touches 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -118,7 +118,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global stay_on_while_plugged_in 7"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -133,7 +133,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global stay_on_while_plugged_in 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -145,7 +145,7 @@ interface NormalCommand {
         override val title: String get() = Language.commandDarkThemeOnTitle
         override val details: String get() = Language.commandDarkThemeOnDetails
         override val requests: List<ShellCommandRequest> = listOf(ShellCommandRequest("cmd uimode night yes"))
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.THEME
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -157,7 +157,7 @@ interface NormalCommand {
         override val title: String get() = Language.commandDarkThemeOffTitle
         override val details: String get() = Language.commandDarkThemeOffDetails
         override val requests: List<ShellCommandRequest> = listOf(ShellCommandRequest("cmd uimode night no"))
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.THEME
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -252,7 +252,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("am task lock stop"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -267,7 +267,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("cmd overlay enable com.android.internal.systemui.navbar.gestural"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.NAVIGATION
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -282,7 +282,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("cmd overlay enable com.android.internal.systemui.navbar.twobutton"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.NAVIGATION
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -297,7 +297,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("cmd overlay enable com.android.internal.systemui.navbar.threebutton"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.NAVIGATION
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -406,7 +406,7 @@ interface NormalCommand {
                 ShellCommandRequest("settings put global transition_animation_scale 1"),
                 ShellCommandRequest("settings put global animator_duration_scale 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -423,7 +423,7 @@ interface NormalCommand {
                 ShellCommandRequest("settings put global transition_animation_scale 0"),
                 ShellCommandRequest("settings put global animator_duration_scale 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -438,7 +438,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system accelerometer_rotation 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -453,7 +453,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system accelerometer_rotation 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -468,7 +468,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 0.85"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -483,7 +483,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 1.0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -498,7 +498,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 1.15"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -513,7 +513,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 1.3"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -528,7 +528,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 1.5"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -543,7 +543,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put system font_scale 2.0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -558,7 +558,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global debug.force_rtl 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -573,7 +573,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global debug.force_rtl 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -588,7 +588,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global low_power 1"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -603,7 +603,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("settings put global low_power 0"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -648,7 +648,7 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("dumpsys deviceidle enable"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }
@@ -663,7 +663,67 @@ interface NormalCommand {
             listOf(
                 ShellCommandRequest("dumpsys deviceidle disable"),
             )
-        override val category: NormalCommandCategory = NormalCommandCategory.UI
+        override val category: NormalCommandCategory = NormalCommandCategory.DEVICE
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class ScreenRotation0(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandScreenRotation0Title
+        override val details: String get() = Language.commandScreenRotation0Details
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system user_rotation 0"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class ScreenRotation90(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandScreenRotation90Title
+        override val details: String get() = Language.commandScreenRotation90Details
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system user_rotation 1"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class ScreenRotation180(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandScreenRotation180Title
+        override val details: String get() = Language.commandScreenRotation180Details
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system user_rotation 2"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class ScreenRotation270(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandScreenRotation270Title
+        override val details: String get() = Language.commandScreenRotation270Details
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put system user_rotation 3"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }

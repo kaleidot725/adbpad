@@ -57,6 +57,10 @@ class NormalCommandRepositoryImpl : NormalCommandRepository {
             NormalCommand.DataSaverOff(runningCommands.any { it is NormalCommand.DataSaverOff }),
             NormalCommand.DozeModeOn(runningCommands.any { it is NormalCommand.DozeModeOn }),
             NormalCommand.DozeModeOff(runningCommands.any { it is NormalCommand.DozeModeOff }),
+            NormalCommand.ScreenRotation0(runningCommands.any { it is NormalCommand.ScreenRotation0 }),
+            NormalCommand.ScreenRotation90(runningCommands.any { it is NormalCommand.ScreenRotation90 }),
+            NormalCommand.ScreenRotation180(runningCommands.any { it is NormalCommand.ScreenRotation180 }),
+            NormalCommand.ScreenRotation270(runningCommands.any { it is NormalCommand.ScreenRotation270 }),
         )
 
     override suspend fun sendCommand(

@@ -95,8 +95,11 @@ private fun CommandScreen(
             CommandList(
                 commands =
                     when (filtered) {
-                        NormalCommandCategory.UI -> commands.ui
                         NormalCommandCategory.COM -> commands.communication
+                        NormalCommandCategory.NAVIGATION -> commands.navigation
+                        NormalCommandCategory.THEME -> commands.theme
+                        NormalCommandCategory.DISPLAY -> commands.display
+                        NormalCommandCategory.DEVICE -> commands.device
                         NormalCommandCategory.FAVORITE -> commands.favorite
                         NormalCommandCategory.ALL -> commands.all
                     },
@@ -142,9 +145,13 @@ private fun CommandScreen_Card_Preview() {
     CommandScreen(
         commands =
             NormalCommandGroup(
-                listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff(), NormalCommand.WifiOn()),
-                listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
-                listOf(NormalCommand.WifiOn()),
+                all = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff(), NormalCommand.WifiOn()),
+                communication = listOf(NormalCommand.WifiOn()),
+                navigation = emptyList(),
+                theme = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
+                display = emptyList(),
+                device = emptyList(),
+                favorite = emptyList(),
             ),
         filtered = NormalCommandCategory.ALL,
         layoutMode = CommandLayoutMode.CARD,
@@ -163,9 +170,13 @@ private fun CommandScreen_List_Preview() {
     CommandScreen(
         commands =
             NormalCommandGroup(
-                listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff(), NormalCommand.WifiOn()),
-                listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
-                listOf(NormalCommand.WifiOn()),
+                all = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff(), NormalCommand.WifiOn()),
+                communication = listOf(NormalCommand.WifiOn()),
+                navigation = emptyList(),
+                theme = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
+                display = emptyList(),
+                device = emptyList(),
+                favorite = emptyList(),
             ),
         filtered = NormalCommandCategory.ALL,
         layoutMode = CommandLayoutMode.LIST,

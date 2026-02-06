@@ -134,6 +134,14 @@ object JapaneseResources : StringResources {
     override val commandDozeModeOnDetails: String = "Dozeモードを有効化し、バッテリーを節約する"
     override val commandDozeModeOffTitle: String = "Dozeモード: OFF"
     override val commandDozeModeOffDetails: String = "Dozeモードを無効化する"
+    override val commandScreenRotation0Title: String = "画面回転: 0度（縦向き）"
+    override val commandScreenRotation0Details: String = "画面を0度（縦向き）に回転する"
+    override val commandScreenRotation90Title: String = "画面回転: 90度（横向き）"
+    override val commandScreenRotation90Details: String = "画面を90度（横向き）に回転する"
+    override val commandScreenRotation180Title: String = "画面回転: 180度（逆さ）"
+    override val commandScreenRotation180Details: String = "画面を180度（逆さ）に回転する"
+    override val commandScreenRotation270Title: String = "画面回転: 270度（横向き）"
+    override val commandScreenRotation270Details: String = "画面を270度（横向き）に回転する"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "通信"
@@ -294,7 +302,10 @@ object JapaneseResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "起動オプション"
 
     override val commandCategoryAll: String = "すべて"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "通信"
+    override val commandCategoryNavigation: String = "ナビゲーション"
+    override val commandCategoryTheme: String = "テーマ"
+    override val commandCategoryDisplay: String = "表示"
+    override val commandCategoryDevice: String = "デバイス"
     override val commandCategoryFavorite: String = "お気に入り"
 }

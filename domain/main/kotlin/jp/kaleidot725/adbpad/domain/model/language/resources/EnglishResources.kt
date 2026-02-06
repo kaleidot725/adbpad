@@ -132,6 +132,14 @@ object EnglishResources : StringResources {
     override val commandDozeModeOnDetails: String = "Enable Doze mode to save battery"
     override val commandDozeModeOffTitle: String = "Doze mode: OFF"
     override val commandDozeModeOffDetails: String = "Disable Doze mode"
+    override val commandScreenRotation0Title: String = "Screen rotation: 0° (Portrait)"
+    override val commandScreenRotation0Details: String = "Rotate screen to 0 degrees (Portrait)"
+    override val commandScreenRotation90Title: String = "Screen rotation: 90° (Landscape)"
+    override val commandScreenRotation90Details: String = "Rotate screen to 90 degrees (Landscape)"
+    override val commandScreenRotation180Title: String = "Screen rotation: 180° (Reverse Portrait)"
+    override val commandScreenRotation180Details: String = "Rotate screen to 180 degrees (Reverse Portrait)"
+    override val commandScreenRotation270Title: String = "Screen rotation: 270° (Reverse Landscape)"
+    override val commandScreenRotation270Details: String = "Rotate screen to 270 degrees (Reverse Landscape)"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "Communication"
@@ -295,7 +303,10 @@ object EnglishResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "Launch Options"
 
     override val commandCategoryAll: String = "All"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "Communication"
+    override val commandCategoryNavigation: String = "Navigation"
+    override val commandCategoryTheme: String = "Theme"
+    override val commandCategoryDisplay: String = "Display"
+    override val commandCategoryDevice: String = "Device"
     override val commandCategoryFavorite: String = "Favorite"
 }

@@ -132,6 +132,14 @@ object TurkishResources : StringResources {
     override val commandDozeModeOnDetails: String = "Pil tasarrufu için Doze modunu etkinleştir"
     override val commandDozeModeOffTitle: String = "Doze modu: KAPALI"
     override val commandDozeModeOffDetails: String = "Doze modunu devre dışı bırak"
+    override val commandScreenRotation0Title: String = "Ekran döndürme: 0° (Dikey)"
+    override val commandScreenRotation0Details: String = "Ekranı 0 dereceye (Dikey) döndür"
+    override val commandScreenRotation90Title: String = "Ekran döndürme: 90° (Yatay)"
+    override val commandScreenRotation90Details: String = "Ekranı 90 dereceye (Yatay) döndür"
+    override val commandScreenRotation180Title: String = "Ekran döndürme: 180° (Ters Dikey)"
+    override val commandScreenRotation180Details: String = "Ekranı 180 dereceye (Ters Dikey) döndür"
+    override val commandScreenRotation270Title: String = "Ekran döndürme: 270° (Ters Yatay)"
+    override val commandScreenRotation270Details: String = "Ekranı 270 dereceye (Ters Yatay) döndür"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "İletişim"
@@ -295,7 +303,10 @@ object TurkishResources : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String = "Başlatma Seçenekleri"
 
     override val commandCategoryAll: String = "Hepsi"
-    override val commandCategoryUi: String = "UI"
     override val commandCategoryCommunication: String = "İletişim"
+    override val commandCategoryNavigation: String = "Gezinme"
+    override val commandCategoryTheme: String = "Tema"
+    override val commandCategoryDisplay: String = "Görüntü"
+    override val commandCategoryDevice: String = "Cihaz"
     override val commandCategoryFavorite: String = "Favori"
 }
