@@ -235,17 +235,33 @@ private fun App(
     deviceSettingsStateHolder: DeviceSettingsStateHolder,
     settingStateHolder: SettingStateHolder,
 ) {
+    val commandSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.7f,
+        )
     val textSplitPaneState =
         rememberSplitPaneState(
             initialPositionPercentage = 0.1f,
+        )
+    val textRightSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.8f,
         )
     val screenshotSplitPaneState =
         rememberSplitPaneState(
             initialPositionPercentage = 0.1f,
         )
+    val screenshotRightSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.8f,
+        )
     val scrcpyNewDisplaySplitPaneState =
         rememberSplitPaneState(
             initialPositionPercentage = 0.1f,
+        )
+    val scrcpyNewDisplayRightSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.8f,
         )
 
     Crossfade(state.language) {
@@ -282,6 +298,7 @@ private fun App(
                                     CommandScreen(
                                         state = state,
                                         onAction = onAction,
+                                        splitterState = commandSplitPaneState,
                                     )
                                 },
                             )
@@ -295,6 +312,7 @@ private fun App(
                                         state = state,
                                         onAction = onAction,
                                         splitterState = textSplitPaneState,
+                                        rightSplitterState = textRightSplitPaneState,
                                     )
                                 },
                             )
@@ -308,6 +326,7 @@ private fun App(
                                         state = state,
                                         onAction = onAction,
                                         screenshotSplitPaneState = screenshotSplitPaneState,
+                                        rightSplitterState = screenshotRightSplitPaneState,
                                     )
                                 },
                             )
@@ -321,6 +340,7 @@ private fun App(
                                         state = state,
                                         onAction = onAction,
                                         splitterState = scrcpyNewDisplaySplitPaneState,
+                                        rightSplitterState = scrcpyNewDisplayRightSplitPaneState,
                                     )
                                 },
                             )

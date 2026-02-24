@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.command.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ fun CommandOutput(
     Column(
         modifier =
             modifier
-                .background(MaterialTheme.colorScheme.background)
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

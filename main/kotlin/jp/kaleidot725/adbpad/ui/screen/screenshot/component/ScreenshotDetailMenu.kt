@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.screenshot.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +37,7 @@ fun ScreenshotDetailMenu(
 ) {
     val file = screenshot.file
     Column(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        modifier = modifier,
     ) {
         Column(
             modifier =

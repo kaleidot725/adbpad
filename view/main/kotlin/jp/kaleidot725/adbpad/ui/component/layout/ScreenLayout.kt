@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import jp.kaleidot725.adbpad.ui.common.resource.UserColor
+
 
 @Composable
 fun ScreenLayout(
@@ -24,26 +24,23 @@ fun ScreenLayout(
     dialog: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier) {
+    Box(modifier.background(MaterialTheme.colorScheme.background)) {
         Column {
             if (top != null) {
                 top()
-                HorizontalDivider(color = UserColor.getSplitterColor())
             }
-            Row(modifier = Modifier.weight(0.9f, true)) {
+            Row(modifier = Modifier.weight(1f)) {
                 Box(Modifier.background(MaterialTheme.colorScheme.background)) { navigationRail() }
-                androidx.compose.material3.VerticalDivider(
-                    modifier = Modifier.fillMaxHeight(),
-                    color = UserColor.getSplitterColor(),
-                )
-                Box(Modifier.background(MaterialTheme.colorScheme.background).weight(1f)) { content() }
-                androidx.compose.material3.VerticalDivider(
-                    modifier = Modifier.fillMaxHeight(),
-                    color = UserColor.getSplitterColor(),
-                )
+                Box(
+                    Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .weight(1f)
+                        .padding(start = 8.dp, top = 8.dp, end = 12.dp, bottom = 12.dp),
+                ) {
+                    content()
+                }
                 Box(Modifier.background(MaterialTheme.colorScheme.background)) { right() }
             }
-            HorizontalDivider(color = UserColor.getSplitterColor())
         }
         dialog()
     }

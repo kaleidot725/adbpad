@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.kaleidot725.adbpad.domain.model.command.TextCommand
 import jp.kaleidot725.adbpad.domain.model.language.Language
-import jp.kaleidot725.adbpad.ui.common.resource.defaultBorder
+import jp.kaleidot725.adbpad.ui.common.resource.UserColor
 import jp.kaleidot725.adbpad.ui.component.text.DefaultTextField
 
 @Composable
@@ -52,7 +52,7 @@ fun TextCommandEditor(
             )
         }
 
-        Divider(modifier = Modifier.height(1.dp).fillMaxWidth().defaultBorder())
+        HorizontalDivider(color = UserColor.getSplitterColor())
 
         val primaryColor = MaterialTheme.colorScheme.primary
         val transformation by remember(primaryColor, option) {

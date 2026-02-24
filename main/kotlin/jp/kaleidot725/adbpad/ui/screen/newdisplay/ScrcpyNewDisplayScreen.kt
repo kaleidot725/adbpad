@@ -2,19 +2,14 @@ package jp.kaleidot725.adbpad.ui.screen.newdisplay
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ContextMenuItem
-import androidx.compose.foundation.background
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -38,15 +33,16 @@ import jp.kaleidot725.adbpad.domain.model.device.ScrcpyOptions
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.scrcpy.ScrcpyNewDisplayProfile
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
+import jp.kaleidot725.adbpad.ui.component.layout.ThreePaneLayout
 import jp.kaleidot725.adbpad.ui.component.menu.ThemedContextMenuArea
+import jp.kaleidot725.adbpad.ui.component.text.DefaultTextField
+import jp.kaleidot725.adbpad.ui.screen.newdisplay.component.DeviceMockup
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.component.ProfileListItem
-import jp.kaleidot725.adbpad.ui.screen.newdisplay.component.ScrcpyNewDisplayDetailPanel
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.component.ScrcpyNewDisplayHeader
+import jp.kaleidot725.adbpad.ui.screen.newdisplay.component.ScrcpyNewDisplayMenu
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayAction
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayState
-import jp.kaleidot725.adbpad.ui.screen.screenshot.cursorForHorizontalResize
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
-import org.jetbrains.compose.splitpane.HorizontalSplitPane
 import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 import kotlin.math.max
@@ -57,156 +53,163 @@ fun ScrcpyNewDisplayScreen(
     state: ScrcpyNewDisplayState,
     onAction: (ScrcpyNewDisplayAction) -> Unit,
     splitterState: SplitPaneState,
+    rightSplitterState: SplitPaneState,
 ) {
     val filteredProfiles = state.filteredProfiles
     val maxProfileDimension =
         remember(state.profiles) {
             state.profiles.maxOfOrNull { max(it.width, it.height) }?.toFloat() ?: 1f
         }
+    val effectiveProfile =
+        remember(state.selectedProfile, state.inputWidth, state.inputHeight, state.inputDpi) {
+            state.selectedProfile?.let { profile ->
+                val w = state.inputWidth.toIntOrNull() ?: profile.width
+                val h = state.inputHeight.toIntOrNull() ?: profile.height
+                val dpi = state.inputDpi.toIntOrNull() ?: profile.densityDpi
+                profile.copy(width = w, height = h, densityDpi = dpi)
+            }
+        }
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
+    ThreePaneLayout(
+        splitterState = splitterState,
+        rightSplitterState = rightSplitterState,
+        left = {
+            Column(modifier = Modifier.fillMaxSize()) {
+                ScrcpyNewDisplayHeader(
+                    searchText = state.searchText,
+                    sortType = state.sortType,
+                    onUpdateSearchText = { onAction(ScrcpyNewDisplayAction.UpdateSearchText(it)) },
+                    onUpdateSortType = { onAction(ScrcpyNewDisplayAction.UpdateSortType(it)) },
+                    onAddProfile = { onAction(ScrcpyNewDisplayAction.AddNewProfile) },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                )
 
-    HorizontalSplitPane(
-        splitPaneState = splitterState,
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        first(minSize = 200.dp) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            ) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    ScrcpyNewDisplayHeader(
-                        searchText = state.searchText,
-                        sortType = state.sortType,
-                        onUpdateSearchText = { onAction(ScrcpyNewDisplayAction.UpdateSearchText(it)) },
-                        onUpdateSortType = { onAction(ScrcpyNewDisplayAction.UpdateSortType(it)) },
-                        onAddProfile = { onAction(ScrcpyNewDisplayAction.AddNewProfile) },
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                    )
+                HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = UserColor.getSplitterColor())
 
-                    HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = UserColor.getSplitterColor())
-
-                    if (filteredProfiles.isEmpty()) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                        ) {
-                            Text(
-                                text = Language.scrcpyNewDisplayEmpty,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
-                    } else {
-                        LazyColumn(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                                    .onKeyEvent { event ->
-                                        when {
-                                            event.key == Key.DirectionUp && event.type == KeyEventType.KeyDown -> {
-                                                onAction(ScrcpyNewDisplayAction.SelectPreviousProfile)
-                                                true
-                                            }
-                                            event.key == Key.DirectionDown && event.type == KeyEventType.KeyDown -> {
-                                                onAction(ScrcpyNewDisplayAction.SelectNextProfile)
-                                                true
-                                            }
-                                            else -> false
+                if (filteredProfiles.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                        Text(
+                            text = Language.scrcpyNewDisplayEmpty,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .onKeyEvent { event ->
+                                    when {
+                                        event.key == Key.DirectionUp && event.type == KeyEventType.KeyDown -> {
+                                            onAction(ScrcpyNewDisplayAction.SelectPreviousProfile)
+                                            true
                                         }
-                                    },
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding =
-                                PaddingValues(
-                                    start = 8.dp,
-                                    top = 4.dp,
-                                    end = 8.dp,
-                                    bottom = 24.dp,
-                                ),
-                        ) {
-                            items(filteredProfiles, key = { it.id }) { profile ->
-                                val selected = state.selectedProfile?.id == profile.id
-                                ThemedContextMenuArea(
-                                    items = {
-                                        listOf(
-                                            ContextMenuItem(
-                                                label = Language.delete,
-                                                onClick = { onAction(ScrcpyNewDisplayAction.DeleteProfile(profile)) },
-                                            ),
-                                        )
-                                    },
-                                ) {
-                                    ProfileListItem(
-                                        name = profile.displayName,
-                                        lastModified = profile.lastModified,
-                                        selected = selected,
-                                        onClick = { onAction(ScrcpyNewDisplayAction.SelectProfile(profile.id)) },
+
+                                        event.key == Key.DirectionDown && event.type == KeyEventType.KeyDown -> {
+                                            onAction(ScrcpyNewDisplayAction.SelectNextProfile)
+                                            true
+                                        }
+
+                                        else -> {
+                                            false
+                                        }
+                                    }
+                                },
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 24.dp),
+                    ) {
+                        items(filteredProfiles, key = { it.id }) { profile ->
+                            val selected = state.selectedProfile?.id == profile.id
+                            ThemedContextMenuArea(
+                                items = {
+                                    listOf(
+                                        ContextMenuItem(
+                                            label = Language.delete,
+                                            onClick = { onAction(ScrcpyNewDisplayAction.DeleteProfile(profile)) },
+                                        ),
                                     )
-                                }
+                                },
+                            ) {
+                                ProfileListItem(
+                                    name = profile.displayName,
+                                    lastModified = profile.lastModified,
+                                    selected = selected,
+                                    onClick = { onAction(ScrcpyNewDisplayAction.SelectProfile(profile.id)) },
+                                )
                             }
                         }
                     }
                 }
             }
-        }
+        },
+        center = {
+            if (effectiveProfile != null) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                    ) {
+                        DefaultTextField(
+                            id = "inputName-${state.selectedProfileId}",
+                            initialText = state.inputName,
+                            onUpdateText = { onAction(ScrcpyNewDisplayAction.UpdateInputName(it)) },
+                            placeHolder = "profile name",
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                        )
+                    }
 
-        second {
-            ScrcpyNewDisplayDetailPanel(
-                selectedProfile = state.selectedProfile,
-                isEditable = true,
-                selectedProfileId = state.selectedProfileId,
-                inputName = state.inputName,
-                inputWidth = state.inputWidth,
-                inputHeight = state.inputHeight,
-                inputDpi = state.inputDpi,
-                scrcpyOptions = state.selectedProfile?.options ?: ScrcpyOptions(),
-                isLaunching = state.isLaunching,
-                canLaunch = state.canLaunch,
-                maxProfileDimension = maxProfileDimension,
-                onUpdateInputName = { onAction(ScrcpyNewDisplayAction.UpdateInputName(it)) },
-                onUpdateInputWidth = { onAction(ScrcpyNewDisplayAction.UpdateInputWidth(it)) },
-                onUpdateInputHeight = { onAction(ScrcpyNewDisplayAction.UpdateInputHeight(it)) },
-                onUpdateInputDpi = { onAction(ScrcpyNewDisplayAction.UpdateInputDpi(it)) },
-                onUpdateScrcpyOptions = { onAction(ScrcpyNewDisplayAction.UpdateScrcpyOptions(it)) },
-                onLaunch = { onAction(ScrcpyNewDisplayAction.LaunchSelectedProfile) },
-            )
-        }
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = UserColor.getSplitterColor())
 
-        splitter {
-            visiblePart {
-                Box(
-                    Modifier
-                        .width(2.dp)
-                        .fillMaxHeight()
-                        .background(
-                            if (isHovered) {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                            } else {
-                                UserColor.getSplitterColor()
-                            },
-                        ),
-                )
+                    Box(
+                        modifier = Modifier.weight(1f).padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        DeviceMockup(
+                            width = effectiveProfile.width,
+                            height = effectiveProfile.height,
+                            maxDimension = maxProfileDimension,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = Language.scrcpyNewDisplayEmpty,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
             }
-
-            handle {
-                Box(
-                    Modifier
-                        .markAsHandle()
-                        .cursorForHorizontalResize()
-                        .hoverable(interactionSource)
-                        .width(10.dp)
-                        .fillMaxHeight(),
-                )
-            }
-        }
-    }
+        },
+        right =
+            effectiveProfile?.let {
+                {
+                    ScrcpyNewDisplayMenu(
+                        isEditable = true,
+                        selectedProfileId = state.selectedProfileId,
+                        inputWidth = state.inputWidth,
+                        inputHeight = state.inputHeight,
+                        inputDpi = state.inputDpi,
+                        scrcpyOptions = state.selectedProfile?.options ?: ScrcpyOptions(),
+                        isLaunching = state.isLaunching,
+                        canLaunch = state.canLaunch,
+                        onUpdateInputWidth = { onAction(ScrcpyNewDisplayAction.UpdateInputWidth(it)) },
+                        onUpdateInputHeight = { onAction(ScrcpyNewDisplayAction.UpdateInputHeight(it)) },
+                        onUpdateInputDpi = { onAction(ScrcpyNewDisplayAction.UpdateInputDpi(it)) },
+                        onUpdateScrcpyOptions = { onAction(ScrcpyNewDisplayAction.UpdateScrcpyOptions(it)) },
+                        onLaunch = { onAction(ScrcpyNewDisplayAction.LaunchSelectedProfile) },
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                    )
+                }
+            },
+    )
 }
 
 @OptIn(ExperimentalSplitPaneApi::class)
@@ -239,5 +242,6 @@ private fun ScrcpyNewDisplayScreenPreview() {
         state = state,
         onAction = {},
         splitterState = rememberSplitPaneState(initialPositionPercentage = 0.3f),
+        rightSplitterState = rememberSplitPaneState(initialPositionPercentage = 0.7f),
     )
 }

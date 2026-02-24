@@ -1,12 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.screenshot
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,19 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.adbpad.domain.model.command.ScreenshotCommand
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.screenshot.Screenshot
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
+import jp.kaleidot725.adbpad.ui.component.layout.ThreePaneLayout
 import jp.kaleidot725.adbpad.ui.component.text.DefaultTextField
 import jp.kaleidot725.adbpad.ui.screen.screenshot.component.ScreenshotDetailMenu
 import jp.kaleidot725.adbpad.ui.screen.screenshot.component.ScreenshotExplorer
@@ -37,12 +27,8 @@ import jp.kaleidot725.adbpad.ui.screen.screenshot.component.ScreenshotViewer
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotAction
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotState
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
-import org.jetbrains.compose.splitpane.HorizontalSplitPane
 import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
-import java.awt.Cursor
-
-fun Modifier.cursorForHorizontalResize(): Modifier = pointerHoverIcon(PointerIcon(Cursor(Cursor.E_RESIZE_CURSOR)))
 
 @OptIn(ExperimentalSplitPaneApi::class)
 @Composable
@@ -50,10 +36,12 @@ fun ScreenshotScreen(
     state: ScreenshotState,
     onAction: (ScreenshotAction) -> Unit,
     screenshotSplitPaneState: SplitPaneState,
+    rightSplitterState: SplitPaneState,
 ) {
     ScreenshotScreen(
         screenshot = state.preview,
         splitterState = screenshotSplitPaneState,
+        rightSplitterState = rightSplitterState,
         screenshots = state.previews,
         canCapture = state.canExecute,
         isCapturing = state.isCapturing,
@@ -110,6 +98,7 @@ fun ScreenshotScreen(
 private fun ScreenshotScreen(
     screenshot: Screenshot,
     splitterState: SplitPaneState,
+    rightSplitterState: SplitPaneState,
     screenshots: List<Screenshot>,
     canCapture: Boolean,
     isCapturing: Boolean,
@@ -133,137 +122,76 @@ private fun ScreenshotScreen(
     errorMessage: String?,
     renameResetKey: Int,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
+    ThreePaneLayout(
+        splitterState = splitterState,
+        rightSplitterState = rightSplitterState,
+        left = {
+            Column(modifier = Modifier.fillMaxSize()) {
+                ScreenshotHeader(
+                    searchText = searchText,
+                    sortType = sortType,
+                    onUpdateSortType = onUpdateSortType,
+                    onUpdateSearchText = onUpdateSearchText,
+                    selectedCommand = selectCommand,
+                    onSelectCommand = onSelectCommand,
+                    commands = commands,
+                    canCapture = canCapture,
+                    isCapturing = isCapturing,
+                    onTakeScreenshot = onTakeScreenshot,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                )
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        HorizontalSplitPane(
-            splitPaneState = splitterState,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1.0f),
-        ) {
-            first(minSize = 200.dp) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        ScreenshotHeader(
-                            searchText = searchText,
-                            sortType = sortType,
-                            onUpdateSortType = onUpdateSortType,
-                            onUpdateSearchText = onUpdateSearchText,
-                            selectedCommand = selectCommand,
-                            onSelectCommand = onSelectCommand,
-                            commands = commands,
-                            canCapture = canCapture,
-                            isCapturing = isCapturing,
-                            onTakeScreenshot = onTakeScreenshot,
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                        )
+                HorizontalDivider(color = UserColor.getSplitterColor())
 
-                        HorizontalDivider(color = UserColor.getSplitterColor())
-
-                        ScreenshotExplorer(
-                            selectedScreenshot = screenshot,
-                            screenshots = screenshots,
-                            onSelectScreenShot = onSelectScreenshot,
-                            onDeleteScreenshot = onDeleteSpecificScreenshot,
-                            onNextScreenshot = onNextScreenshot,
-                            onPreviousScreenshot = onPreviousScreenshot,
-                            modifier =
-                                Modifier
-                                    .weight(1.0f)
-                                    .fillMaxWidth(),
+                ScreenshotExplorer(
+                    selectedScreenshot = screenshot,
+                    screenshots = screenshots,
+                    onSelectScreenShot = onSelectScreenshot,
+                    onDeleteScreenshot = onDeleteSpecificScreenshot,
+                    onNextScreenshot = onNextScreenshot,
+                    onPreviousScreenshot = onPreviousScreenshot,
+                    modifier = Modifier.weight(1.0f).fillMaxWidth(),
+                )
+            }
+        },
+        center = {
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (screenshot.file != null) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        DefaultTextField(
+                            id = "screenshot-name-${screenshot.file!!.absolutePath}-$renameResetKey",
+                            initialText = screenshot.file!!.nameWithoutExtension,
+                            onUpdateText = { newText -> onRenameScreenshot(newText, true) },
+                            onConfirm = { newText -> onRenameScreenshot(newText, false) },
+                            errorMessage = errorMessage,
+                            placeHolder = Language.screenshotNamePlaceholder,
+                            modifier = Modifier.weight(1.0f).height(48.dp).padding(horizontal = 12.dp),
                         )
                     }
+                    HorizontalDivider(color = UserColor.getSplitterColor())
                 }
+
+                ScreenshotViewer(
+                    screenshot = screenshot,
+                    isCapturing = isCapturing,
+                    onOpenDirectory = onOpenDirectory,
+                    onEditScreenshot = onEditScreenshot,
+                    onCopyScreenshot = onCopyScreenshot,
+                    modifier = Modifier.weight(1.0f).fillMaxWidth(),
+                )
             }
-
-            second {
-                Row(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-                    Column(modifier = Modifier.weight(1.0f).fillMaxHeight()) {
-                        if (screenshot.file != null) {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                DefaultTextField(
-                                    id = "screenshot-name-${screenshot.file!!.absolutePath}-$renameResetKey",
-                                    initialText = screenshot.file!!.nameWithoutExtension,
-                                    onUpdateText = { newText ->
-                                        onRenameScreenshot(newText, true)
-                                    },
-                                    onConfirm = { newText ->
-                                        onRenameScreenshot(newText, false)
-                                    },
-                                    errorMessage = errorMessage,
-                                    placeHolder = Language.screenshotNamePlaceholder,
-                                    modifier = Modifier.weight(1.0f).height(48.dp).padding(horizontal = 12.dp),
-                                )
-                            }
-                            HorizontalDivider(color = UserColor.getSplitterColor())
-                        }
-
-                        ScreenshotViewer(
-                            screenshot = screenshot,
-                            isCapturing = isCapturing,
-                            onOpenDirectory = onOpenDirectory,
-                            onEditScreenshot = onEditScreenshot,
-                            onCopyScreenshot = onCopyScreenshot,
-                            modifier = Modifier.weight(1.0f).fillMaxWidth(),
-                        )
-                    }
-
-                    if (screenshot.file != null) {
-                        androidx.compose.material3.VerticalDivider(
-                            modifier = Modifier.fillMaxHeight(),
-                            color = UserColor.getSplitterColor(),
-                        )
-
-                        ScreenshotDetailMenu(
-                            screenshot = screenshot,
-                            onOpenDirectory = onOpenDirectory,
-                            onEditScreenshot = onEditScreenshot,
-                            modifier =
-                                Modifier
-                                    .width(300.dp)
-                                    .fillMaxHeight(),
-                        )
-                    }
-                }
+        },
+        right = if (screenshot.file != null) {
+            {
+                ScreenshotDetailMenu(
+                    screenshot = screenshot,
+                    onOpenDirectory = onOpenDirectory,
+                    onEditScreenshot = onEditScreenshot,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
-
-            splitter {
-                visiblePart {
-                    Box(
-                        Modifier
-                            .width(2.dp)
-                            .fillMaxHeight()
-                            .background(
-                                if (isHovered) {
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                } else {
-                                    UserColor.getSplitterColor()
-                                },
-                            ),
-                    )
-                }
-
-                handle {
-                    Box(
-                        Modifier
-                            .markAsHandle()
-                            .cursorForHorizontalResize()
-                            .hoverable(interactionSource)
-                            .width(10.dp)
-                            .fillMaxHeight(),
-                    )
-                }
-            }
-        }
-    }
+        } else null,
+    )
 }
 
 @OptIn(ExperimentalSplitPaneApi::class)
@@ -273,6 +201,7 @@ private fun ScreenshotScreen_Preview() {
     ScreenshotScreen(
         screenshot = Screenshot(null),
         splitterState = rememberSplitPaneState(),
+        rightSplitterState = rememberSplitPaneState(initialPositionPercentage = 0.7f),
         screenshots = emptyList(),
         canCapture = true,
         isCapturing = false,

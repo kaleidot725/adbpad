@@ -1,28 +1,17 @@
 package jp.kaleidot725.adbpad.ui.screen.text
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
-import jp.kaleidot725.adbpad.ui.screen.screenshot.cursorForHorizontalResize
+import jp.kaleidot725.adbpad.ui.component.layout.ThreePaneLayout
 import jp.kaleidot725.adbpad.ui.screen.text.component.TextCommandDetailMenu
 import jp.kaleidot725.adbpad.ui.screen.text.component.TextCommandEditor
 import jp.kaleidot725.adbpad.ui.screen.text.component.TextCommandHeader
@@ -30,7 +19,6 @@ import jp.kaleidot725.adbpad.ui.screen.text.component.TextCommandList
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandAction
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandState
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
-import org.jetbrains.compose.splitpane.HorizontalSplitPane
 import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 
@@ -40,15 +28,13 @@ fun TextCommandScreen(
     state: TextCommandState,
     onAction: (TextCommandAction) -> Unit,
     splitterState: SplitPaneState,
+    rightSplitterState: SplitPaneState,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
-
-    HorizontalSplitPane(
-        splitPaneState = splitterState,
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        first(minSize = 200.dp) {
+    val selectedCommand = state.selectedCommand
+    ThreePaneLayout(
+        splitterState = splitterState,
+        rightSplitterState = rightSplitterState,
+        left = {
             Column {
                 TextCommandHeader(
                     searchText = state.searchText,
@@ -72,64 +58,31 @@ fun TextCommandScreen(
                     modifier = Modifier.fillMaxSize(),
                 )
             }
-        }
-
-        second {
-            Row(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-                if (state.selectedCommand != null) {
-                    TextCommandEditor(
-                        command = state.selectedCommand,
-                        option = state.selectedTextCommandOption,
-                        onUpdateTitle = { id, title -> onAction(TextCommandAction.UpdateCommandTitle(id, title)) },
-                        onUpdateText = { id, text -> onAction(TextCommandAction.UpdateCommandText(id, text)) },
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
-                    )
-
-                    VerticalDivider(
-                        modifier = Modifier.fillMaxHeight(),
-                        color = UserColor.getSplitterColor(),
-                    )
-
-                    TextCommandDetailMenu(
-                        command = state.selectedCommand,
-                        canSend = state.canSend,
-                        onSendText = { onAction(TextCommandAction.SendTextCommand) },
-                        selectedOption = state.selectedTextCommandOption,
-                        onUpdateTextCommandOption = { onAction(TextCommandAction.UpdateTextCommandOption(it)) },
-                        modifier = Modifier.width(300.dp).fillMaxHeight(),
-                    )
-                }
-            }
-        }
-
-        splitter {
-            visiblePart {
-                Box(
-                    Modifier
-                        .width(2.dp)
-                        .fillMaxHeight()
-                        .background(
-                            if (isHovered) {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                            } else {
-                                UserColor.getSplitterColor()
-                            },
-                        ),
+        },
+        center = selectedCommand?.let { command ->
+            {
+                TextCommandEditor(
+                    command = command,
+                    option = state.selectedTextCommandOption,
+                    onUpdateTitle = { id, title -> onAction(TextCommandAction.UpdateCommandTitle(id, title)) },
+                    onUpdateText = { id, text -> onAction(TextCommandAction.UpdateCommandText(id, text)) },
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
-
-            handle {
-                Box(
-                    Modifier
-                        .markAsHandle()
-                        .cursorForHorizontalResize()
-                        .hoverable(interactionSource)
-                        .width(10.dp)
-                        .fillMaxHeight(),
+        },
+        right = selectedCommand?.let { command ->
+            {
+                TextCommandDetailMenu(
+                    command = command,
+                    canSend = state.canSend,
+                    onSendText = { onAction(TextCommandAction.SendTextCommand) },
+                    selectedOption = state.selectedTextCommandOption,
+                    onUpdateTextCommandOption = { onAction(TextCommandAction.UpdateTextCommandOption(it)) },
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
-        }
-    }
+        },
+    )
 }
 
 @OptIn(ExperimentalSplitPaneApi::class)
@@ -140,5 +93,6 @@ private fun InputTextScreen_Preview() {
         state = TextCommandState(),
         onAction = {},
         splitterState = rememberSplitPaneState(),
+        rightSplitterState = rememberSplitPaneState(initialPositionPercentage = 0.7f),
     )
 }
