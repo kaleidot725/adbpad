@@ -7,13 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-
 
 @Composable
 fun ScreenLayout(
@@ -22,24 +24,41 @@ fun ScreenLayout(
     content: @Composable () -> Unit,
     right: @Composable () -> Unit,
     dialog: @Composable () -> Unit,
+    bottom: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.background(MaterialTheme.colorScheme.background)) {
+    val background = MaterialTheme.colorScheme.background
+    val accent = MaterialTheme.colorScheme.primary
+    Box(
+        modifier.background(
+            Brush.linearGradient(
+                colors =
+                    listOf(
+                        accent.copy(alpha = 0.05f),
+                        accent.copy(alpha = 0.05f),
+                    ),
+                start = Offset(0f, 0f),
+                end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+            ),
+        ),
+    ) {
         Column {
             if (top != null) {
                 top()
             }
             Row(modifier = Modifier.weight(1f)) {
-                Box(Modifier.background(MaterialTheme.colorScheme.background)) { navigationRail() }
+                Box { navigationRail() }
                 Box(
                     Modifier
-                        .background(MaterialTheme.colorScheme.background)
                         .weight(1f)
-                        .padding(start = 8.dp, top = 8.dp, end = 12.dp, bottom = 12.dp),
+                        .padding(8.dp),
                 ) {
                     content()
                 }
-                Box(Modifier.background(MaterialTheme.colorScheme.background)) { right() }
+                Box { right() }
+            }
+            if (bottom != null) {
+                bottom()
             }
         }
         dialog()

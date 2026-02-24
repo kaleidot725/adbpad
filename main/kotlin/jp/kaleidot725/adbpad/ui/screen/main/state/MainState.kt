@@ -15,6 +15,6 @@ data class MainState(
     val category: MainCategory = MainCategory.Command,
     val selectedDevice: Device? = null,
     val isAlwaysOnTop: Boolean = false,
-    val isNavigationRailCollapsed: Boolean = false,
+    val isNavigationRailCollapsed: Boolean = true,
     val accentColor: AccentColor = AccentColor.BLUE,
 ) : MVIState
