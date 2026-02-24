@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -72,9 +73,8 @@ fun TopSection(
     onRefreshDevices: () -> Unit,
     onToggleNavigationRail: () -> Unit,
 ) {
-    Surface(
+    Box(
         modifier = Modifier.fillMaxWidth().height(50.dp),
-        color = MaterialTheme.colorScheme.background,
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(8.dp),
