@@ -22,7 +22,7 @@ kotlin {
                 implementation(libs.adam)
                 implementation(libs.kotlin.coroutines)
                 implementation(libs.kotlin.serialization)
-                implementation(project(":domain"))
+                implementation(project(":core:domain"))
             }
         }
         val jvmTest by getting {

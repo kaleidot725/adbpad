@@ -44,10 +44,10 @@ kotlin {
                 implementation(libs.zoomable)
                 implementation(libs.scrcpy.kt)
                 implementation(project(":core:mvi"))
-                implementation(project(":core:utils"))
-                implementation(project(":data"))
-                implementation(project(":domain"))
-                implementation(project(":view"))
+                implementation(project(":core:util"))
+                implementation(project(":core:data"))
+                implementation(project(":core:domain"))
+                implementation(project(":core:view"))
             }
         }
         val jvmTest by getting {

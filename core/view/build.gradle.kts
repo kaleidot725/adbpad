@@ -29,7 +29,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(libs.lucide)
-                implementation(project(":domain"))
+                implementation(project(":core:domain"))
             }
         }
         val jvmTest by getting {
