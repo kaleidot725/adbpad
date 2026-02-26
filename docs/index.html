@@ -5,276 +5,710 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="AdbPad - A GUI tool to streamline Android app testing using ADB">
     <title>AdbPad - Android Development Made Easy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --android-green: #3ddc84;
+            --android-green-dark: #00c853;
+            --android-blue: #4285f4;
+            --surface: #ffffff;
+            --surface-variant: #f8f9fa;
+            --on-surface: #202124;
+            --on-surface-variant: #5f6368;
+            --outline: #dadce0;
+            --nav-height: 64px;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Google Sans', 'Noto Sans JP', Roboto, sans-serif;
+            color: var(--on-surface);
+            background-color: var(--surface);
             line-height: 1.6;
-            color: #e0e0e0;
-            background-color: #0d1117;
         }
 
-        .header {
-            background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1a1a 100%);
-            border-bottom: 2px solid #3DDC84;
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
+        /* ── Navigation ── */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--nav-height);
+            background: var(--surface);
+            border-bottom: 1px solid var(--outline);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 24px;
         }
 
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 0 20px rgba(61, 220, 132, 0.3));
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--on-surface);
+            flex-shrink: 0;
         }
 
-        .header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: #3DDC84;
-            text-shadow: 0 0 30px rgba(61, 220, 132, 0.5);
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
         }
 
-        .header p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-            color: #c9d1d9;
+        .nav-brand-text {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: -0.2px;
         }
 
-        .container {
+        .nav-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--outline);
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            height: 36px;
+            padding: 0 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(32, 33, 36, 0.06);
+            color: var(--on-surface);
+        }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            height: 36px;
+            padding: 0 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--android-green-dark);
+            text-decoration: none;
+            border: 1px solid var(--android-green-dark);
+            border-radius: 4px;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .nav-cta:hover {
+            background: rgba(0, 200, 83, 0.06);
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a2e1a 60%, #0d1117 100%);
+            padding: 80px 24px 64px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 48px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem 2rem;
         }
 
-        .screenshot {
-            width: 100%;
-            max-width: 900px;
-            margin: 2rem auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(61, 220, 132, 0.2);
-            border: 1px solid #30363d;
+        .hero-outer {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a2e1a 60%, #0d1117 100%);
         }
 
-        .section {
-            margin-bottom: 4rem;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(61, 220, 132, 0.12);
+            border: 1px solid rgba(61, 220, 132, 0.3);
+            color: var(--android-green);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .section h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: #3DDC84;
-            text-shadow: 0 0 20px rgba(61, 220, 132, 0.3);
+        .hero-title {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
         }
 
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+        .hero-title span {
+            color: var(--android-green);
         }
 
-        .feature-card {
-            background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid #3DDC84;
-            border: 1px solid #30363d;
-            transition: transform 0.3s, box-shadow 0.3s;
+        .hero-desc {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+            max-width: 480px;
+            line-height: 1.7;
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.2);
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: #3DDC84;
-        }
-
-        .feature-card p {
-            color: #8b949e;
-        }
-
-        .install-section {
-            background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
-            padding: 2rem;
-            border-radius: 8px;
-            margin-top: 2rem;
-            border: 1px solid #30363d;
-        }
-
-        .install-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #3DDC84;
-        }
-
-        .code-block {
-            background: #0d1117;
-            color: #3DDC84;
-            padding: 1rem;
-            border-radius: 4px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-            border: 1px solid #30363d;
-        }
-
-        .buttons {
+        .hero-actions {
             display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: #3DDC84;
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 24px;
+            background: var(--android-green);
             color: #0d1117;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
             text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(61, 220, 132, 0.3);
-        }
-
-        .btn:hover {
-            background: #32c770;
-            box-shadow: 0 6px 20px rgba(61, 220, 132, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #3DDC84;
-            border: 2px solid #3DDC84;
-        }
-
-        .btn-secondary:hover {
-            background: #3DDC84;
-            color: #0d1117;
-        }
-
-        .note {
-            background: rgba(61, 220, 132, 0.1);
-            border-left: 4px solid #3DDC84;
-            padding: 1rem;
-            margin: 1rem 0;
             border-radius: 4px;
-            border: 1px solid #30363d;
+            transition: background 0.15s, box-shadow 0.15s;
         }
 
-        .note strong {
-            color: #3DDC84;
+        .btn-primary:hover {
+            background: #5ae69a;
+            box-shadow: 0 4px 16px rgba(61, 220, 132, 0.4);
         }
 
-        .note ol, .install-section ol {
-            color: #8b949e;
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 24px;
+            background: transparent;
+            color: var(--android-green);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid rgba(61, 220, 132, 0.5);
+            border-radius: 4px;
+            transition: background 0.15s, border-color 0.15s;
         }
 
-        footer {
-            background: #0d1117;
-            border-top: 2px solid #3DDC84;
-            color: #8b949e;
+        .btn-outline:hover {
+            background: rgba(61, 220, 132, 0.08);
+            border-color: var(--android-green);
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Chips / OS badges ── */
+        .platform-chips {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 28px;
+            padding: 0 10px;
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ── Main content ── */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 64px 24px;
+        }
+
+        /* ── Section header ── */
+        .section-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--android-green-dark);
+            margin-bottom: 12px;
+        }
+
+        .section-eyebrow::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--android-green-dark);
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--on-surface-variant);
+            margin-bottom: 40px;
+        }
+
+        /* ── Feature cards ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .feature-card {
+            padding: 24px;
+            border: 1px solid var(--outline);
+            border-radius: 8px;
+            background: var(--surface);
+            transition: box-shadow 0.2s, border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-color: #bdc1c6;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(61, 220, 132, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--on-surface);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--on-surface-variant);
+            line-height: 1.6;
+        }
+
+        /* ── Divider ── */
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--outline);
+            margin: 64px 0;
+        }
+
+        /* ── Installation ── */
+        .install-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .install-card {
+            padding: 28px;
+            border: 1px solid var(--outline);
+            border-radius: 8px;
+            background: var(--surface-variant);
+        }
+
+        .install-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .install-os-icon {
+            font-size: 24px;
+        }
+
+        .install-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--on-surface);
+        }
+
+        .code-block {
+            background: #202124;
+            color: var(--android-green);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            padding: 16px 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .install-steps {
+            list-style: none;
+            counter-reset: steps;
+            margin: 12px 0;
+        }
+
+        .install-steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--on-surface-variant);
+            padding: 6px 0;
+        }
+
+        .install-steps li::before {
+            content: counter(steps);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            background: var(--android-green-dark);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 50%;
+            margin-top: 2px;
+        }
+
+        /* ── Notice ── */
+        .notice {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px;
+            background: #fff8e1;
+            border-left: 3px solid #f9ab00;
+            border-radius: 0 6px 6px 0;
+            margin-top: 16px;
+        }
+
+        .notice-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .notice-body {
+            font-size: 13px;
+            color: #3c4043;
+            line-height: 1.6;
+        }
+
+        .notice-body strong {
+            font-weight: 700;
+            color: #202124;
+        }
+
+        /* ── CTA banner ── */
+        .cta-banner {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a2e1a 100%);
+            border-radius: 12px;
+            padding: 48px;
             text-align: center;
-            padding: 2rem;
+            margin-top: 64px;
         }
 
-        footer a {
-            color: #3DDC84;
+        .cta-banner h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .cta-banner p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 28px;
+        }
+
+        .cta-banner .btn-primary {
+            font-size: 15px;
+            height: 48px;
+            padding: 0 28px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--surface-variant);
+            border-top: 1px solid var(--outline);
+            padding: 40px 24px;
+            margin-top: 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface);
             text-decoration: none;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .footer-brand img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .footer-links a:hover {
+            color: var(--on-surface);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--on-surface-variant);
+            width: 100%;
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--outline);
+            margin-top: 8px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 840px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 48px 24px 40px;
+            }
+            .hero-title { font-size: 40px; }
+            .hero-image { order: -1; }
+            .install-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .cta-banner { padding: 32px 24px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 32px; }
+            .section-title { font-size: 28px; }
+            .hero-actions { flex-direction: column; }
+            .btn-primary, .btn-outline { justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img class="logo" src="https://github.com/kaleidot725/AdbPad/assets/23740796/ab3b08b2-1267-488c-9b14-927325751232" alt="AdbPad Logo">
-        <h1>AdbPad</h1>
-        <p>A GUI tool to streamline Android app testing using ADB</p>
-        <p style="margin-top: 0.5rem; font-size: 1rem;">Available for Windows & macOS</p>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a class="nav-brand" href="#">
+            <img src="https://github.com/kaleidot725/AdbPad/assets/23740796/ab3b08b2-1267-488c-9b14-927325751232" alt="AdbPad">
+            <span class="nav-brand-text">AdbPad</span>
+        </a>
+        <div class="nav-divider"></div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#install">Installation</a></li>
+        </ul>
+        <a href="https://github.com/kaleidot725/AdbPad/releases" class="nav-cta">Download</a>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero-outer">
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">Open Source</div>
+                <h1 class="hero-title">ADB made<br><span>visual.</span></h1>
+                <p class="hero-desc">
+                    A powerful GUI tool that puts Android Debug Bridge at your fingertips —
+                    manage devices, run commands, capture screenshots, and launch virtual displays without touching the terminal.
+                </p>
+                <div class="hero-actions">
+                    <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn-primary">
+                        ↓ Download
+                    </a>
+                    <a href="https://github.com/kaleidot725/AdbPad" class="btn-outline">
+                        View on GitHub
+                    </a>
+                </div>
+                <div class="platform-chips">
+                    <span class="chip">🍎 macOS</span>
+                    <span class="chip">🪟 Windows</span>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://github.com/user-attachments/assets/086a1a56-50a0-4330-ad7f-c40cb4f39ba7" alt="AdbPad Screenshot">
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        <img class="screenshot" src="https://github.com/user-attachments/assets/086a1a56-50a0-4330-ad7f-c40cb4f39ba7" alt="AdbPad Screenshot">
+    <!-- Main content -->
+    <main class="content">
 
-        <section class="section">
-            <h2>✨ Features</h2>
-            <div class="features">
+        <!-- Features -->
+        <section id="features">
+            <div class="section-eyebrow">Features</div>
+            <h2 class="section-title">Everything you need for Android testing</h2>
+            <p class="section-subtitle">All the essential ADB workflows, wrapped in a clean desktop UI.</p>
+
+            <div class="features-grid">
                 <div class="feature-card">
+                    <div class="feature-icon">📱</div>
                     <h3>Device Management</h3>
-                    <p>View a list of connected Android devices and switch between them effortlessly</p>
+                    <p>View all connected Android devices at a glance and switch between them with a single click.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
                     <h3>ADB Command Execution</h3>
-                    <p>Run ADB shell commands with ease</p>
+                    <p>Run ADB shell commands directly from the UI without opening a terminal window.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
                     <h3>Text Input</h3>
-                    <p>Send text input to your Android device</p>
+                    <p>Send text input to your Android device instantly — great for filling forms during testing.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">📸</div>
                     <h3>Screenshots</h3>
-                    <p>Capture screenshots for each theme</p>
+                    <p>Capture device screenshots for each theme with a single click and save them locally.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
                     <h3>Virtual Display</h3>
-                    <p>Create virtual displays to test on large-screen environments</p>
+                    <p>Create virtual displays via scrcpy to test your app on large-screen environments.</p>
                 </div>
             </div>
         </section>
 
-        <section class="section">
-            <h2>⬇️ Installation</h2>
+        <hr class="section-divider">
 
-            <div class="install-section">
-                <h3>Via Homebrew (macOS)</h3>
-                <div class="code-block">brew tap kaleidot725/kaleidot725<br>brew install --cask adbpad</div>
-            </div>
+        <!-- Installation -->
+        <section id="install">
+            <div class="section-eyebrow">Installation</div>
+            <h2 class="section-title">Get started in minutes</h2>
+            <p class="section-subtitle">Choose the installation method for your platform.</p>
 
-            <div class="install-section">
-                <h3>Manual Installation</h3>
-                <ol style="margin-left: 1.5rem;">
-                    <li>Download the latest installer from the Releases page</li>
-                    <li>Launch the application and configure the ADB path in Settings</li>
-                </ol>
+            <div class="install-grid">
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <span class="install-os-icon">🍎</span>
+                        <h3>macOS — Homebrew</h3>
+                    </div>
+                    <div class="code-block">brew tap kaleidot725/kaleidot725<br>brew install --cask adbpad</div>
+                    <div class="notice">
+                        <span class="notice-icon">⚠️</span>
+                        <div class="notice-body">
+                            <strong>Gatekeeper warning:</strong> The app is not signed with an Apple Developer certificate.
+                            Right-click the icon → <strong>Open</strong>, then click <strong>Open</strong> in the dialog.
+                            Or go to <strong>System Settings › Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>.
+                        </div>
+                    </div>
+                </div>
 
-                <div class="note">
-                    <strong>For macOS users:</strong> Since the app is not signed with an Apple Developer account, you may encounter a security warning stating that the developer cannot be verified. To open the app:
-                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
-                        <li>Right-click (or Control-click) the AdbPad icon and select <strong>Open</strong></li>
-                        <li>In the dialog that appears, click <strong>Open</strong> again</li>
-                        <li>Alternatively, go to <strong>System Settings > Privacy & Security</strong> and click <strong>Open Anyway</strong></li>
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <span class="install-os-icon">🪟</span>
+                        <h3>Windows / Manual</h3>
+                    </div>
+                    <ol class="install-steps">
+                        <li>Download the latest installer from the <a href="https://github.com/kaleidot725/AdbPad/releases" style="color: var(--android-green-dark);">Releases page</a>.</li>
+                        <li>Run the installer and follow the on-screen instructions.</li>
+                        <li>Launch AdbPad and configure the ADB path in <strong>Settings</strong>.</li>
                     </ol>
                 </div>
             </div>
-
-            <div class="buttons">
-                <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn">Download</a>
-                <a href="https://github.com/kaleidot725/AdbPad" class="btn btn-secondary">View on GitHub</a>
-            </div>
         </section>
-    </div>
 
+        <!-- CTA -->
+        <div class="cta-banner">
+            <h2>Ready to simplify your Android workflow?</h2>
+            <p>Download AdbPad and start using ADB visually today.</p>
+            <a href="https://github.com/kaleidot725/AdbPad/releases" class="btn-primary">↓ Download AdbPad</a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Yusuke Katsuragawa | <a href="https://github.com/kaleidot725/AdbPad">GitHub</a> | MIT License</p>
+        <div class="footer-inner">
+            <a class="footer-brand" href="https://github.com/kaleidot725/AdbPad">
+                <img src="https://github.com/kaleidot725/AdbPad/assets/23740796/ab3b08b2-1267-488c-9b14-927325751232" alt="AdbPad">
+                AdbPad
+            </a>
+            <ul class="footer-links">
+                <li><a href="https://github.com/kaleidot725/AdbPad">GitHub</a></li>
+                <li><a href="https://github.com/kaleidot725/AdbPad/releases">Releases</a></li>
+                <li><a href="https://github.com/kaleidot725/AdbPad/blob/main/LICENSE">MIT License</a></li>
+            </ul>
+            <p class="footer-copy">&copy; 2025 Yusuke Katsuragawa. Released under the MIT License.</p>
+        </div>
     </footer>
+
 </body>
 </html>
