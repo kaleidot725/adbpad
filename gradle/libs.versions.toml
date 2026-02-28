@@ -11,7 +11,7 @@ koin="4.1.1"
 system_theme_detector="3.9.1"
 ktor = "3.3.0"
 lucide = "1.1.0"
-coil = "3.3.0"
+coil = "3.4.0"
 zoomable = "2.8.1"
 scrcpy_kt = "1.9.0"
 
