@@ -15,7 +15,7 @@ jobs:
           java-version: '17'
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.8'
+          ruby-version: '4.0.1'
       - name: Install danger
         run: |
           gem install danger danger-junit danger-checkstyle_format
