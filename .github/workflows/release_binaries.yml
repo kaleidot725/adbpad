@@ -33,7 +33,7 @@ jobs:
 
       - name: Archive Artifacts (for workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macOS Release
           path: build/compose/binaries/main-release/dmg
@@ -65,7 +65,7 @@ jobs:
 
       - name: Archive Artifacts (for workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Windows Release
           path: build/compose/binaries/main-release/exe
