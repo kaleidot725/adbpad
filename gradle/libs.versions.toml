@@ -1,6 +1,6 @@
 [versions]
 kotlin="2.3.10"
-kotlin_serialization="1.9.0"
+kotlin_serialization="1.10.0"
 kotlin_coroutines="1.10.2"
 compose_hot_reload = "1.0.0"
 compose="1.10.1"
