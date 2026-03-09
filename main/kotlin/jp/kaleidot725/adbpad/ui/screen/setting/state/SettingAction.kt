@@ -1,12 +1,12 @@
 package jp.kaleidot725.adbpad.ui.screen.setting.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIAction
+import jp.kaleidot725.pulse.mvi.PulseAction
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.setting.AccentColor
 import jp.kaleidot725.adbpad.domain.model.setting.Appearance
 import jp.kaleidot725.adbpad.ui.screen.setting.model.SettingCategory
 
-sealed class SettingAction : MVIAction {
+sealed class SettingAction : PulseAction {
     data object Save : SettingAction()
 
     data class SelectCategory(

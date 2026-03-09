@@ -43,7 +43,7 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.zoomable)
                 implementation(libs.scrcpy.kt)
-                implementation(project(":core:mvi"))
+                implementation(libs.pulse.mvi)
                 implementation(project(":core:util"))
                 implementation(project(":core:data"))
                 implementation(project(":core:domain"))

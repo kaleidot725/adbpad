@@ -20,7 +20,6 @@ plugins {
 }
 
 rootProject.name = "adbpad"
-include(":core:mvi")
 include(":core:util")
 include(":core:data")
 include(":core:domain")

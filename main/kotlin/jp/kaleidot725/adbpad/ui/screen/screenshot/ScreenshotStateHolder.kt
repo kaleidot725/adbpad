@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.screenshot
 
-import jp.kaleidot725.adbpad.core.mvi.MVIBase
 import jp.kaleidot725.adbpad.core.utils.ClipBoardUtils
 import jp.kaleidot725.adbpad.domain.model.command.ScreenshotCommand
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -12,9 +11,11 @@ import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.domain.usecase.screenshot.GetScreenshotCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.screenshot.RenameScreenshotUseCase
 import jp.kaleidot725.adbpad.domain.usecase.screenshot.TakeScreenshotUseCase
+import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotAction
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotSideEffect
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotState
+import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ class ScreenshotStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val screenshotCommandRepository: ScreenshotCommandRepository,
     private val renameScreenshotUseCase: RenameScreenshotUseCase,
-) : MVIBase<ScreenshotState, ScreenshotAction, ScreenshotSideEffect>(initialUiState = ScreenshotState()) {
+) : PulseStore<ScreenshotState, ScreenshotAction, ScreenshotSideEffect, AppBroadCast>(initialUiState = ScreenshotState()) {
     override fun onSetup() {
         coroutineScope.launch {
             val commands = getScreenshotCommandUseCase()
@@ -49,20 +50,6 @@ class ScreenshotStateHolder(
         }
     }
 
-    override fun onRefresh() {
-        coroutineScope.launch {
-            val commands = getScreenshotCommandUseCase()
-            update {
-                copy(
-                    selectedCommand = commands.first(),
-                    commands = commands,
-                )
-            }
-
-            initPreviews()
-        }
-    }
-
     override fun onAction(uiAction: ScreenshotAction) {
         coroutineScope.launch {
             when (uiAction) {
@@ -80,6 +67,24 @@ class ScreenshotStateHolder(
                 is ScreenshotAction.SelectScreenshotCommand -> selectScreenshotCommand(uiAction.command)
                 is ScreenshotAction.UpdateSortType -> updateSortType(uiAction.sortType)
                 ScreenshotAction.DismissError -> update { copy(errorMessage = null) }
+            }
+        }
+    }
+
+    override fun onReceive(broadcast: AppBroadCast) {
+        when (broadcast) {
+            AppBroadCast.Refresh -> {
+                coroutineScope.launch {
+                    val commands = getScreenshotCommandUseCase()
+                    update {
+                        copy(
+                            selectedCommand = commands.first(),
+                            commands = commands,
+                        )
+                    }
+
+                    initPreviews()
+                }
             }
         }
     }

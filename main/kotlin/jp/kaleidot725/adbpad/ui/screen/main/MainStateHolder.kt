@@ -1,9 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.main
 
-import jp.kaleidot725.adbpad.core.mvi.MVIAction
-import jp.kaleidot725.adbpad.core.mvi.MVIBase
-import jp.kaleidot725.adbpad.core.mvi.MVISideEffect
-import jp.kaleidot725.adbpad.core.mvi.MVIState
+import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.setting.WindowSize
@@ -15,30 +12,17 @@ import jp.kaleidot725.adbpad.domain.usecase.refresh.RefreshUseCase
 import jp.kaleidot725.adbpad.domain.usecase.theme.GetDarkModeFlowUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.GetWindowSizeUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.SaveWindowSizeUseCase
-import jp.kaleidot725.adbpad.ui.screen.command.CommandStateHolder
-import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsStateHolder
+import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainAction
-import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainDialog
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainSideEffect
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainState
-import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayStateHolder
-import jp.kaleidot725.adbpad.ui.screen.screenshot.ScreenshotStateHolder
-import jp.kaleidot725.adbpad.ui.screen.setting.SettingStateHolder
-import jp.kaleidot725.adbpad.ui.screen.text.TextCommandStateHolder
-import jp.kaleidot725.adbpad.ui.section.top.TopStateHolder
+import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainStateHolder(
-    val commandStateHolder: CommandStateHolder,
-    val textCommandStateHolder: TextCommandStateHolder,
-    val screenshotStateHolder: ScreenshotStateHolder,
-    val scrcpyNewDisplayStateHolder: ScrcpyNewDisplayStateHolder,
-    val topStateHolder: TopStateHolder,
-    val deviceSettingsStateHolder: DeviceSettingsStateHolder,
-    val settingStateHolder: SettingStateHolder,
     private val getWindowSizeUseCase: GetWindowSizeUseCase,
     private val saveWindowSizeUseCase: SaveWindowSizeUseCase,
     private val startAdbUseCase: StartAdbUseCase,
@@ -47,32 +31,13 @@ class MainStateHolder(
     private val getAccentColorUseCase: GetAccentColorUseCase,
     private val refreshUseCase: RefreshUseCase,
     private val shutdownAppUseCase: ShutdownAppUseCase,
-) : MVIBase<MainState, MainAction, MainSideEffect>(initialUiState = MainState()) {
-    private val children: List<MVIBase<out MVIState, out MVIAction, out MVISideEffect>> =
-        listOf(
-            commandStateHolder,
-            textCommandStateHolder,
-            screenshotStateHolder,
-            scrcpyNewDisplayStateHolder,
-            topStateHolder,
-        )
-
+) : PulseStore<MainState, MainAction, MainSideEffect, AppBroadCast>(initialUiState = MainState()) {
     override fun onSetup() {
         restoreWindowSize()
         startSyncDarkMode()
         checkAdbServer()
         syncLanguage()
         syncAccentColor()
-        children.forEach { it.onSetup() }
-    }
-
-    override fun onRefresh() {
-        startSyncDarkMode()
-        checkAdbServer()
-        syncLanguage()
-        syncAccentColor()
-        refreshUseCase()
-        children.forEach { it.onRefresh() }
     }
 
     override fun onAction(uiAction: MainAction) {
@@ -84,6 +49,18 @@ class MainStateHolder(
             is MainAction.ToggleAlwaysOnTop -> toggleAlwaysOnTop()
             is MainAction.ToggleNavigationRail -> toggleNavigationRail()
             is MainAction.Shutdown -> shutdown()
+        }
+    }
+
+    override fun onReceive(broadcast: AppBroadCast) {
+        when (broadcast) {
+            AppBroadCast.Refresh -> {
+                startSyncDarkMode()
+                checkAdbServer()
+                syncLanguage()
+                syncAccentColor()
+                refreshUseCase()
+            }
         }
     }
 

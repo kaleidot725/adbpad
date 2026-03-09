@@ -1,15 +1,15 @@
 package jp.kaleidot725.adbpad.ui.screen.newdisplay.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIAction
-import jp.kaleidot725.adbpad.core.mvi.MVISideEffect
-import jp.kaleidot725.adbpad.core.mvi.MVIState
+import jp.kaleidot725.pulse.mvi.PulseAction
+import jp.kaleidot725.pulse.mvi.PulseEvent
+import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.device.ScrcpyOptions
 import jp.kaleidot725.adbpad.domain.model.scrcpy.ScrcpyNewDisplayProfile
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import java.util.Locale
 
-sealed class ScrcpyNewDisplayAction : MVIAction {
+sealed class ScrcpyNewDisplayAction : PulseAction {
     data class SelectProfile(
         val profileId: String,
     ) : ScrcpyNewDisplayAction()
@@ -84,7 +84,7 @@ data class ScrcpyNewDisplayState(
     val inputDpi: String = "",
     val isLaunching: Boolean = false,
     val feedback: ScrcpyNewDisplayFeedback = ScrcpyNewDisplayFeedback.None,
-) : MVIState {
+) : PulseState {
     val filteredProfiles: List<ScrcpyNewDisplayProfile>
         get() = filterScrcpyNewDisplayProfiles(profiles, searchText, sortType)
 
@@ -95,7 +95,7 @@ data class ScrcpyNewDisplayState(
         get() = selectedDevice != null && selectedProfile != null && !isLaunching
 }
 
-class ScrcpyNewDisplaySideEffect : MVISideEffect
+class ScrcpyNewDisplaySideEffect : PulseEvent
 
 internal fun filterScrcpyNewDisplayProfiles(
     profiles: List<ScrcpyNewDisplayProfile>,

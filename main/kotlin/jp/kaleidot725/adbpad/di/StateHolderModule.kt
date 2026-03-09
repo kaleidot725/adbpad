@@ -86,10 +86,6 @@ val stateHolderModule =
 
         factory {
             MainStateHolder(
-                commandStateHolder = get(),
-                textCommandStateHolder = get(),
-                screenshotStateHolder = get(),
-                scrcpyNewDisplayStateHolder = get(),
                 getWindowSizeUseCase = get(),
                 saveWindowSizeUseCase = get(),
                 startAdbUseCase = get(),
@@ -97,9 +93,6 @@ val stateHolderModule =
                 getLanguageUseCase = get(),
                 getAccentColorUseCase = get(),
                 refreshUseCase = get(),
-                topStateHolder = get(),
-                deviceSettingsStateHolder = get(),
-                settingStateHolder = get(),
                 shutdownAppUseCase = get(),
             )
         }

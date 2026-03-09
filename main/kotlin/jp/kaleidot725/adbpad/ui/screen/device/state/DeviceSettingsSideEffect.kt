@@ -1,8 +1,8 @@
 package jp.kaleidot725.adbpad.ui.screen.device.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVISideEffect
+import jp.kaleidot725.pulse.mvi.PulseEvent
 
-sealed class DeviceSettingsSideEffect : MVISideEffect {
+sealed class DeviceSettingsSideEffect : PulseEvent {
     data object Saved : DeviceSettingsSideEffect()
 
     data object Cancelled : DeviceSettingsSideEffect()

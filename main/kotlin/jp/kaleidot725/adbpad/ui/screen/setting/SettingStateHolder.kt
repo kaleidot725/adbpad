@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.setting
 
-import jp.kaleidot725.adbpad.core.mvi.MVIBase
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.setting.AccentColor
 import jp.kaleidot725.adbpad.domain.model.setting.Appearance
@@ -15,9 +14,11 @@ import jp.kaleidot725.adbpad.domain.usecase.scrcpy.GetScrcpySettingsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.SaveScrcpySettingsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.sdkpath.GetSdkPathUseCase
 import jp.kaleidot725.adbpad.domain.usecase.sdkpath.SaveSdkPathUseCase
+import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingAction
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingSideEffect
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingState
+import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.launch
 
 class SettingStateHolder(
@@ -32,7 +33,7 @@ class SettingStateHolder(
     private val restartAdbUseCase: RestartAdbUseCase,
     private val getAccentColorUseCase: GetAccentColorUseCase,
     private val saveAccentColorUseCase: SaveAccentColorUseCase,
-) : MVIBase<SettingState, SettingAction, SettingSideEffect>(initialUiState = SettingState()) {
+) : PulseStore<SettingState, SettingAction, SettingSideEffect, AppBroadCast>(initialUiState = SettingState()) {
     private var oldAdbDirectoryPath: String = ""
     private var oldAdbPortNumber: Int = 0
 
@@ -79,7 +80,11 @@ class SettingStateHolder(
         }
     }
 
-    override fun onRefresh() {}
+    override fun onReceive(broadcast: AppBroadCast) {
+        when (broadcast) {
+            AppBroadCast.Refresh -> {}
+        }
+    }
 
     private suspend fun save() {
         update { this.copy(isSaving = true) }
@@ -89,7 +94,8 @@ class SettingStateHolder(
         saveSdkPathUseCase(currentState.adbDirectoryPath, currentState.adbPortNumber.toIntOrNull())
         saveScrcpySettingsUseCase(currentState.scrcpyBinaryPath)
         restartAdbUseCase(oldAdbDirectory = oldAdbDirectoryPath, oldServerPort = oldAdbPortNumber)
-        sideEffect(SettingSideEffect.Saved)
+        event(SettingSideEffect.Saved)
+        update { this.copy(isSaving = false) }
     }
 
     private fun updateLanguage(value: Language.Type) {

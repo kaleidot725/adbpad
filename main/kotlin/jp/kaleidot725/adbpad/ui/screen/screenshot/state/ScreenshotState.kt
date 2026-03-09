@@ -1,6 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.screenshot.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIState
+import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.command.ScreenshotCommand
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.screenshot.Screenshot
@@ -17,6 +17,6 @@ data class ScreenshotState(
     val sortType: SortType = SortType.SORT_BY_NAME_ASC,
     val errorMessage: String? = null,
     val renameResetKey: Int = 0,
-) : MVIState {
+) : PulseState {
     val canExecute: Boolean = selectedDevice != null
 }

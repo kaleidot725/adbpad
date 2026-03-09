@@ -1,6 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.setting.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIState
+import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.setting.AccentColor
 import jp.kaleidot725.adbpad.domain.model.setting.Appearance
@@ -17,7 +17,7 @@ data class SettingState(
     val adbPortNumber: String = "",
     val scrcpyBinaryPath: String = "",
     val isSaving: Boolean = false,
-) : MVIState {
+) : PulseState {
     val isValidAdbDirectoryPath: Boolean = adbDirectoryPath.isNotEmpty()
     val isValidAdbPortNumber: Boolean = adbPortNumber.toIntOrNull() != null
     val isValidScrcpyBinaryPath: Boolean = true

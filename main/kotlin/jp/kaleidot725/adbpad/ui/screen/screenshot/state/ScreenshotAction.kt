@@ -1,11 +1,11 @@
 package jp.kaleidot725.adbpad.ui.screen.screenshot.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIAction
+import jp.kaleidot725.pulse.mvi.PulseAction
 import jp.kaleidot725.adbpad.domain.model.command.ScreenshotCommand
 import jp.kaleidot725.adbpad.domain.model.screenshot.Screenshot
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 
-sealed class ScreenshotAction : MVIAction {
+sealed class ScreenshotAction : PulseAction {
     data class UpdateSearchText(
         val text: String,
     ) : ScreenshotAction()

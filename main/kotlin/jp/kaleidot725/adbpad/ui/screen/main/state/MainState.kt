@@ -1,6 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.main.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIState
+import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -17,4 +17,4 @@ data class MainState(
     val isAlwaysOnTop: Boolean = false,
     val isNavigationRailCollapsed: Boolean = true,
     val accentColor: AccentColor = AccentColor.BLUE,
-) : MVIState
+) : PulseState

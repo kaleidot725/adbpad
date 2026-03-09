@@ -14,6 +14,7 @@ lucide = "1.1.0"
 coil = "3.4.0"
 zoomable = "2.11.1"
 scrcpy_kt = "1.9.0"
+pulse_mvi = "0.2.0"
 
 [libraries]
 adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
@@ -29,6 +30,7 @@ lucide = { module = "com.composables:icons-lucide", version.ref = "lucide" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 scrcpy-kt = { module = "com.github.kaleidot725:ScrcpyKt", version.ref = "scrcpy_kt" }
+pulse-mvi = { module = "com.github.kaleidot725:PulseMVI", version.ref = "pulse_mvi" }
 
 [plugins]
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

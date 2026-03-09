@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.newdisplay
 
-import jp.kaleidot725.adbpad.core.mvi.MVIBase
 import jp.kaleidot725.adbpad.domain.model.device.ScrcpyOptions
 import jp.kaleidot725.adbpad.domain.model.scrcpy.ScrcpyNewDisplayProfile
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
@@ -9,12 +8,14 @@ import jp.kaleidot725.adbpad.domain.usecase.scrcpy.DeleteScrcpyNewDisplayProfile
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.GetScrcpyNewDisplayProfilesUseCase
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.LaunchScrcpyNewDisplayUseCase
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.SaveScrcpyNewDisplayProfileUseCase
+import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayAction
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayFailureReason
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayFeedback
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplaySideEffect
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayState
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.filterScrcpyNewDisplayProfiles
+import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -24,7 +25,7 @@ class ScrcpyNewDisplayStateHolder(
     private val launchScrcpyNewDisplayUseCase: LaunchScrcpyNewDisplayUseCase,
     private val saveScrcpyNewDisplayProfileUseCase: SaveScrcpyNewDisplayProfileUseCase,
     private val deleteScrcpyNewDisplayProfileUseCase: DeleteScrcpyNewDisplayProfileUseCase,
-) : MVIBase<ScrcpyNewDisplayState, ScrcpyNewDisplayAction, ScrcpyNewDisplaySideEffect>(
+) : PulseStore<ScrcpyNewDisplayState, ScrcpyNewDisplayAction, ScrcpyNewDisplaySideEffect, AppBroadCast>(
         initialUiState = ScrcpyNewDisplayState(),
     ) {
     override fun onSetup() {
@@ -40,41 +41,78 @@ class ScrcpyNewDisplayStateHolder(
         }
     }
 
-    override fun onRefresh() {
-        coroutineScope.launch {
-            val profiles = getScrcpyNewDisplayProfilesUseCase()
-            updateProfiles(profiles)
-        }
-    }
-
     override fun onAction(uiAction: ScrcpyNewDisplayAction) {
         when (uiAction) {
-            is ScrcpyNewDisplayAction.SelectProfile -> selectProfile(uiAction.profileId)
-            ScrcpyNewDisplayAction.LaunchSelectedProfile -> launchSelectedProfile()
-            is ScrcpyNewDisplayAction.UpdateSearchText -> updateSearchText(uiAction.text)
-            is ScrcpyNewDisplayAction.UpdateSortType -> updateSortType(uiAction.sortType)
-            is ScrcpyNewDisplayAction.UpdateScrcpyOptions -> updateScrcpyOptions(uiAction.options)
-            ScrcpyNewDisplayAction.AddNewProfile -> addNewProfile()
-            ScrcpyNewDisplayAction.SaveProfile -> saveProfile()
-            is ScrcpyNewDisplayAction.DeleteProfile -> deleteProfile(uiAction.profile)
+            is ScrcpyNewDisplayAction.SelectProfile -> {
+                selectProfile(uiAction.profileId)
+            }
+
+            ScrcpyNewDisplayAction.LaunchSelectedProfile -> {
+                launchSelectedProfile()
+            }
+
+            is ScrcpyNewDisplayAction.UpdateSearchText -> {
+                updateSearchText(uiAction.text)
+            }
+
+            is ScrcpyNewDisplayAction.UpdateSortType -> {
+                updateSortType(uiAction.sortType)
+            }
+
+            is ScrcpyNewDisplayAction.UpdateScrcpyOptions -> {
+                updateScrcpyOptions(uiAction.options)
+            }
+
+            ScrcpyNewDisplayAction.AddNewProfile -> {
+                addNewProfile()
+            }
+
+            ScrcpyNewDisplayAction.SaveProfile -> {
+                saveProfile()
+            }
+
+            is ScrcpyNewDisplayAction.DeleteProfile -> {
+                deleteProfile(uiAction.profile)
+            }
+
             is ScrcpyNewDisplayAction.UpdateInputName -> {
                 update { copy(inputName = uiAction.text) }
                 saveProfile(inputName = uiAction.text)
             }
+
             is ScrcpyNewDisplayAction.UpdateInputWidth -> {
                 update { copy(inputWidth = uiAction.text) }
                 saveProfile(inputWidth = uiAction.text)
             }
+
             is ScrcpyNewDisplayAction.UpdateInputHeight -> {
                 update { copy(inputHeight = uiAction.text) }
                 saveProfile(inputHeight = uiAction.text)
             }
+
             is ScrcpyNewDisplayAction.UpdateInputDpi -> {
                 update { copy(inputDpi = uiAction.text) }
                 saveProfile(inputDpi = uiAction.text)
             }
-            ScrcpyNewDisplayAction.SelectNextProfile -> selectNextProfile()
-            ScrcpyNewDisplayAction.SelectPreviousProfile -> selectPreviousProfile()
+
+            ScrcpyNewDisplayAction.SelectNextProfile -> {
+                selectNextProfile()
+            }
+
+            ScrcpyNewDisplayAction.SelectPreviousProfile -> {
+                selectPreviousProfile()
+            }
+        }
+    }
+
+    override fun onReceive(broadcast: AppBroadCast) {
+        when (broadcast) {
+            AppBroadCast.Refresh -> {
+                coroutineScope.launch {
+                    val profiles = getScrcpyNewDisplayProfilesUseCase()
+                    updateProfiles(profiles)
+                }
+            }
         }
     }
 

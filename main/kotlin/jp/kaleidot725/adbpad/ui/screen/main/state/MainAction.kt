@@ -1,11 +1,11 @@
 package jp.kaleidot725.adbpad.ui.screen.main.state
 
-import jp.kaleidot725.adbpad.core.mvi.MVIAction
+import jp.kaleidot725.pulse.mvi.PulseAction
 import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.setting.WindowSize
 
-sealed class MainAction : MVIAction {
+sealed class MainAction : PulseAction {
     data class SaveSetting(
         val windowSize: WindowSize,
     ) : MainAction()

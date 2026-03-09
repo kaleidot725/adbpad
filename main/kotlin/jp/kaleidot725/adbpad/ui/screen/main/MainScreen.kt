@@ -31,38 +31,20 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
-import jp.kaleidot725.adbpad.AppInfo
-import jp.kaleidot725.adbpad.core.mvi.MVIChildContent
-import jp.kaleidot725.adbpad.core.mvi.MVIDialogContent
 import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.setting.AccentColor
 import jp.kaleidot725.adbpad.domain.model.setting.getWindowSize
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
 import jp.kaleidot725.adbpad.ui.component.rail.NavigationRail
-import jp.kaleidot725.adbpad.ui.screen.CommandScreen
 import jp.kaleidot725.adbpad.ui.screen.ScreenLayout
-import jp.kaleidot725.adbpad.ui.screen.command.CommandStateHolder
-import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsScreen
-import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsStateHolder
-import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsAction
-import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsSideEffect
 import jp.kaleidot725.adbpad.ui.screen.error.AdbErrorScreen
+import jp.kaleidot725.adbpad.ui.screen.main.state.AppInfo
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainAction
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainDialog
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainState
-import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayScreen
-import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayStateHolder
-import jp.kaleidot725.adbpad.ui.screen.screenshot.ScreenshotScreen
-import jp.kaleidot725.adbpad.ui.screen.screenshot.ScreenshotStateHolder
-import jp.kaleidot725.adbpad.ui.screen.setting.SettingScreen
-import jp.kaleidot725.adbpad.ui.screen.setting.SettingStateHolder
-import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingSideEffect
-import jp.kaleidot725.adbpad.ui.screen.text.TextCommandScreen
-import jp.kaleidot725.adbpad.ui.screen.text.TextCommandStateHolder
-import jp.kaleidot725.adbpad.ui.section.top.TopSection
-import jp.kaleidot725.adbpad.ui.section.top.TopStateHolder
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
+import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 
 private fun createLightColorScheme(accentColor: AccentColor) =
@@ -149,8 +131,15 @@ private fun createDarkColorScheme(accentColor: AccentColor) =
 fun MainScreen(
     state: MainState,
     onAction: (MainAction) -> Unit,
-    mainStateHolder: MainStateHolder,
+    onRefresh: () -> Unit,
     onExitApplication: () -> Unit,
+    topContent: @Composable () -> Unit,
+    commandContent: @Composable (SplitPaneState) -> Unit,
+    textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    settingContent: @Composable () -> Unit,
+    deviceSettingsContent: @Composable () -> Unit,
 ) {
     val windowState by remember(state.size.width, state.size.height) {
         mutableStateOf(WindowState(width = state.size.width.dp, height = state.size.height.dp))
@@ -222,14 +211,13 @@ fun MainScreen(
             App(
                 state = state,
                 onMainAction = onAction,
-                onMainRefresh = { mainStateHolder.onRefresh() },
-                commandStateHolder = mainStateHolder.commandStateHolder,
-                textCommandStateHolder = mainStateHolder.textCommandStateHolder,
-                screenshotStateHolder = mainStateHolder.screenshotStateHolder,
-                scrcpyNewDisplayStateHolder = mainStateHolder.scrcpyNewDisplayStateHolder,
-                topStateHolder = mainStateHolder.topStateHolder,
-                deviceSettingsStateHolder = mainStateHolder.deviceSettingsStateHolder,
-                settingStateHolder = mainStateHolder.settingStateHolder,
+                topContent = topContent,
+                commandContent = commandContent,
+                textCommandContent = textCommandContent,
+                screenshotContent = screenshotContent,
+                scrcpyNewDisplayContent = scrcpyNewDisplayContent,
+                settingContent = settingContent,
+                deviceSettingsContent = deviceSettingsContent,
             )
         }
     }
@@ -240,14 +228,13 @@ fun MainScreen(
 private fun App(
     state: MainState,
     onMainAction: (MainAction) -> Unit,
-    onMainRefresh: () -> Unit,
-    commandStateHolder: CommandStateHolder,
-    textCommandStateHolder: TextCommandStateHolder,
-    screenshotStateHolder: ScreenshotStateHolder,
-    scrcpyNewDisplayStateHolder: ScrcpyNewDisplayStateHolder,
-    topStateHolder: TopStateHolder,
-    deviceSettingsStateHolder: DeviceSettingsStateHolder,
-    settingStateHolder: SettingStateHolder,
+    topContent: @Composable () -> Unit,
+    commandContent: @Composable (SplitPaneState) -> Unit,
+    textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    settingContent: @Composable () -> Unit,
+    deviceSettingsContent: @Composable () -> Unit,
 ) {
     val commandSplitPaneState =
         rememberSplitPaneState(
@@ -281,20 +268,7 @@ private fun App(
     Crossfade(state.language) {
         Surface {
             ScreenLayout(
-                top = {
-                    MVIChildContent(
-                        mvi = topStateHolder,
-                        content = { topState, onTopAction ->
-                            TopSection(
-                                topState = topState,
-                                onTopAction = onTopAction,
-                                onOpenDeviceSettings = { device -> onMainAction(MainAction.OpenDeviceSettings(device)) },
-                                onRefreshDevices = onMainRefresh,
-                                onToggleNavigationRail = { onMainAction(MainAction.ToggleNavigationRail) },
-                            )
-                        },
-                    )
-                },
+                top = topContent,
                 navigationRail = {
                     NavigationRail(
                         category = state.category,
@@ -306,58 +280,19 @@ private fun App(
                 content = {
                     when (state.category) {
                         MainCategory.Command -> {
-                            MVIChildContent(
-                                mvi = commandStateHolder,
-                                content = { state, onAction ->
-                                    CommandScreen(
-                                        state = state,
-                                        onAction = onAction,
-                                        splitterState = commandSplitPaneState,
-                                    )
-                                },
-                            )
+                            commandContent(commandSplitPaneState)
                         }
 
                         MainCategory.Text -> {
-                            MVIChildContent(
-                                mvi = textCommandStateHolder,
-                                content = { state, onAction ->
-                                    TextCommandScreen(
-                                        state = state,
-                                        onAction = onAction,
-                                        splitterState = textSplitPaneState,
-                                        rightSplitterState = textRightSplitPaneState,
-                                    )
-                                },
-                            )
+                            textCommandContent(textSplitPaneState, textRightSplitPaneState)
                         }
 
                         MainCategory.Screenshot -> {
-                            MVIChildContent(
-                                mvi = screenshotStateHolder,
-                                content = { state, onAction ->
-                                    ScreenshotScreen(
-                                        state = state,
-                                        onAction = onAction,
-                                        screenshotSplitPaneState = screenshotSplitPaneState,
-                                        rightSplitterState = screenshotRightSplitPaneState,
-                                    )
-                                },
-                            )
+                            screenshotContent(screenshotSplitPaneState, screenshotRightSplitPaneState)
                         }
 
                         MainCategory.ScrcpyNewDisplay -> {
-                            MVIChildContent(
-                                mvi = scrcpyNewDisplayStateHolder,
-                                content = { state, onAction ->
-                                    ScrcpyNewDisplayScreen(
-                                        state = state,
-                                        onAction = onAction,
-                                        splitterState = scrcpyNewDisplaySplitPaneState,
-                                        rightSplitterState = scrcpyNewDisplayRightSplitPaneState,
-                                    )
-                                },
-                            )
+                            scrcpyNewDisplayContent(scrcpyNewDisplaySplitPaneState, scrcpyNewDisplayRightSplitPaneState)
                         }
 
                         MainCategory.File -> {
@@ -382,51 +317,11 @@ private fun App(
                 dialog = {
                     when (state.dialog) {
                         MainDialog.Setting -> {
-                            MVIDialogContent(
-                                mvi = settingStateHolder,
-                                onSideEffect = {
-                                    when (it) {
-                                        SettingSideEffect.Saved -> {
-                                            onMainRefresh()
-                                        }
-                                    }
-                                },
-                            ) { state, onAction ->
-                                SettingScreen(
-                                    state = state,
-                                    onAction = onAction,
-                                    onMainRefresh = onMainRefresh,
-                                )
-                            }
+                            settingContent()
                         }
 
                         is MainDialog.DeviceSettings -> {
-                            MVIDialogContent(
-                                mvi = deviceSettingsStateHolder,
-                                onSideEffect = {
-                                    when (it) {
-                                        DeviceSettingsSideEffect.Saved -> onMainRefresh()
-                                        DeviceSettingsSideEffect.Cancelled -> onMainRefresh()
-                                    }
-                                },
-                            ) { deviceSettingsState, onDeviceSettingsAction ->
-                                deviceSettingsState.ifReady { device, deviceSettings ->
-                                    DeviceSettingsScreen(
-                                        device = device,
-                                        deviceSettings = deviceSettings,
-                                        selectedCategory = deviceSettingsState.selectedCategory,
-                                        onCategorySelected = { category ->
-                                            onDeviceSettingsAction(DeviceSettingsAction.SelectCategory(category))
-                                        },
-                                        onUpdateDeviceSettings = { settings ->
-                                            onDeviceSettingsAction(DeviceSettingsAction.UpdateSettings(settings))
-                                        },
-                                        onSave = { onDeviceSettingsAction(DeviceSettingsAction.Save) },
-                                        onCancel = { onDeviceSettingsAction(DeviceSettingsAction.Cancel) },
-                                        isSaving = deviceSettingsState.isSaving,
-                                    )
-                                }
-                            }
+                            deviceSettingsContent()
                         }
 
                         MainDialog.AdbError -> {

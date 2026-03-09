@@ -1,15 +1,16 @@
 package jp.kaleidot725.adbpad.ui.screen.text
 
-import jp.kaleidot725.adbpad.core.mvi.MVIBase
 import jp.kaleidot725.adbpad.domain.model.command.TextCommand
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import jp.kaleidot725.adbpad.domain.repository.TextCommandRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.ExecuteTextCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.GetTextCommandUseCase
+import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandAction
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandSideEffect
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandState
+import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.launch
 
 class TextCommandStateHolder(
@@ -17,29 +18,13 @@ class TextCommandStateHolder(
     private val getTextCommandUseCase: GetTextCommandUseCase,
     private val executeTextCommandUseCase: ExecuteTextCommandUseCase,
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
-) : MVIBase<TextCommandState, TextCommandAction, TextCommandSideEffect>(initialUiState = TextCommandState()) {
+) : PulseStore<TextCommandState, TextCommandAction, TextCommandSideEffect, AppBroadCast>(initialUiState = TextCommandState()) {
     override fun onSetup() {
         coroutineScope.launch {
             getSelectedDeviceFlowUseCase().collect {
                 update { this.copy(selectedDevice = it) }
             }
         }
-        coroutineScope.launch {
-            val commands =
-                getTextCommandUseCase(
-                    searchText = currentState.searchText,
-                    sortType = currentState.sortType,
-                )
-            update {
-                val currentId = selectedCommandId
-                val isValid = commands.any { it.id == currentId }
-                val nextSelectedId = if (isValid) currentId else commands.firstOrNull()?.id
-                this.copy(commands = commands, selectedCommandId = nextSelectedId)
-            }
-        }
-    }
-
-    override fun onRefresh() {
         coroutineScope.launch {
             val commands =
                 getTextCommandUseCase(
@@ -104,6 +89,26 @@ class TextCommandStateHolder(
 
                 is TextCommandAction.UpdateSortType -> {
                     updateSortType(uiAction.type)
+                }
+            }
+        }
+    }
+
+    override fun onReceive(broadcast: AppBroadCast) {
+        when (broadcast) {
+            AppBroadCast.Refresh -> {
+                coroutineScope.launch {
+                    val commands =
+                        getTextCommandUseCase(
+                            searchText = currentState.searchText,
+                            sortType = currentState.sortType,
+                        )
+                    update {
+                        val currentId = selectedCommandId
+                        val isValid = commands.any { it.id == currentId }
+                        val nextSelectedId = if (isValid) currentId else commands.firstOrNull()?.id
+                        this.copy(commands = commands, selectedCommandId = nextSelectedId)
+                    }
                 }
             }
         }
