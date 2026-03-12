@@ -7,13 +7,14 @@ enum class AccentColor(
     val lightColor: Color,
     val darkColor: Color,
 ) {
-    BLUE(Color(0xFF2196F3), Color(0xFF64B5F6)),
-    PURPLE(Color(0xFF9C27B0), Color(0xFFBA68C8)),
-    GREEN(Color(0xFF4CAF50), Color(0xFF81C784)),
-    ORANGE(Color(0xFFFF9800), Color(0xFFFFB74D)),
-    RED(Color(0xFFF44336), Color(0xFFE57373)),
-    TEAL(Color(0xFF009688), Color(0xFF4DB6AC)),
-    INDIGO(Color(0xFF3F51B5), Color(0xFF7986CB)),
+    BLUE(Color(0xFF4A8FB8), Color(0xFF7AAED4)),
+    PURPLE(Color(0xFF8B60A8), Color(0xFFA888C4)),
+    GREEN(Color(0xFF4A9068), Color(0xFF78B594)),
+    ORANGE(Color(0xFFC47A45), Color(0xFFD4A070)),
+    RED(Color(0xFFB85555), Color(0xFFD48888)),
+    TEAL(Color(0xFF3D8C8C), Color(0xFF6CB0B0)),
+    INDIGO(Color(0xFF5063A0), Color(0xFF8896C4)),
+    MONO(Color(0xFF000000), Color(0xFFFFFFFF)),
     ;
 
     fun getColor(isLight: Boolean): Color = if (isLight) lightColor else darkColor
@@ -27,5 +28,6 @@ enum class AccentColor(
             RED -> Language.accentColorRed
             TEAL -> Language.accentColorTeal
             INDIGO -> Language.accentColorIndigo
+            MONO -> Language.accentColorMono
         }
 }

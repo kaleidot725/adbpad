@@ -22,7 +22,7 @@ fun ScreenLayout(
     top: (@Composable () -> Unit)? = null,
     navigationRail: @Composable () -> Unit,
     content: @Composable () -> Unit,
-    right: @Composable () -> Unit,
+    right: (@Composable () -> Unit)? = null,
     dialog: @Composable () -> Unit,
     bottom: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
@@ -55,7 +55,7 @@ fun ScreenLayout(
                 ) {
                     content()
                 }
-                Box { right() }
+                if (right != null) { Box { right() } }
             }
             if (bottom != null) {
                 bottom()

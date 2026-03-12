@@ -182,6 +182,7 @@ object EnglishResources : StringResources {
     override val accentColorRed = "Red"
     override val accentColorTeal = "Teal"
     override val accentColorIndigo = "Indigo"
+    override val accentColorMono = "Mono"
     override val settingAdbHeader = "ADB"
     override val settingAdbDirectoryPathTitle = "Binary Path"
     override val settingAdbPortNumberTitle = "Server Port"

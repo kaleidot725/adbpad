@@ -325,6 +325,8 @@ object Language : StringResources {
         get() = getCurrentResources().accentColorTeal
     override val accentColorIndigo: String
         get() = getCurrentResources().accentColorIndigo
+    override val accentColorMono: String
+        get() = getCurrentResources().accentColorMono
     override val settingLanguageHeader: String
         get() = getCurrentResources().settingLanguageHeader
     override val settingLanguageEnglish: String

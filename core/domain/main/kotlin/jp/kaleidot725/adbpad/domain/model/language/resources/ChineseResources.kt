@@ -182,6 +182,7 @@ object ChineseResources : StringResources {
     override val accentColorRed = "红色"
     override val accentColorTeal = "青色"
     override val accentColorIndigo = "靛青色"
+    override val accentColorMono = "单色"
     override val settingAdbHeader = "ADB"
     override val settingAdbDirectoryPathTitle = "二进制路径"
     override val settingAdbPortNumberTitle = "服务端口"

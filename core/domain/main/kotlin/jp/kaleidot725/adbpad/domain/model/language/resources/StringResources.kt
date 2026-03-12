@@ -166,6 +166,7 @@ interface StringResources {
     val accentColorRed: String
     val accentColorTeal: String
     val accentColorIndigo: String
+    val accentColorMono: String
     val settingLanguageHeader: String
     val settingLanguageEnglish: String
     val settingLanguageJapanese: String

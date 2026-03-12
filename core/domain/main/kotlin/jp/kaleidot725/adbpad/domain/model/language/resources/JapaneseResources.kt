@@ -184,6 +184,7 @@ object JapaneseResources : StringResources {
     override val accentColorRed = "レッド"
     override val accentColorTeal = "ティール"
     override val accentColorIndigo = "インディゴ"
+    override val accentColorMono = "モノ"
     override val settingAdbHeader = "ADB"
     override val settingAdbDirectoryPathTitle = "Binary Path"
     override val settingAdbPortNumberTitle = "Server Port"

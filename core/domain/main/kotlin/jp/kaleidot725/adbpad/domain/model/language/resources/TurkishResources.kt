@@ -182,6 +182,7 @@ object TurkishResources : StringResources {
     override val accentColorRed = "Kırmızı"
     override val accentColorTeal = "Teal"
     override val accentColorIndigo = "İndigo"
+    override val accentColorMono = "Mono"
     override val settingAdbHeader = "ADB"
     override val settingAdbDirectoryPathTitle = "Yürütülebilir Dosya Yolu"
     override val settingAdbPortNumberTitle = "Sunucu Portu"
