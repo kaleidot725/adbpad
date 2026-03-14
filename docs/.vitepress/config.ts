@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'AdbPad',
   description: 'A GUI tool to streamline Android app testing using ADB',
+  base: '/adbpad/',
   head: [
     ['link', { rel: 'icon', href: '/logo.png' }],
   ],
