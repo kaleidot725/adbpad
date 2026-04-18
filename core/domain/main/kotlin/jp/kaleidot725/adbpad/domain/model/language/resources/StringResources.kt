@@ -210,6 +210,7 @@ interface StringResources {
     // NavigationRail tooltips
     val tooltipCommand: String
     val tooltipText: String
+    val tooltipTimeEdit: String
     val tooltipScreenshot: String
     val tooltipFile: String
     val tooltipSetting: String
@@ -298,6 +299,31 @@ interface StringResources {
     val scrcpyNewDisplayTitleFormat: String
     val scrcpyNewDisplayTargetDeviceFormat: String
     val scrcpyNewDisplayLaunchOptions: String
+
+    // Time Edit Screen
+    val timeEditEmpty: String
+    val timeEditNoSelection: String
+    val timeEditOverview: String
+    val timeEditConfiguredTime: String
+    val timeEditCurrentTime: String
+    val timeEditTitleLabel: String
+    val timeEditTimeZoneLabel: String
+    val timeEditHourLabel: String
+    val timeEditMinuteLabel: String
+    val timeEditDefaultTitle: String
+    val timeEditInvalidTitle: String
+    val timeEditInvalidTimeZone: String
+    val timeEditInvalidHour: String
+    val timeEditInvalidMinute: String
+    val timeEditDateTimeSection: String
+    val timeEditTimeZoneSection: String
+    val timeEditDateLabel: String
+    val timeEditTimeLabel: String
+    val timeEditTimeDifference: String
+    val timeEditAutoDateTimeLabel: String
+    val timeEditAutoTimeZoneLabel: String
+    val timeEditInvalidDate: String
+    val timeEditInvalidTime: String
 
     val commandCategoryAll: String
     val commandCategoryCommunication: String

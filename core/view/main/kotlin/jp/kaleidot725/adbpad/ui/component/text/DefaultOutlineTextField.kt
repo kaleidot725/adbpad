@@ -1,6 +1,7 @@
 package jp.kaleidot725.adbpad.ui.component.text
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,9 +22,15 @@ fun DefaultOutlineTextField(
     onUpdateText: (String) -> Unit,
     maxLines: Int = 1,
     enabled: Boolean = true,
+    trailingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var localText by remember(id) { mutableStateOf(initialText) }
+    LaunchedEffect(initialText) {
+        if (localText != initialText) {
+            localText = initialText
+        }
+    }
     val textStyle = MaterialTheme.typography.bodySmall
     OutlinedTextField(
         label = { Text(label, style = textStyle) },
@@ -37,6 +44,7 @@ fun DefaultOutlineTextField(
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
         isError = isError,
         enabled = enabled,
+        trailingIcon = trailingIcon,
         modifier = modifier,
     )
 }

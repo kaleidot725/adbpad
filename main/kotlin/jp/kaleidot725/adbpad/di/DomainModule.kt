@@ -33,6 +33,8 @@ import jp.kaleidot725.adbpad.domain.usecase.text.AddTextCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.ExecuteTextCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.GetTextCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.theme.GetDarkModeFlowUseCase
+import jp.kaleidot725.adbpad.domain.usecase.time.ExecuteTimeEditUseCase
+import jp.kaleidot725.adbpad.domain.usecase.time.GetTimeEditItemsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.GetWindowSizeUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.SaveWindowSizeUseCase
 import org.koin.dsl.module
@@ -71,6 +73,12 @@ val domainModule =
         }
         factory {
             GetTextCommandUseCase(get())
+        }
+        factory {
+            GetTimeEditItemsUseCase(get())
+        }
+        factory {
+            ExecuteTimeEditUseCase(get())
         }
         factory {
             TakeScreenshotUseCase(get())

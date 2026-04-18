@@ -7,6 +7,7 @@ import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayStateHolder
 import jp.kaleidot725.adbpad.ui.screen.screenshot.ScreenshotStateHolder
 import jp.kaleidot725.adbpad.ui.screen.setting.SettingStateHolder
 import jp.kaleidot725.adbpad.ui.screen.text.TextCommandStateHolder
+import jp.kaleidot725.adbpad.ui.screen.timeedit.TimeEditStateHolder
 import jp.kaleidot725.adbpad.ui.section.top.TopStateHolder
 import org.koin.dsl.module
 
@@ -28,6 +29,15 @@ val stateHolderModule =
                 getTextCommandUseCase = get(),
                 executeTextCommandUseCase = get(),
                 getSelectedDeviceFlowUseCase = get(),
+            )
+        }
+
+        factory {
+            TimeEditStateHolder(
+                timeEditItemRepository = get(),
+                getTimeEditItemsUseCase = get(),
+                getSelectedDeviceFlowUseCase = get(),
+                executeTimeEditUseCase = get(),
             )
         }
 

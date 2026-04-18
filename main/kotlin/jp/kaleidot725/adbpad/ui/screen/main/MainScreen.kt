@@ -1,9 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.main
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ColorScheme
@@ -16,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.MenuBar
@@ -127,6 +123,7 @@ fun MainScreen(
     topContent: @Composable () -> Unit,
     commandContent: @Composable (SplitPaneState) -> Unit,
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    timeEditContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
@@ -203,6 +200,7 @@ fun MainScreen(
                 topContent = topContent,
                 commandContent = commandContent,
                 textCommandContent = textCommandContent,
+                timeEditContent = timeEditContent,
                 screenshotContent = screenshotContent,
                 scrcpyNewDisplayContent = scrcpyNewDisplayContent,
                 settingContent = settingContent,
@@ -220,6 +218,7 @@ private fun App(
     topContent: @Composable () -> Unit,
     commandContent: @Composable (SplitPaneState) -> Unit,
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    timeEditContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
@@ -240,6 +239,14 @@ private fun App(
     val screenshotSplitPaneState =
         rememberSplitPaneState(
             initialPositionPercentage = 0.1f,
+        )
+    val timeEditSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.25f,
+        )
+    val timeEditRightSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.7f,
         )
     val screenshotRightSplitPaneState =
         rememberSplitPaneState(
@@ -274,6 +281,10 @@ private fun App(
 
                         MainCategory.Text -> {
                             textCommandContent(textSplitPaneState, textRightSplitPaneState)
+                        }
+
+                        MainCategory.TimeEdit -> {
+                            timeEditContent(timeEditSplitPaneState, timeEditRightSplitPaneState)
                         }
 
                         MainCategory.Screenshot -> {

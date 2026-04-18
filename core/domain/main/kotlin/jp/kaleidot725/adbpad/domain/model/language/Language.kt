@@ -404,6 +404,8 @@ object Language : StringResources {
         get() = getCurrentResources().tooltipCommand
     override val tooltipText: String
         get() = getCurrentResources().tooltipText
+    override val tooltipTimeEdit: String
+        get() = getCurrentResources().tooltipTimeEdit
     override val tooltipScreenshot: String
         get() = getCurrentResources().tooltipScreenshot
     override val tooltipFile: String
@@ -564,6 +566,53 @@ object Language : StringResources {
         get() = getCurrentResources().scrcpyNewDisplayTargetDeviceFormat
     override val scrcpyNewDisplayLaunchOptions: String
         get() = getCurrentResources().scrcpyNewDisplayLaunchOptions
+
+    override val timeEditEmpty: String
+        get() = getCurrentResources().timeEditEmpty
+    override val timeEditNoSelection: String
+        get() = getCurrentResources().timeEditNoSelection
+    override val timeEditOverview: String
+        get() = getCurrentResources().timeEditOverview
+    override val timeEditConfiguredTime: String
+        get() = getCurrentResources().timeEditConfiguredTime
+    override val timeEditCurrentTime: String
+        get() = getCurrentResources().timeEditCurrentTime
+    override val timeEditTitleLabel: String
+        get() = getCurrentResources().timeEditTitleLabel
+    override val timeEditTimeZoneLabel: String
+        get() = getCurrentResources().timeEditTimeZoneLabel
+    override val timeEditHourLabel: String
+        get() = getCurrentResources().timeEditHourLabel
+    override val timeEditMinuteLabel: String
+        get() = getCurrentResources().timeEditMinuteLabel
+    override val timeEditDefaultTitle: String
+        get() = getCurrentResources().timeEditDefaultTitle
+    override val timeEditInvalidTitle: String
+        get() = getCurrentResources().timeEditInvalidTitle
+    override val timeEditInvalidTimeZone: String
+        get() = getCurrentResources().timeEditInvalidTimeZone
+    override val timeEditInvalidHour: String
+        get() = getCurrentResources().timeEditInvalidHour
+    override val timeEditInvalidMinute: String
+        get() = getCurrentResources().timeEditInvalidMinute
+    override val timeEditDateTimeSection: String
+        get() = getCurrentResources().timeEditDateTimeSection
+    override val timeEditTimeZoneSection: String
+        get() = getCurrentResources().timeEditTimeZoneSection
+    override val timeEditDateLabel: String
+        get() = getCurrentResources().timeEditDateLabel
+    override val timeEditTimeLabel: String
+        get() = getCurrentResources().timeEditTimeLabel
+    override val timeEditTimeDifference: String
+        get() = getCurrentResources().timeEditTimeDifference
+    override val timeEditAutoDateTimeLabel: String
+        get() = getCurrentResources().timeEditAutoDateTimeLabel
+    override val timeEditAutoTimeZoneLabel: String
+        get() = getCurrentResources().timeEditAutoTimeZoneLabel
+    override val timeEditInvalidDate: String
+        get() = getCurrentResources().timeEditInvalidDate
+    override val timeEditInvalidTime: String
+        get() = getCurrentResources().timeEditInvalidTime
 
     override val commandCategoryAll: String
         get() = getCurrentResources().commandCategoryAll

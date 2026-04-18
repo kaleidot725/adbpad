@@ -6,6 +6,7 @@ import jp.kaleidot725.adbpad.data.repository.NormalCommandFavoriteRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.ScrcpyNewDisplayProfileRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.SettingRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.TextCommandRepositoryImpl
+import jp.kaleidot725.adbpad.data.repository.TimeEditItemRepositoryImpl
 import jp.kaleidot725.adbpad.domain.repository.DeviceControlCommandRepository
 import jp.kaleidot725.adbpad.domain.repository.DeviceControlCommandRepositoryImpl
 import jp.kaleidot725.adbpad.domain.repository.DeviceRepository
@@ -25,6 +26,7 @@ import jp.kaleidot725.adbpad.domain.repository.ScreenshotCommandRepository
 import jp.kaleidot725.adbpad.domain.repository.ScreenshotCommandRepositoryImpl
 import jp.kaleidot725.adbpad.domain.repository.SettingRepository
 import jp.kaleidot725.adbpad.domain.repository.TextCommandRepository
+import jp.kaleidot725.adbpad.domain.repository.TimeEditItemRepository
 import org.koin.dsl.module
 
 val repositoryModule =
@@ -45,6 +47,9 @@ val repositoryModule =
         }
         single<TextCommandRepository> {
             TextCommandRepositoryImpl()
+        }
+        single<TimeEditItemRepository> {
+            TimeEditItemRepositoryImpl()
         }
         single<ScreenshotCommandRepository> {
             ScreenshotCommandRepositoryImpl()

@@ -19,7 +19,6 @@ import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsSideEffect
 import jp.kaleidot725.adbpad.ui.screen.main.MainScreen
 import jp.kaleidot725.adbpad.ui.screen.main.MainStateHolder
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainAction
-import jp.kaleidot725.adbpad.ui.screen.main.state.MainDialog
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayScreen
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.ScrcpyNewDisplayStateHolder
 import jp.kaleidot725.adbpad.ui.screen.screenshot.ScreenshotScreen
@@ -29,6 +28,8 @@ import jp.kaleidot725.adbpad.ui.screen.setting.SettingStateHolder
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingSideEffect
 import jp.kaleidot725.adbpad.ui.screen.text.TextCommandScreen
 import jp.kaleidot725.adbpad.ui.screen.text.TextCommandStateHolder
+import jp.kaleidot725.adbpad.ui.screen.timeedit.TimeEditScreen
+import jp.kaleidot725.adbpad.ui.screen.timeedit.TimeEditStateHolder
 import jp.kaleidot725.adbpad.ui.section.top.TopSection
 import jp.kaleidot725.adbpad.ui.section.top.TopStateHolder
 import jp.kaleidot725.pulse.mvi.PulseApp
@@ -47,6 +48,8 @@ fun main() {
             by remember { mutableStateOf(GlobalContext.get().get<CommandStateHolder>()) }
         val textCommandStateHolder: TextCommandStateHolder
             by remember { mutableStateOf(GlobalContext.get().get<TextCommandStateHolder>()) }
+        val timeEditStateHolder: TimeEditStateHolder
+            by remember { mutableStateOf(GlobalContext.get().get<TimeEditStateHolder>()) }
         val screenshotStateHolder: ScreenshotStateHolder
             by remember { mutableStateOf(GlobalContext.get().get<ScreenshotStateHolder>()) }
         val scrcpyNewDisplayStateHolder: ScrcpyNewDisplayStateHolder
@@ -65,6 +68,7 @@ fun main() {
                             mainStateHolder,
                             commandStateHolder,
                             textCommandStateHolder,
+                            timeEditStateHolder,
                             screenshotStateHolder,
                             scrcpyNewDisplayStateHolder,
                             topStateHolder,
@@ -114,6 +118,19 @@ fun main() {
                             store = textCommandStateHolder,
                             content = { state, onAction ->
                                 TextCommandScreen(
+                                    state = state,
+                                    onAction = onAction,
+                                    splitterState = splitterState,
+                                    rightSplitterState = rightSplitterState,
+                                )
+                            },
+                        )
+                    },
+                    timeEditContent = { splitterState, rightSplitterState ->
+                        PulseContent(
+                            store = timeEditStateHolder,
+                            content = { state, onAction ->
+                                TimeEditScreen(
                                     state = state,
                                     onAction = onAction,
                                     splitterState = splitterState,
