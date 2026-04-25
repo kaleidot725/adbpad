@@ -261,6 +261,14 @@ object Language : StringResources {
         get() = getCurrentResources().commandScreenRotation270Title
     override val commandScreenRotation270Details: String
         get() = getCurrentResources().commandScreenRotation270Details
+    override val commandAutoTimeZoneTitle: String
+        get() = getCurrentResources().commandAutoTimeZoneTitle
+    override val commandAutoTimeZoneDetails: String
+        get() = getCurrentResources().commandAutoTimeZoneDetails
+    override val commandManualTimeZoneTitleFormat: String
+        get() = getCurrentResources().commandManualTimeZoneTitleFormat
+    override val commandManualTimeZoneDetailsFormat: String
+        get() = getCurrentResources().commandManualTimeZoneDetailsFormat
 
     override val categoryUI: String
         get() = getCurrentResources().categoryUI
@@ -404,8 +412,6 @@ object Language : StringResources {
         get() = getCurrentResources().tooltipCommand
     override val tooltipText: String
         get() = getCurrentResources().tooltipText
-    override val tooltipTimeEdit: String
-        get() = getCurrentResources().tooltipTimeEdit
     override val tooltipScreenshot: String
         get() = getCurrentResources().tooltipScreenshot
     override val tooltipFile: String
@@ -567,53 +573,6 @@ object Language : StringResources {
     override val scrcpyNewDisplayLaunchOptions: String
         get() = getCurrentResources().scrcpyNewDisplayLaunchOptions
 
-    override val timeEditEmpty: String
-        get() = getCurrentResources().timeEditEmpty
-    override val timeEditNoSelection: String
-        get() = getCurrentResources().timeEditNoSelection
-    override val timeEditOverview: String
-        get() = getCurrentResources().timeEditOverview
-    override val timeEditConfiguredTime: String
-        get() = getCurrentResources().timeEditConfiguredTime
-    override val timeEditCurrentTime: String
-        get() = getCurrentResources().timeEditCurrentTime
-    override val timeEditTitleLabel: String
-        get() = getCurrentResources().timeEditTitleLabel
-    override val timeEditTimeZoneLabel: String
-        get() = getCurrentResources().timeEditTimeZoneLabel
-    override val timeEditHourLabel: String
-        get() = getCurrentResources().timeEditHourLabel
-    override val timeEditMinuteLabel: String
-        get() = getCurrentResources().timeEditMinuteLabel
-    override val timeEditDefaultTitle: String
-        get() = getCurrentResources().timeEditDefaultTitle
-    override val timeEditInvalidTitle: String
-        get() = getCurrentResources().timeEditInvalidTitle
-    override val timeEditInvalidTimeZone: String
-        get() = getCurrentResources().timeEditInvalidTimeZone
-    override val timeEditInvalidHour: String
-        get() = getCurrentResources().timeEditInvalidHour
-    override val timeEditInvalidMinute: String
-        get() = getCurrentResources().timeEditInvalidMinute
-    override val timeEditDateTimeSection: String
-        get() = getCurrentResources().timeEditDateTimeSection
-    override val timeEditTimeZoneSection: String
-        get() = getCurrentResources().timeEditTimeZoneSection
-    override val timeEditDateLabel: String
-        get() = getCurrentResources().timeEditDateLabel
-    override val timeEditTimeLabel: String
-        get() = getCurrentResources().timeEditTimeLabel
-    override val timeEditTimeDifference: String
-        get() = getCurrentResources().timeEditTimeDifference
-    override val timeEditAutoDateTimeLabel: String
-        get() = getCurrentResources().timeEditAutoDateTimeLabel
-    override val timeEditAutoTimeZoneLabel: String
-        get() = getCurrentResources().timeEditAutoTimeZoneLabel
-    override val timeEditInvalidDate: String
-        get() = getCurrentResources().timeEditInvalidDate
-    override val timeEditInvalidTime: String
-        get() = getCurrentResources().timeEditInvalidTime
-
     override val commandCategoryAll: String
         get() = getCurrentResources().commandCategoryAll
     override val commandCategoryCommunication: String
@@ -626,12 +585,21 @@ object Language : StringResources {
         get() = getCurrentResources().commandCategoryDisplay
     override val commandCategoryDevice: String
         get() = getCurrentResources().commandCategoryDevice
+    override val commandCategoryTime: String
+        get() = getCurrentResources().commandCategoryTime
     override val commandCategoryFavorite: String
         get() = getCurrentResources().commandCategoryFavorite
 
     fun scrcpyNewDisplayTitle(name: String): String = String.format(scrcpyNewDisplayTitleFormat, name)
 
     fun scrcpyNewDisplayTargetDevice(name: String): String = String.format(scrcpyNewDisplayTargetDeviceFormat, name)
+
+    fun commandManualTimeZoneTitle(country: String): String = String.format(commandManualTimeZoneTitleFormat, country)
+
+    fun commandManualTimeZoneDetails(
+        timeZoneId: String,
+        utcOffset: String,
+    ): String = String.format(commandManualTimeZoneDetailsFormat, timeZoneId, utcOffset)
 
     private var currentType: Type = Type.ENGLISH
 

@@ -10,9 +10,9 @@ class NormalCommandFavoriteRepositoryImpl : NormalCommandFavoriteRepository {
     override suspend fun save(command: NormalCommand): Boolean {
         return withContext(Dispatchers.IO) {
             val favorites = NormalCommandFavoriteFileCreator.load().toMutableList()
-            val className = command::class.qualifiedName ?: return@withContext false
-            if (!favorites.contains(className)) {
-                favorites.add(className)
+            val favoriteKey = command.favoriteKey.ifBlank { return@withContext false }
+            if (!favorites.contains(favoriteKey)) {
+                favorites.add(favoriteKey)
                 return@withContext NormalCommandFavoriteFileCreator.save(favorites)
             }
             return@withContext false
@@ -22,9 +22,9 @@ class NormalCommandFavoriteRepositoryImpl : NormalCommandFavoriteRepository {
     override suspend fun delete(command: NormalCommand): Boolean {
         return withContext(Dispatchers.IO) {
             val favorites = NormalCommandFavoriteFileCreator.load().toMutableList()
-            val className = command::class.qualifiedName ?: return@withContext false
-            if (favorites.contains(className)) {
-                favorites.remove(className)
+            val favoriteKey = command.favoriteKey.ifBlank { return@withContext false }
+            if (favorites.contains(favoriteKey)) {
+                favorites.remove(favoriteKey)
                 return@withContext NormalCommandFavoriteFileCreator.save(favorites)
             }
             return@withContext false

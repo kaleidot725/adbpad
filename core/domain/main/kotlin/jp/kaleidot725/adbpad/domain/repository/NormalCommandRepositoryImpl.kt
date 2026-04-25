@@ -61,7 +61,24 @@ class NormalCommandRepositoryImpl : NormalCommandRepository {
             NormalCommand.ScreenRotation90(runningCommands.any { it is NormalCommand.ScreenRotation90 }),
             NormalCommand.ScreenRotation180(runningCommands.any { it is NormalCommand.ScreenRotation180 }),
             NormalCommand.ScreenRotation270(runningCommands.any { it is NormalCommand.ScreenRotation270 }),
-        )
+        ) + getTimeZoneCommands()
+
+    private fun getTimeZoneCommands(): List<NormalCommand> =
+        listOf(
+            NormalCommand.SetAutoTimeZone(
+                runningCommands.any { it is NormalCommand.SetAutoTimeZone },
+            ),
+        ) + timeZoneCommandSpecs.map { spec ->
+            NormalCommand.SetTimeZone(
+                country = "${spec.flagEmoji} ${spec.country}",
+                timeZoneId = spec.timeZoneId,
+                utcOffset = spec.utcOffset,
+                isRunning =
+                    runningCommands.any {
+                        it is NormalCommand.SetTimeZone && it.timeZoneId == spec.timeZoneId
+                    },
+            )
+        }
 
     override suspend fun sendCommand(
         device: Device,
@@ -117,5 +134,31 @@ class NormalCommandRepositoryImpl : NormalCommandRepository {
 
     override fun clear() {
         runningCommands.clear()
+    }
+
+    private data class TimeZoneCommandSpec(
+        val flagEmoji: String,
+        val country: String,
+        val timeZoneId: String,
+        val utcOffset: String,
+    )
+
+    companion object {
+        private val timeZoneCommandSpecs =
+            listOf(
+                TimeZoneCommandSpec("🇯🇵", "Japan", "Asia/Tokyo", "UTC+09:00"),
+                TimeZoneCommandSpec("🇺🇸", "United States (Pacific)", "America/Los_Angeles", "UTC-08:00 / UTC-07:00"),
+                TimeZoneCommandSpec("🇺🇸", "United States (Eastern)", "America/New_York", "UTC-05:00 / UTC-04:00"),
+                TimeZoneCommandSpec("🇬🇧", "United Kingdom", "Europe/London", "UTC+00:00 / UTC+01:00"),
+                TimeZoneCommandSpec("🇩🇪", "Germany", "Europe/Berlin", "UTC+01:00 / UTC+02:00"),
+                TimeZoneCommandSpec("🇫🇷", "France", "Europe/Paris", "UTC+01:00 / UTC+02:00"),
+                TimeZoneCommandSpec("🇨🇳", "China", "Asia/Shanghai", "UTC+08:00"),
+                TimeZoneCommandSpec("🇰🇷", "South Korea", "Asia/Seoul", "UTC+09:00"),
+                TimeZoneCommandSpec("🇮🇳", "India", "Asia/Kolkata", "UTC+05:30"),
+                TimeZoneCommandSpec("🇸🇬", "Singapore", "Asia/Singapore", "UTC+08:00"),
+                TimeZoneCommandSpec("🇦🇺", "Australia (Sydney)", "Australia/Sydney", "UTC+10:00 / UTC+11:00"),
+                TimeZoneCommandSpec("🇧🇷", "Brazil", "America/Sao_Paulo", "UTC-03:00"),
+                TimeZoneCommandSpec("🇹🇷", "Turkey", "Europe/Istanbul", "UTC+03:00"),
+            )
     }
 }

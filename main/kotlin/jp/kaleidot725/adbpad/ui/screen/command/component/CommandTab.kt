@@ -8,12 +8,13 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.composables.icons.lucide.Clock3
 import com.composables.icons.lucide.Diamond
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.Smartphone
 import com.composables.icons.lucide.Monitor
 import com.composables.icons.lucide.Palette
 import com.composables.icons.lucide.Navigation
+import com.composables.icons.lucide.Smartphone
 import com.composables.icons.lucide.Wifi
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandCategory
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -68,6 +69,13 @@ fun CommandTab(
             icon = Lucide.Smartphone,
             isSelected = filtered == NormalCommandCategory.DEVICE,
             onClick = { onClick(NormalCommandCategory.DEVICE) },
+        )
+
+        CommandTabItem(
+            title = Language.commandCategoryTime,
+            icon = Lucide.Clock3,
+            isSelected = filtered == NormalCommandCategory.TIME,
+            onClick = { onClick(NormalCommandCategory.TIME) },
         )
 
         CommandTabItem(

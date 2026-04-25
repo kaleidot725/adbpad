@@ -130,6 +130,10 @@ interface StringResources {
     val commandScreenRotation180Details: String
     val commandScreenRotation270Title: String
     val commandScreenRotation270Details: String
+    val commandAutoTimeZoneTitle: String
+    val commandAutoTimeZoneDetails: String
+    val commandManualTimeZoneTitleFormat: String
+    val commandManualTimeZoneDetailsFormat: String
 
     val categoryUI: String
     val categoryCommunication: String
@@ -210,7 +214,6 @@ interface StringResources {
     // NavigationRail tooltips
     val tooltipCommand: String
     val tooltipText: String
-    val tooltipTimeEdit: String
     val tooltipScreenshot: String
     val tooltipFile: String
     val tooltipSetting: String
@@ -300,36 +303,12 @@ interface StringResources {
     val scrcpyNewDisplayTargetDeviceFormat: String
     val scrcpyNewDisplayLaunchOptions: String
 
-    // Time Edit Screen
-    val timeEditEmpty: String
-    val timeEditNoSelection: String
-    val timeEditOverview: String
-    val timeEditConfiguredTime: String
-    val timeEditCurrentTime: String
-    val timeEditTitleLabel: String
-    val timeEditTimeZoneLabel: String
-    val timeEditHourLabel: String
-    val timeEditMinuteLabel: String
-    val timeEditDefaultTitle: String
-    val timeEditInvalidTitle: String
-    val timeEditInvalidTimeZone: String
-    val timeEditInvalidHour: String
-    val timeEditInvalidMinute: String
-    val timeEditDateTimeSection: String
-    val timeEditTimeZoneSection: String
-    val timeEditDateLabel: String
-    val timeEditTimeLabel: String
-    val timeEditTimeDifference: String
-    val timeEditAutoDateTimeLabel: String
-    val timeEditAutoTimeZoneLabel: String
-    val timeEditInvalidDate: String
-    val timeEditInvalidTime: String
-
     val commandCategoryAll: String
     val commandCategoryCommunication: String
     val commandCategoryNavigation: String
     val commandCategoryTheme: String
     val commandCategoryDisplay: String
     val commandCategoryDevice: String
+    val commandCategoryTime: String
     val commandCategoryFavorite: String
 }

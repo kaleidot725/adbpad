@@ -123,7 +123,6 @@ fun MainScreen(
     topContent: @Composable () -> Unit,
     commandContent: @Composable (SplitPaneState) -> Unit,
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
-    timeEditContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
@@ -200,7 +199,6 @@ fun MainScreen(
                 topContent = topContent,
                 commandContent = commandContent,
                 textCommandContent = textCommandContent,
-                timeEditContent = timeEditContent,
                 screenshotContent = screenshotContent,
                 scrcpyNewDisplayContent = scrcpyNewDisplayContent,
                 settingContent = settingContent,
@@ -218,7 +216,6 @@ private fun App(
     topContent: @Composable () -> Unit,
     commandContent: @Composable (SplitPaneState) -> Unit,
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
-    timeEditContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
@@ -239,14 +236,6 @@ private fun App(
     val screenshotSplitPaneState =
         rememberSplitPaneState(
             initialPositionPercentage = 0.1f,
-        )
-    val timeEditSplitPaneState =
-        rememberSplitPaneState(
-            initialPositionPercentage = 0.25f,
-        )
-    val timeEditRightSplitPaneState =
-        rememberSplitPaneState(
-            initialPositionPercentage = 0.7f,
         )
     val screenshotRightSplitPaneState =
         rememberSplitPaneState(
@@ -281,10 +270,6 @@ private fun App(
 
                         MainCategory.Text -> {
                             textCommandContent(textSplitPaneState, textRightSplitPaneState)
-                        }
-
-                        MainCategory.TimeEdit -> {
-                            timeEditContent(timeEditSplitPaneState, timeEditRightSplitPaneState)
                         }
 
                         MainCategory.Screenshot -> {

@@ -7,9 +7,20 @@ data class NormalCommandGroup(
     val theme: List<NormalCommand>,
     val display: List<NormalCommand>,
     val device: List<NormalCommand>,
+    val time: List<NormalCommand>,
     val favorite: List<NormalCommand> = emptyList(),
 ) {
     companion object {
-        val Empty = NormalCommandGroup(emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
+        val Empty =
+            NormalCommandGroup(
+                all = emptyList(),
+                communication = emptyList(),
+                navigation = emptyList(),
+                theme = emptyList(),
+                display = emptyList(),
+                device = emptyList(),
+                time = emptyList(),
+                favorite = emptyList(),
+            )
     }
 }

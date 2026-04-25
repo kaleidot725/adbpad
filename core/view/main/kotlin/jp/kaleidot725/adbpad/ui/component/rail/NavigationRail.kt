@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Camera
 import com.composables.icons.lucide.ChevronsRight
-import com.composables.icons.lucide.Clock3
 import com.composables.icons.lucide.File
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.MonitorSmartphone
@@ -51,15 +50,6 @@ fun NavigationRail(
             isSelected = category == MainCategory.Text,
             isCollapsed = isCollapsed,
             onClick = { onSelectCategory(MainCategory.Text) },
-        )
-
-        NavigationRailItem(
-            label = Language.tooltipTimeEdit,
-            icon = Lucide.Clock3,
-            contentDescription = "time edit menu",
-            isSelected = category == MainCategory.TimeEdit,
-            isCollapsed = isCollapsed,
-            onClick = { onSelectCategory(MainCategory.TimeEdit) },
         )
 
         NavigationRailItem(
