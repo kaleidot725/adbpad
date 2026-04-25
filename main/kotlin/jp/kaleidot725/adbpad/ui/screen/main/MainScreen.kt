@@ -2,7 +2,6 @@ package jp.kaleidot725.adbpad.ui.screen.main
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -125,6 +124,7 @@ fun MainScreen(
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    appContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
     deviceSettingsContent: @Composable () -> Unit,
 ) {
@@ -201,6 +201,7 @@ fun MainScreen(
                 textCommandContent = textCommandContent,
                 screenshotContent = screenshotContent,
                 scrcpyNewDisplayContent = scrcpyNewDisplayContent,
+                appContent = appContent,
                 settingContent = settingContent,
                 deviceSettingsContent = deviceSettingsContent,
             )
@@ -218,6 +219,7 @@ private fun App(
     textCommandContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     screenshotContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     scrcpyNewDisplayContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
+    appContent: @Composable (SplitPaneState, SplitPaneState) -> Unit,
     settingContent: @Composable () -> Unit,
     deviceSettingsContent: @Composable () -> Unit,
 ) {
@@ -249,6 +251,14 @@ private fun App(
         rememberSplitPaneState(
             initialPositionPercentage = 0.8f,
         )
+    val appSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.25f,
+        )
+    val appRightSplitPaneState =
+        rememberSplitPaneState(
+            initialPositionPercentage = 0.7f,
+        )
 
     Crossfade(state.language) {
         Surface {
@@ -278,6 +288,10 @@ private fun App(
 
                         MainCategory.ScrcpyNewDisplay -> {
                             scrcpyNewDisplayContent(scrcpyNewDisplaySplitPaneState, scrcpyNewDisplayRightSplitPaneState)
+                        }
+
+                        MainCategory.App -> {
+                            appContent(appSplitPaneState, appRightSplitPaneState)
                         }
 
                         MainCategory.File -> {

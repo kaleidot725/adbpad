@@ -7,6 +7,7 @@ object ChineseResources : StringResources {
     override val notFoundCommand = "未找到命令"
     override val notFoundInputText = "未找到输入文本"
     override val notFoundScreenshot = "未找到截图"
+    override val notFoundApp = "未找到应用"
 
     override val execute = "运行"
     override val save = "保存"
@@ -25,6 +26,12 @@ object ChineseResources : StringResources {
     override val light = "浅色"
     override val system = "系统"
     override val search: String = "搜索"
+    override val loadingAppList: String = "正在加载应用"
+    override val appListLoadFailed: String = "无法加载应用列表"
+    override val appDetailsTitle: String = "应用信息"
+    override val appPackageName: String = "包名"
+    override val appSourceDir: String = "APK 路径"
+    override val appDataDirectory: String = "数据目录"
 
     override val textCommandUnTitle: String = "取消文本标题命令"
 
@@ -222,6 +229,7 @@ object ChineseResources : StringResources {
     override val tooltipSetting: String = "设置"
     override val tooltipScrcpy: String = "启动 Scrcpy"
     override val tooltipNewDisplay: String = "虚拟显示"
+    override val tooltipApp: String = "应用"
 
     // MenuBar Window menu
     override val menuWindow: String = "窗口"

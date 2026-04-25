@@ -5,5 +5,6 @@ enum class MainCategory {
     Text,
     Screenshot,
     ScrcpyNewDisplay,
+    App,
     File,
 }

@@ -7,6 +7,7 @@ object EnglishResources : StringResources {
     override val notFoundCommand = "Not found command"
     override val notFoundInputText = "Not found input text"
     override val notFoundScreenshot = "Not found screenshot"
+    override val notFoundApp = "Not found app"
 
     override val execute = "Run"
     override val save = "Save"
@@ -25,6 +26,12 @@ object EnglishResources : StringResources {
     override val light = "Light"
     override val system = "System"
     override val search: String = "Search"
+    override val loadingAppList: String = "Loading apps"
+    override val appListLoadFailed: String = "Failed to load apps"
+    override val appDetailsTitle: String = "App information"
+    override val appPackageName: String = "Package name"
+    override val appSourceDir: String = "APK path"
+    override val appDataDirectory: String = "Data directory"
 
     override val textCommandUnTitle: String = "untitle text command"
 
@@ -222,6 +229,7 @@ object EnglishResources : StringResources {
     override val tooltipSetting: String = "Setting"
     override val tooltipScrcpy: String = "Launch Scrcpy"
     override val tooltipNewDisplay: String = "Virtual display"
+    override val tooltipApp: String = "Apps"
 
     // MenuBar Window menu
     override val menuWindow: String = "Window"

@@ -17,6 +17,7 @@ import com.composables.icons.lucide.ChevronsRight
 import com.composables.icons.lucide.File
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.MonitorSmartphone
+import com.composables.icons.lucide.Package
 import com.composables.icons.lucide.Settings
 import jp.kaleidot725.adbpad.domain.model.MainCategory
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -68,6 +69,15 @@ fun NavigationRail(
             isSelected = category == MainCategory.ScrcpyNewDisplay,
             isCollapsed = isCollapsed,
             onClick = { onSelectCategory(MainCategory.ScrcpyNewDisplay) },
+        )
+
+        NavigationRailItem(
+            label = Language.tooltipApp,
+            icon = Lucide.Package,
+            contentDescription = "app menu",
+            isSelected = category == MainCategory.App,
+            isCollapsed = isCollapsed,
+            onClick = { onSelectCategory(MainCategory.App) },
         )
 
         Spacer(modifier = Modifier.weight(1f, fill = true))

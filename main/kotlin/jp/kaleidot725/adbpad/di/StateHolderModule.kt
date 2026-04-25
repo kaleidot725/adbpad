@@ -1,5 +1,6 @@
 package jp.kaleidot725.adbpad.di
 
+import jp.kaleidot725.adbpad.ui.screen.app.AppStateHolder
 import jp.kaleidot725.adbpad.ui.screen.command.CommandStateHolder
 import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsStateHolder
 import jp.kaleidot725.adbpad.ui.screen.main.MainStateHolder
@@ -19,6 +20,13 @@ val stateHolderModule =
                 executeCommandUseCase = get(),
                 getSelectedDeviceFlowUseCase = get(),
                 normalCommandOutputRepository = get(),
+            )
+        }
+
+        factory {
+            AppStateHolder(
+                getSelectedDeviceFlowUseCase = get(),
+                getInstalledAppsUseCase = get(),
             )
         }
 

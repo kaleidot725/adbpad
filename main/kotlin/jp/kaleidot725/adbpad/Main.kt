@@ -11,6 +11,8 @@ import jp.kaleidot725.adbpad.domain.model.setting.WindowSize
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.container.AppContainer
 import jp.kaleidot725.adbpad.ui.screen.CommandScreen
+import jp.kaleidot725.adbpad.ui.screen.app.AppScreen
+import jp.kaleidot725.adbpad.ui.screen.app.AppStateHolder
 import jp.kaleidot725.adbpad.ui.screen.command.CommandStateHolder
 import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsScreen
 import jp.kaleidot725.adbpad.ui.screen.device.DeviceSettingsStateHolder
@@ -50,6 +52,8 @@ fun main() {
             by remember { mutableStateOf(GlobalContext.get().get<ScreenshotStateHolder>()) }
         val scrcpyNewDisplayStateHolder: ScrcpyNewDisplayStateHolder
             by remember { mutableStateOf(GlobalContext.get().get<ScrcpyNewDisplayStateHolder>()) }
+        val appStateHolder: AppStateHolder
+            by remember { mutableStateOf(GlobalContext.get().get<AppStateHolder>()) }
         val topStateHolder: TopStateHolder
             by remember { mutableStateOf(GlobalContext.get().get<TopStateHolder>()) }
         val deviceSettingsStateHolder: DeviceSettingsStateHolder
@@ -66,6 +70,7 @@ fun main() {
                             textCommandStateHolder,
                             screenshotStateHolder,
                             scrcpyNewDisplayStateHolder,
+                            appStateHolder,
                             topStateHolder,
                             deviceSettingsStateHolder,
                             settingStateHolder,
@@ -139,6 +144,19 @@ fun main() {
                             store = scrcpyNewDisplayStateHolder,
                             content = { state, onAction ->
                                 ScrcpyNewDisplayScreen(
+                                    state = state,
+                                    onAction = onAction,
+                                    splitterState = splitterState,
+                                    rightSplitterState = rightSplitterState,
+                                )
+                            },
+                        )
+                    },
+                    appContent = { splitterState, rightSplitterState ->
+                        PulseContent(
+                            store = appStateHolder,
+                            content = { state, onAction ->
+                                AppScreen(
                                     state = state,
                                     onAction = onAction,
                                     splitterState = splitterState,
