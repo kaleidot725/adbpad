@@ -35,7 +35,7 @@ fun CommandTabItem(
 ) {
     Box(
         modifier
-            .widthIn(min = 184.dp)
+            .widthIn(min = 144.dp)
             .heightIn(min = 40.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickableBackground(isSelected = isSelected, shape = RoundedCornerShape(8.dp))

@@ -2,7 +2,8 @@ package jp.kaleidot725.adbpad.ui.screen.command.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -19,15 +20,17 @@ import com.composables.icons.lucide.Wifi
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandCategory
 import jp.kaleidot725.adbpad.domain.model.language.Language
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommandTab(
     modifier: Modifier = Modifier,
     filtered: NormalCommandCategory,
     onClick: (NormalCommandCategory) -> Unit,
 ) {
-    Row(
+    FlowRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         CommandTabItem(
             title = Language.commandCategoryAll,
