@@ -3,6 +3,7 @@ package jp.kaleidot725.adbpad.ui.screen.app
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
+import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppIconUseCase
 import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 class AppStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
+    private val getInstalledAppIconUseCase: GetInstalledAppIconUseCase,
 ) : PulseStore<AppState, AppAction, AppSideEffect, AppBroadCast>(
         initialUiState = AppState(),
     ) {
@@ -46,6 +48,10 @@ class AppStateHolder(
 
             is AppAction.SelectApp -> {
                 selectApp(uiAction.app)
+            }
+
+            is AppAction.FetchIcon -> {
+                fetchIcon(uiAction.app)
             }
 
             AppAction.SelectNextApp -> {
@@ -147,6 +153,43 @@ class AppStateHolder(
 
     private fun selectApp(app: InstalledApp) {
         update { copy(selectedAppPackageName = app.packageName) }
+    }
+
+    private fun fetchIcon(app: InstalledApp) {
+        val device = currentState.selectedDevice ?: return
+        if (currentState.isIconLoading(app)) return
+
+        update {
+            copy(
+                loadingIconPackageNames = loadingIconPackageNames + app.packageName,
+            )
+        }
+
+        coroutineScope.launch {
+            runCatching { getInstalledAppIconUseCase(device, app) }
+                .onSuccess { iconFile ->
+                    update {
+                        val newIconFilePaths =
+                            if (iconFile != null) {
+                                iconFilePaths + (app.packageName to iconFile.absolutePath)
+                            } else {
+                                iconFilePaths
+                            }
+
+                        copy(
+                            iconFilePaths = newIconFilePaths,
+                            loadingIconPackageNames = loadingIconPackageNames - app.packageName,
+                        )
+                    }
+                }.onFailure { throwable ->
+                    if (throwable is CancellationException) throw throwable
+                    update {
+                        copy(
+                            loadingIconPackageNames = loadingIconPackageNames - app.packageName,
+                        )
+                    }
+                }
+        }
     }
 
     private fun selectNextApp() {

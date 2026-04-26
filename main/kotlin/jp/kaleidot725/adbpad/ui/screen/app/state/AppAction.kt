@@ -19,6 +19,10 @@ sealed class AppAction : PulseAction {
         val app: InstalledApp,
     ) : AppAction()
 
+    data class FetchIcon(
+        val app: InstalledApp,
+    ) : AppAction()
+
     data object SelectNextApp : AppAction()
 
     data object SelectPreviousApp : AppAction()

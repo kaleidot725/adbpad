@@ -65,6 +65,8 @@ object Language : StringResources {
         get() = getCurrentResources().appSourceDir
     override val appDataDirectory: String
         get() = getCurrentResources().appDataDirectory
+    override val fetchAppIcon: String
+        get() = getCurrentResources().fetchAppIcon
     override val textCommandUnTitle: String
         get() = getCurrentResources().textCommandUnTitle
     override val screenshotTakeByCurrentTheme: String

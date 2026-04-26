@@ -31,6 +31,7 @@ interface StringResources {
     val appPackageName: String
     val appSourceDir: String
     val appDataDirectory: String
+    val fetchAppIcon: String
 
     val textCommandUnTitle: String
     val screenshotTakeByCurrentTheme: String

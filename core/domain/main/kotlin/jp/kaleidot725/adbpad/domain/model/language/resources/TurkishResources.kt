@@ -32,6 +32,7 @@ object TurkishResources : StringResources {
     override val appPackageName: String = "Paket adı"
     override val appSourceDir: String = "APK yolu"
     override val appDataDirectory: String = "Veri dizini"
+    override val fetchAppIcon: String = "Simgeyi al"
 
     override val textCommandUnTitle: String = "başlıksız metin komutu"
 

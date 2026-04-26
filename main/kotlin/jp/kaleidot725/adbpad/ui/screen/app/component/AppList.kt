@@ -1,5 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.app.component
 
+import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,9 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.ui.common.resource.clickableBackground
 import jp.kaleidot725.adbpad.ui.component.indicator.RunningIndicator
+import jp.kaleidot725.adbpad.ui.component.menu.ThemedContextMenuArea
 
 @Composable
 fun AppList(
@@ -38,7 +40,10 @@ fun AppList(
     selectedDevice: Device?,
     isLoading: Boolean,
     errorMessage: String?,
+    iconFilePath: (InstalledApp) -> String?,
+    isIconLoading: (InstalledApp) -> Boolean,
     onSelectApp: (InstalledApp) -> Unit,
+    onFetchIcon: (InstalledApp) -> Unit,
     onNextApp: () -> Unit,
     onPreviousApp: () -> Unit,
     modifier: Modifier = Modifier,
@@ -81,11 +86,24 @@ fun AppList(
                     contentPadding = PaddingValues(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 24.dp),
                 ) {
                     items(apps, key = { it.packageName }) { app ->
-                        AppListItem(
-                            app = app,
-                            isSelected = selectedApp?.packageName == app.packageName,
-                            onClick = { onSelectApp(app) },
-                        )
+                        ThemedContextMenuArea(
+                            items = {
+                                listOf(
+                                    ContextMenuItem(
+                                        label = Language.fetchAppIcon,
+                                        onClick = { onFetchIcon(app) },
+                                    ),
+                                )
+                            },
+                        ) {
+                            AppListItem(
+                                app = app,
+                                iconFilePath = iconFilePath(app),
+                                isIconLoading = isIconLoading(app),
+                                isSelected = selectedApp?.packageName == app.packageName,
+                                onClick = { onSelectApp(app) },
+                            )
+                        }
                     }
                 }
             }
@@ -104,6 +122,8 @@ fun AppList(
 @Composable
 private fun AppListItem(
     app: InstalledApp,
+    iconFilePath: String?,
+    isIconLoading: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,6 +142,8 @@ private fun AppListItem(
     ) {
         AppInitialIcon(
             name = app.displayName,
+            iconFilePath = iconFilePath,
+            isLoading = isIconLoading,
             modifier = Modifier.size(36.dp),
         )
 

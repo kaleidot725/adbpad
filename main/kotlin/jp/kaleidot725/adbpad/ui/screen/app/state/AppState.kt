@@ -14,12 +14,18 @@ data class AppState(
     val sortType: SortType = SortType.SORT_BY_NAME_ASC,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val iconFilePaths: Map<String, String> = emptyMap(),
+    val loadingIconPackageNames: Set<String> = emptySet(),
 ) : PulseState {
     val filteredApps: List<InstalledApp>
         get() = filterInstalledApps(apps, searchText, sortType)
 
     val selectedApp: InstalledApp?
         get() = filteredApps.firstOrNull { it.packageName == selectedAppPackageName } ?: filteredApps.firstOrNull()
+
+    fun getIconFilePath(app: InstalledApp): String? = iconFilePaths[app.packageName]
+
+    fun isIconLoading(app: InstalledApp): Boolean = loadingIconPackageNames.contains(app.packageName)
 }
 
 internal fun filterInstalledApps(
