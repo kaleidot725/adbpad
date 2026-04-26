@@ -140,6 +140,10 @@ object ChineseResources : StringResources {
     override val commandScreenRotation180Details: String = "将屏幕旋转到180度（倒竖屏）"
     override val commandScreenRotation270Title: String = "屏幕旋转: 270度（倒横屏）"
     override val commandScreenRotation270Details: String = "将屏幕旋转到270度（倒横屏）"
+    override val commandAutoTimeZoneTitle: String = "时区: 自动设置"
+    override val commandAutoTimeZoneDetails: String = "启用设备的自动时区设置"
+    override val commandManualTimeZoneTitleFormat: String = "时区: 手动 - %s"
+    override val commandManualTimeZoneDetailsFormat: String = "关闭自动时区，并手动设置为 %s (%s)"
 
     override val categoryUI: String = "界面"
     override val categoryCommunication: String = "通信"
@@ -307,5 +311,6 @@ object ChineseResources : StringResources {
     override val commandCategoryTheme: String = "主题"
     override val commandCategoryDisplay: String = "显示"
     override val commandCategoryDevice: String = "设备"
+    override val commandCategoryTime: String = "时间"
     override val commandCategoryFavorite: String = "收藏"
 }

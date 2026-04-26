@@ -140,6 +140,10 @@ object EnglishResources : StringResources {
     override val commandScreenRotation180Details: String = "Rotate screen to 180 degrees (Reverse Portrait)"
     override val commandScreenRotation270Title: String = "Screen rotation: 270° (Reverse Landscape)"
     override val commandScreenRotation270Details: String = "Rotate screen to 270 degrees (Reverse Landscape)"
+    override val commandAutoTimeZoneTitle: String = "Time zone: Automatic"
+    override val commandAutoTimeZoneDetails: String = "Enable the device's automatic time zone setting"
+    override val commandManualTimeZoneTitleFormat: String = "Time zone: Manual - %s"
+    override val commandManualTimeZoneDetailsFormat: String = "Turn off automatic time zone and set manually to %s (%s)"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "Communication"
@@ -309,5 +313,6 @@ object EnglishResources : StringResources {
     override val commandCategoryTheme: String = "Theme"
     override val commandCategoryDisplay: String = "Display"
     override val commandCategoryDevice: String = "Device"
+    override val commandCategoryTime: String = "Time"
     override val commandCategoryFavorite: String = "Favorite"
 }

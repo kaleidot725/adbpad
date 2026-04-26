@@ -140,6 +140,10 @@ object TurkishResources : StringResources {
     override val commandScreenRotation180Details: String = "Ekranı 180 dereceye (Ters Dikey) döndür"
     override val commandScreenRotation270Title: String = "Ekran döndürme: 270° (Ters Yatay)"
     override val commandScreenRotation270Details: String = "Ekranı 270 dereceye (Ters Yatay) döndür"
+    override val commandAutoTimeZoneTitle: String = "Saat dilimi: Otomatik"
+    override val commandAutoTimeZoneDetails: String = "Cihazın otomatik saat dilimi ayarını etkinleştir"
+    override val commandManualTimeZoneTitleFormat: String = "Saat dilimi: Manuel - %s"
+    override val commandManualTimeZoneDetailsFormat: String = "Otomatik saat dilimini kapatıp manuel olarak %s (%s) ayarla"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "İletişim"
@@ -309,5 +313,6 @@ object TurkishResources : StringResources {
     override val commandCategoryTheme: String = "Tema"
     override val commandCategoryDisplay: String = "Görüntü"
     override val commandCategoryDevice: String = "Cihaz"
+    override val commandCategoryTime: String = "Saat"
     override val commandCategoryFavorite: String = "Favori"
 }

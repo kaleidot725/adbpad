@@ -98,6 +98,7 @@ private fun CommandScreen(
                             NormalCommandCategory.THEME -> commands.theme
                             NormalCommandCategory.DISPLAY -> commands.display
                             NormalCommandCategory.DEVICE -> commands.device
+                            NormalCommandCategory.TIME -> commands.time
                             NormalCommandCategory.FAVORITE -> commands.favorite
                             NormalCommandCategory.ALL -> commands.all
                         },
@@ -134,6 +135,7 @@ private fun CommandScreen_Card_Preview() {
                 theme = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
                 display = emptyList(),
                 device = emptyList(),
+                time = emptyList(),
                 favorite = emptyList(),
             ),
         filtered = NormalCommandCategory.ALL,
@@ -161,6 +163,7 @@ private fun CommandScreen_List_Preview() {
                 theme = listOf(NormalCommand.DarkThemeOn(), NormalCommand.DarkThemeOff()),
                 display = emptyList(),
                 device = emptyList(),
+                time = emptyList(),
                 favorite = emptyList(),
             ),
         filtered = NormalCommandCategory.ALL,

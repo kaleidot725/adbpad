@@ -142,6 +142,10 @@ object JapaneseResources : StringResources {
     override val commandScreenRotation180Details: String = "画面を180度（逆さ）に回転する"
     override val commandScreenRotation270Title: String = "画面回転: 270度（横向き）"
     override val commandScreenRotation270Details: String = "画面を270度（横向き）に回転する"
+    override val commandAutoTimeZoneTitle: String = "タイムゾーン: 自動設定"
+    override val commandAutoTimeZoneDetails: String = "端末のタイムゾーン自動設定を有効にする"
+    override val commandManualTimeZoneTitleFormat: String = "タイムゾーン: 手動 - %s"
+    override val commandManualTimeZoneDetailsFormat: String = "自動設定を無効にして、%s (%s) を手動設定する"
 
     override val categoryUI: String = "UI"
     override val categoryCommunication: String = "通信"
@@ -308,5 +312,6 @@ object JapaneseResources : StringResources {
     override val commandCategoryTheme: String = "テーマ"
     override val commandCategoryDisplay: String = "表示"
     override val commandCategoryDevice: String = "デバイス"
+    override val commandCategoryTime: String = "時刻"
     override val commandCategoryFavorite: String = "お気に入り"
 }

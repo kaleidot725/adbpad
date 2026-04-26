@@ -130,6 +130,10 @@ interface StringResources {
     val commandScreenRotation180Details: String
     val commandScreenRotation270Title: String
     val commandScreenRotation270Details: String
+    val commandAutoTimeZoneTitle: String
+    val commandAutoTimeZoneDetails: String
+    val commandManualTimeZoneTitleFormat: String
+    val commandManualTimeZoneDetailsFormat: String
 
     val categoryUI: String
     val categoryCommunication: String
@@ -305,5 +309,6 @@ interface StringResources {
     val commandCategoryTheme: String
     val commandCategoryDisplay: String
     val commandCategoryDevice: String
+    val commandCategoryTime: String
     val commandCategoryFavorite: String
 }

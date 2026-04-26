@@ -261,6 +261,14 @@ object Language : StringResources {
         get() = getCurrentResources().commandScreenRotation270Title
     override val commandScreenRotation270Details: String
         get() = getCurrentResources().commandScreenRotation270Details
+    override val commandAutoTimeZoneTitle: String
+        get() = getCurrentResources().commandAutoTimeZoneTitle
+    override val commandAutoTimeZoneDetails: String
+        get() = getCurrentResources().commandAutoTimeZoneDetails
+    override val commandManualTimeZoneTitleFormat: String
+        get() = getCurrentResources().commandManualTimeZoneTitleFormat
+    override val commandManualTimeZoneDetailsFormat: String
+        get() = getCurrentResources().commandManualTimeZoneDetailsFormat
 
     override val categoryUI: String
         get() = getCurrentResources().categoryUI
@@ -577,12 +585,21 @@ object Language : StringResources {
         get() = getCurrentResources().commandCategoryDisplay
     override val commandCategoryDevice: String
         get() = getCurrentResources().commandCategoryDevice
+    override val commandCategoryTime: String
+        get() = getCurrentResources().commandCategoryTime
     override val commandCategoryFavorite: String
         get() = getCurrentResources().commandCategoryFavorite
 
     fun scrcpyNewDisplayTitle(name: String): String = String.format(scrcpyNewDisplayTitleFormat, name)
 
     fun scrcpyNewDisplayTargetDevice(name: String): String = String.format(scrcpyNewDisplayTargetDeviceFormat, name)
+
+    fun commandManualTimeZoneTitle(country: String): String = String.format(commandManualTimeZoneTitleFormat, country)
+
+    fun commandManualTimeZoneDetails(
+        timeZoneId: String,
+        utcOffset: String,
+    ): String = String.format(commandManualTimeZoneDetailsFormat, timeZoneId, utcOffset)
 
     private var currentType: Type = Type.ENGLISH
 

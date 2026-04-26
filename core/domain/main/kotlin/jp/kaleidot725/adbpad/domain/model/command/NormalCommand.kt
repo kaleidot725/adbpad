@@ -10,6 +10,8 @@ interface NormalCommand {
     val isFavorite: Boolean
     val requests: List<ShellCommandRequest>
     val category: NormalCommandCategory
+    val favoriteKey: String
+        get() = this::class.qualifiedName.orEmpty()
 
     val commandStrings: List<String>
         get() = requests.map { it.cmd }
@@ -724,6 +726,41 @@ interface NormalCommand {
                 ShellCommandRequest("settings put system user_rotation 3"),
             )
         override val category: NormalCommandCategory = NormalCommandCategory.DISPLAY
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class SetAutoTimeZone(
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val title: String get() = Language.commandAutoTimeZoneTitle
+        override val details: String get() = Language.commandAutoTimeZoneDetails
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put global auto_time_zone 1"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.TIME
+
+        override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
+    }
+
+    data class SetTimeZone(
+        val country: String,
+        val timeZoneId: String,
+        val utcOffset: String,
+        override val isRunning: Boolean = false,
+        override val isFavorite: Boolean = false,
+    ) : NormalCommand {
+        override val favoriteKey: String = "${this::class.qualifiedName}:$timeZoneId"
+        override val title: String get() = Language.commandManualTimeZoneTitle(country)
+        override val details: String get() = Language.commandManualTimeZoneDetails(timeZoneId, utcOffset)
+        override val requests: List<ShellCommandRequest> =
+            listOf(
+                ShellCommandRequest("settings put global auto_time_zone 0"),
+                ShellCommandRequest("cmd alarm set-timezone $timeZoneId"),
+            )
+        override val category: NormalCommandCategory = NormalCommandCategory.TIME
 
         override fun updateFavorite(isFavorite: Boolean): NormalCommand = copy(isFavorite = isFavorite)
     }

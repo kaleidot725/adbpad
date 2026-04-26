@@ -13,7 +13,7 @@ class GetNormalCommandGroup(
         val favorites = normalCommandFavoriteRepository.getAll()
         val all =
             normalCommandRepository.getCommands().map {
-                it.updateFavorite(favorites.contains(it::class.qualifiedName))
+                it.updateFavorite(favorites.contains(it.favoriteKey))
             }
         return NormalCommandGroup(
             all = all,
@@ -22,6 +22,7 @@ class GetNormalCommandGroup(
             theme = all.filter { it.category == NormalCommandCategory.THEME },
             display = all.filter { it.category == NormalCommandCategory.DISPLAY },
             device = all.filter { it.category == NormalCommandCategory.DEVICE },
+            time = all.filter { it.category == NormalCommandCategory.TIME },
             favorite = all.filter { it.isFavorite },
         )
     }
