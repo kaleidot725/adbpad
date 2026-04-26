@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +26,6 @@ fun ScreenLayout(
     bottom: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    val background = MaterialTheme.colorScheme.background
     val accent = MaterialTheme.colorScheme.primary
     Box(
         modifier.background(
@@ -55,7 +53,11 @@ fun ScreenLayout(
                 ) {
                     content()
                 }
-                if (right != null) { Box { right() } }
+                if (right != null) {
+                    Box {
+                        right()
+                    }
+                }
             }
             if (bottom != null) {
                 bottom()

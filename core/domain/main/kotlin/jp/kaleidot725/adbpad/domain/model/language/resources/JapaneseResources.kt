@@ -7,6 +7,7 @@ object JapaneseResources : StringResources {
     override val notFoundCommand = "コマンドがありません"
     override val notFoundInputText = "テキストがありません"
     override val notFoundScreenshot = "スクリーンショットがありません"
+    override val notFoundApp = "アプリがありません"
 
     override val execute = "実行"
     override val save = "保存"
@@ -25,6 +26,13 @@ object JapaneseResources : StringResources {
     override val light = "Light"
     override val system = "System"
     override val search: String = "Search"
+    override val loadingAppList: String = "アプリ一覧を取得中"
+    override val appListLoadFailed: String = "アプリ一覧を取得できません"
+    override val appDetailsTitle: String = "アプリ情報"
+    override val appPackageName: String = "パッケージ名"
+    override val appSourceDir: String = "APKパス"
+    override val appDataDirectory: String = "データ領域"
+    override val fetchAppIcon: String = "アイコンを取得"
 
     override val textCommandUnTitle: String = "untitle text command"
     override val screenshotTakeByCurrentTheme = "現在のテーマで撮影する"
@@ -221,6 +229,7 @@ object JapaneseResources : StringResources {
     override val tooltipSetting: String = "設定"
     override val tooltipScrcpy: String = "Scrcpyを起動"
     override val tooltipNewDisplay: String = "仮想ディスプレイ"
+    override val tooltipApp: String = "アプリ"
 
     // MenuBar Window menu
     override val menuWindow: String = "ウィンドウ"

@@ -1,12 +1,12 @@
 package jp.kaleidot725.adbpad.ui.screen.newdisplay.state
 
-import jp.kaleidot725.pulse.mvi.PulseAction
-import jp.kaleidot725.pulse.mvi.PulseEvent
-import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.device.ScrcpyOptions
 import jp.kaleidot725.adbpad.domain.model.scrcpy.ScrcpyNewDisplayProfile
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
+import jp.kaleidot725.pulse.mvi.PulseAction
+import jp.kaleidot725.pulse.mvi.PulseEvent
+import jp.kaleidot725.pulse.mvi.PulseState
 import java.util.Locale
 
 sealed class ScrcpyNewDisplayAction : PulseAction {

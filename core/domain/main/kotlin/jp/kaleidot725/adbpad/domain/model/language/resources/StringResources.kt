@@ -7,6 +7,7 @@ interface StringResources {
     val notFoundCommand: String
     val notFoundInputText: String
     val notFoundScreenshot: String
+    val notFoundApp: String
     val execute: String
     val save: String
     val delete: String
@@ -24,6 +25,13 @@ interface StringResources {
     val light: String
     val system: String
     val search: String
+    val loadingAppList: String
+    val appListLoadFailed: String
+    val appDetailsTitle: String
+    val appPackageName: String
+    val appSourceDir: String
+    val appDataDirectory: String
+    val fetchAppIcon: String
 
     val textCommandUnTitle: String
     val screenshotTakeByCurrentTheme: String
@@ -219,6 +227,7 @@ interface StringResources {
     val tooltipSetting: String
     val tooltipScrcpy: String
     val tooltipNewDisplay: String
+    val tooltipApp: String
 
     // MenuBar Window menu
     val menuWindow: String

@@ -2,6 +2,7 @@ package jp.kaleidot725.adbpad.di
 
 import jp.kaleidot725.adbpad.data.local.ScrcpyNewDisplayProfileFileCreator
 import jp.kaleidot725.adbpad.data.repository.DeviceSettingsRepositoryImpl
+import jp.kaleidot725.adbpad.data.repository.InstalledAppRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.NormalCommandFavoriteRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.ScrcpyNewDisplayProfileRepositoryImpl
 import jp.kaleidot725.adbpad.data.repository.SettingRepositoryImpl
@@ -11,6 +12,7 @@ import jp.kaleidot725.adbpad.domain.repository.DeviceControlCommandRepositoryImp
 import jp.kaleidot725.adbpad.domain.repository.DeviceRepository
 import jp.kaleidot725.adbpad.domain.repository.DeviceRepositoryImpl
 import jp.kaleidot725.adbpad.domain.repository.DeviceSettingsRepository
+import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
 import jp.kaleidot725.adbpad.domain.repository.NormalCommandFavoriteRepository
 import jp.kaleidot725.adbpad.domain.repository.NormalCommandOutputRepository
 import jp.kaleidot725.adbpad.domain.repository.NormalCommandOutputRepositoryImpl
@@ -39,6 +41,9 @@ val repositoryModule =
         }
         single<NormalCommandRepository> {
             NormalCommandRepositoryImpl()
+        }
+        single<InstalledAppRepository> {
+            InstalledAppRepositoryImpl()
         }
         single<NormalCommandFavoriteRepository> {
             NormalCommandFavoriteRepositoryImpl()

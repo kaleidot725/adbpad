@@ -1,8 +1,8 @@
 package jp.kaleidot725.adbpad.ui.screen.command.state
 
-import jp.kaleidot725.pulse.mvi.PulseAction
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommand
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandCategory
+import jp.kaleidot725.pulse.mvi.PulseAction
 
 sealed class CommandAction : PulseAction {
     data class ExecuteCommand(

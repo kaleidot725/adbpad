@@ -2,6 +2,8 @@ package jp.kaleidot725.adbpad.di
 
 import jp.kaleidot725.adbpad.domain.usecase.adb.RestartAdbUseCase
 import jp.kaleidot725.adbpad.domain.usecase.adb.StartAdbUseCase
+import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppIconUseCase
+import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.app.ShutdownAppUseCase
 import jp.kaleidot725.adbpad.domain.usecase.appearance.GetAccentColorUseCase
 import jp.kaleidot725.adbpad.domain.usecase.appearance.GetAppearanceUseCase
@@ -50,6 +52,12 @@ val domainModule =
         }
         factory {
             ExecuteDeviceControlCommandUseCase(get())
+        }
+        factory {
+            GetInstalledAppsUseCase(get())
+        }
+        factory {
+            GetInstalledAppIconUseCase(get())
         }
         factory {
             GetNormalCommandGroup(get(), get())

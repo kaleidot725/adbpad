@@ -7,6 +7,7 @@ object TurkishResources : StringResources {
     override val notFoundCommand = "Komut bulunamadı"
     override val notFoundInputText = "Giriş metni bulunamadı"
     override val notFoundScreenshot = "Ekran görüntüsü bulunamadı"
+    override val notFoundApp = "Uygulama bulunamadı"
 
     override val execute = "Çalıştır"
     override val save = "Kaydet"
@@ -25,6 +26,13 @@ object TurkishResources : StringResources {
     override val light = "Açık"
     override val system = "Sistem"
     override val search: String = "Ara"
+    override val loadingAppList: String = "Uygulamalar yükleniyor"
+    override val appListLoadFailed: String = "Uygulamalar yüklenemedi"
+    override val appDetailsTitle: String = "Uygulama bilgileri"
+    override val appPackageName: String = "Paket adı"
+    override val appSourceDir: String = "APK yolu"
+    override val appDataDirectory: String = "Veri dizini"
+    override val fetchAppIcon: String = "Simgeyi al"
 
     override val textCommandUnTitle: String = "başlıksız metin komutu"
 
@@ -222,6 +230,7 @@ object TurkishResources : StringResources {
     override val tooltipSetting: String = "Ayarlar"
     override val tooltipScrcpy: String = "Scrcpy'yi Başlat"
     override val tooltipNewDisplay: String = "Sanal ekran"
+    override val tooltipApp: String = "Uygulamalar"
 
     // MenuBar Window menu
     override val menuWindow: String = "Pencere"
