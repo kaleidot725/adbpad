@@ -19,10 +19,6 @@ sealed class AppAction : PulseAction {
         val app: InstalledApp,
     ) : AppAction()
 
-    data class FetchIcon(
-        val app: InstalledApp,
-    ) : AppAction()
-
     data object InstallPackage : AppAction()
 
     data class UninstallApp(

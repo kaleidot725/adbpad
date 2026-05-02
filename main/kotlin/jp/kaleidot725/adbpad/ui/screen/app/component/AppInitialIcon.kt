@@ -2,7 +2,6 @@ package jp.kaleidot725.adbpad.ui.screen.app.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,17 +10,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import jp.kaleidot725.adbpad.ui.component.indicator.RunningIndicator
-import java.io.File
 
 @Composable
 fun AppInitialIcon(
     name: String,
-    iconFilePath: String? = null,
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
@@ -44,15 +39,6 @@ fun AppInitialIcon(
         when {
             isLoading -> {
                 RunningIndicator(color = MaterialTheme.colorScheme.onPrimaryContainer)
-            }
-
-            iconFilePath != null -> {
-                AsyncImage(
-                    model = File(iconFilePath),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
             }
 
             else -> {

@@ -55,10 +55,8 @@ fun AppScreen(
                     selectedDevice = state.selectedDevice,
                     isLoading = state.isLoading,
                     errorMessage = state.errorMessage,
-                    iconFilePath = { state.getIconFilePath(it) },
-                    isIconLoading = { state.isProcessing(it) },
+                    isProcessing = { state.isProcessing(it) },
                     onSelectApp = { onAction(AppAction.SelectApp(it)) },
-                    onFetchIcon = { onAction(AppAction.FetchIcon(it)) },
                     onUninstallApp = { onAction(AppAction.UninstallApp(it)) },
                     onNextApp = { onAction(AppAction.SelectNextApp) },
                     onPreviousApp = { onAction(AppAction.SelectPreviousApp) },
@@ -69,8 +67,7 @@ fun AppScreen(
         center = {
             AppDetailPane(
                 app = state.selectedApp,
-                iconFilePath = state.selectedApp?.let { state.getIconFilePath(it) },
-                isIconLoading = state.selectedApp?.let { state.isProcessing(it) } ?: false,
+                isProcessing = state.selectedApp?.let { state.isProcessing(it) } ?: false,
                 modifier = Modifier.fillMaxSize(),
             )
         },

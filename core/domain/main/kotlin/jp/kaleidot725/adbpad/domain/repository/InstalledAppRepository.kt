@@ -7,11 +7,6 @@ import java.io.File
 interface InstalledAppRepository {
     suspend fun getInstalledApps(device: Device): List<InstalledApp>
 
-    suspend fun getInstalledAppIcon(
-        device: Device,
-        app: InstalledApp,
-    ): File?
-
     suspend fun installPackage(
         device: Device,
         packageFile: File,

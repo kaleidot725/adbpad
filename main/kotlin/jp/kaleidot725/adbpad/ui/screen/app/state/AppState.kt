@@ -14,8 +14,6 @@ data class AppState(
     val sortType: SortType = SortType.SORT_BY_NAME_ASC,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val iconFilePaths: Map<String, String> = emptyMap(),
-    val loadingIconPackageNames: Set<String> = emptySet(),
     val uninstallingPackageNames: Set<String> = emptySet(),
     val isInstalling: Boolean = false,
 ) : PulseState {
@@ -25,13 +23,9 @@ data class AppState(
     val selectedApp: InstalledApp?
         get() = filteredApps.firstOrNull { it.packageName == selectedAppPackageName } ?: filteredApps.firstOrNull()
 
-    fun getIconFilePath(app: InstalledApp): String? = iconFilePaths[app.packageName]
-
-    fun isIconLoading(app: InstalledApp): Boolean = loadingIconPackageNames.contains(app.packageName)
-
     fun isUninstalling(app: InstalledApp): Boolean = uninstallingPackageNames.contains(app.packageName)
 
-    fun isProcessing(app: InstalledApp): Boolean = isIconLoading(app) || isUninstalling(app)
+    fun isProcessing(app: InstalledApp): Boolean = isUninstalling(app)
 }
 
 internal fun filterInstalledApps(

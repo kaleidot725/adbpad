@@ -26,10 +26,7 @@ val stateHolderModule =
         factory {
             AppStateHolder(
                 getSelectedDeviceFlowUseCase = get(),
-                getInstalledAppsUseCase = get(),
-                getInstalledAppIconUseCase = get(),
-                installPackageUseCase = get(),
-                uninstallInstalledAppUseCase = get(),
+                installedAppRepository = get(),
             )
         }
 

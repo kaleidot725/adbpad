@@ -4,10 +4,7 @@ import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
-import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppIconUseCase
-import jp.kaleidot725.adbpad.domain.usecase.app.GetInstalledAppsUseCase
-import jp.kaleidot725.adbpad.domain.usecase.app.InstallPackageUseCase
-import jp.kaleidot725.adbpad.domain.usecase.app.UninstallInstalledAppUseCase
+import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
@@ -28,10 +25,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 
 class AppStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
-    private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
-    private val getInstalledAppIconUseCase: GetInstalledAppIconUseCase,
-    private val installPackageUseCase: InstallPackageUseCase,
-    private val uninstallInstalledAppUseCase: UninstallInstalledAppUseCase,
+    private val installedAppRepository: InstalledAppRepository,
 ) : PulseStore<AppState, AppAction, AppSideEffect, AppBroadCast>(
         initialUiState = AppState(),
     ) {
@@ -60,10 +54,6 @@ class AppStateHolder(
 
             is AppAction.SelectApp -> {
                 selectApp(uiAction.app)
-            }
-
-            is AppAction.FetchIcon -> {
-                fetchIcon(uiAction.app)
             }
 
             AppAction.InstallPackage -> {
@@ -106,7 +96,7 @@ class AppStateHolder(
         }
 
         update { copy(isLoading = true, errorMessage = null) }
-        runCatching { getInstalledAppsUseCase(device) }
+        runCatching { installedAppRepository.getInstalledApps(device) }
             .onSuccess { apps -> updateApps(apps) }
             .onFailure { throwable ->
                 if (throwable is CancellationException) throw throwable
@@ -175,43 +165,6 @@ class AppStateHolder(
         update { copy(selectedAppPackageName = app.packageName) }
     }
 
-    private fun fetchIcon(app: InstalledApp) {
-        val device = currentState.selectedDevice ?: return
-        if (currentState.isProcessing(app)) return
-
-        update {
-            copy(
-                loadingIconPackageNames = loadingIconPackageNames + app.packageName,
-            )
-        }
-
-        coroutineScope.launch {
-            runCatching { getInstalledAppIconUseCase(device, app) }
-                .onSuccess { iconFile ->
-                    update {
-                        val newIconFilePaths =
-                            if (iconFile != null) {
-                                iconFilePaths + (app.packageName to iconFile.absolutePath)
-                            } else {
-                                iconFilePaths
-                            }
-
-                        copy(
-                            iconFilePaths = newIconFilePaths,
-                            loadingIconPackageNames = loadingIconPackageNames - app.packageName,
-                        )
-                    }
-                }.onFailure { throwable ->
-                    if (throwable is CancellationException) throw throwable
-                    update {
-                        copy(
-                            loadingIconPackageNames = loadingIconPackageNames - app.packageName,
-                        )
-                    }
-                }
-        }
-    }
-
     private fun installPackage() {
         val device = currentState.selectedDevice ?: return
         if (currentState.isInstalling) return
@@ -221,7 +174,7 @@ class AppStateHolder(
             if (currentState.isInstalling) return@launch
 
             update { copy(isInstalling = true) }
-            runCatching { installPackageUseCase(device, packageFile) }
+            runCatching { installedAppRepository.installPackage(device, packageFile) }
                 .onSuccess {
                     update { copy(isInstalling = false) }
                     loadApps(device)
@@ -257,12 +210,10 @@ class AppStateHolder(
         }
 
         coroutineScope.launch {
-            runCatching { uninstallInstalledAppUseCase(device, app) }
+            runCatching { installedAppRepository.uninstallInstalledApp(device, app) }
                 .onSuccess {
                     update {
                         copy(
-                            iconFilePaths = iconFilePaths - app.packageName,
-                            loadingIconPackageNames = loadingIconPackageNames - app.packageName,
                             uninstallingPackageNames = uninstallingPackageNames - app.packageName,
                         )
                     }

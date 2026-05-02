@@ -40,10 +40,8 @@ fun AppList(
     selectedDevice: Device?,
     isLoading: Boolean,
     errorMessage: String?,
-    iconFilePath: (InstalledApp) -> String?,
-    isIconLoading: (InstalledApp) -> Boolean,
+    isProcessing: (InstalledApp) -> Boolean,
     onSelectApp: (InstalledApp) -> Unit,
-    onFetchIcon: (InstalledApp) -> Unit,
     onUninstallApp: (InstalledApp) -> Unit,
     onNextApp: () -> Unit,
     onPreviousApp: () -> Unit,
@@ -91,10 +89,6 @@ fun AppList(
                             items = {
                                 listOf(
                                     ContextMenuItem(
-                                        label = Language.fetchAppIcon,
-                                        onClick = { onFetchIcon(app) },
-                                    ),
-                                    ContextMenuItem(
                                         label = Language.uninstallApp,
                                         onClick = { onUninstallApp(app) },
                                     ),
@@ -103,8 +97,7 @@ fun AppList(
                         ) {
                             AppListItem(
                                 app = app,
-                                iconFilePath = iconFilePath(app),
-                                isIconLoading = isIconLoading(app),
+                                isProcessing = isProcessing(app),
                                 isSelected = selectedApp?.packageName == app.packageName,
                                 onClick = { onSelectApp(app) },
                             )
@@ -127,8 +120,7 @@ fun AppList(
 @Composable
 private fun AppListItem(
     app: InstalledApp,
-    iconFilePath: String?,
-    isIconLoading: Boolean,
+    isProcessing: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -147,8 +139,7 @@ private fun AppListItem(
     ) {
         AppInitialIcon(
             name = app.displayName,
-            iconFilePath = iconFilePath,
-            isLoading = isIconLoading,
+            isLoading = isProcessing,
             modifier = Modifier.size(36.dp),
         )
 

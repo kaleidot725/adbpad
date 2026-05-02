@@ -24,8 +24,7 @@ import jp.kaleidot725.adbpad.ui.component.layout.ExpandableSection
 @Composable
 fun AppDetailPane(
     app: InstalledApp?,
-    iconFilePath: String?,
-    isIconLoading: Boolean,
+    isProcessing: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
@@ -47,8 +46,7 @@ fun AppDetailPane(
         ) {
             AppInitialIcon(
                 name = app.displayName,
-                iconFilePath = iconFilePath,
-                isLoading = isIconLoading,
+                isLoading = isProcessing,
                 modifier = Modifier.size(48.dp),
             )
 
