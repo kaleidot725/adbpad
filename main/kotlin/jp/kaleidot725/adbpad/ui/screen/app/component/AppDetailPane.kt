@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -28,7 +27,7 @@ fun AppDetailPane(
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
-        EmptyAppDetail(modifier = modifier)
+        AppDetailEmptyState(modifier = modifier)
         return
     }
 
@@ -72,58 +71,18 @@ fun AppDetailPane(
         }
 
         ExpandableSection(title = Language.appDetailsTitle) {
-            DetailRow(
+            AppDetailPropertyRow(
                 label = Language.appPackageName,
                 value = app.packageName,
             )
-            DetailRow(
+            AppDetailPropertyRow(
                 label = Language.appSourceDir,
                 value = app.sourceDir ?: "",
             )
-            DetailRow(
+            AppDetailPropertyRow(
                 label = Language.appDataDirectory,
                 value = app.dataDir,
             )
         }
-    }
-}
-
-@Composable
-private fun EmptyAppDetail(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = Language.notFoundApp,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(16.dp),
-        )
-    }
-}
-
-@Composable
-private fun DetailRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
