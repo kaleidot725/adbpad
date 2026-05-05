@@ -10,7 +10,6 @@ import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppSideEffect
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppState
-import jp.kaleidot725.adbpad.ui.screen.app.state.filterInstalledApps
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +19,7 @@ import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
 import java.awt.KeyboardFocusManager
 import java.io.File
+import java.util.Locale
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -87,6 +87,7 @@ class AppStateHolder(
             update {
                 copy(
                     apps = emptyList(),
+                    filteredApps = emptyList(),
                     selectedAppPackageName = null,
                     isLoading = false,
                     errorMessage = null,
@@ -103,6 +104,7 @@ class AppStateHolder(
                 update {
                     copy(
                         apps = emptyList(),
+                        filteredApps = emptyList(),
                         selectedAppPackageName = null,
                         isLoading = false,
                         errorMessage = throwable.message,
@@ -122,6 +124,7 @@ class AppStateHolder(
 
             copy(
                 apps = apps,
+                filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
                 isLoading = false,
                 errorMessage = null,
@@ -140,6 +143,7 @@ class AppStateHolder(
 
             copy(
                 searchText = text,
+                filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
             )
         }
@@ -156,6 +160,7 @@ class AppStateHolder(
 
             copy(
                 sortType = sortType,
+                filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
             )
         }
@@ -254,5 +259,29 @@ class AppStateHolder(
         if (currentIndex <= 0) return
 
         update { copy(selectedAppPackageName = filteredApps[currentIndex - 1].packageName) }
+    }
+
+    private fun filterInstalledApps(
+        apps: List<InstalledApp>,
+        query: String,
+        sortType: SortType,
+    ): List<InstalledApp> {
+        val normalized = query.trim().lowercase(Locale.getDefault())
+        val filtered =
+            if (normalized.isBlank()) {
+                apps
+            } else {
+                apps.filter { app ->
+                    listOf(
+                        app.displayName,
+                        app.packageName,
+                    ).any { it.contains(normalized, ignoreCase = true) }
+                }
+            }
+
+        return when (sortType) {
+            SortType.SORT_BY_NAME_ASC -> filtered.sortedBy { it.packageName.lowercase(Locale.getDefault()) }
+            SortType.SORT_BY_NAME_DESC -> filtered.sortedByDescending { it.packageName.lowercase(Locale.getDefault()) }
+        }
     }
 }

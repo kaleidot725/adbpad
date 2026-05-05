@@ -78,18 +78,21 @@ fun AppScreen(
 @Preview
 @Composable
 private fun AppScreenPreview() {
+    val apps =
+        listOf(
+            InstalledApp(
+                packageName = "com.example.notes",
+            ),
+            InstalledApp(
+                packageName = "com.example.calendar",
+            ),
+        )
+
     AppScreen(
         state =
             AppState(
-                apps =
-                    listOf(
-                        InstalledApp(
-                            packageName = "com.example.notes",
-                        ),
-                        InstalledApp(
-                            packageName = "com.example.calendar",
-                        ),
-                    ),
+                apps = apps,
+                filteredApps = apps,
                 selectedAppPackageName = "com.example.notes",
             ),
         onAction = {},
