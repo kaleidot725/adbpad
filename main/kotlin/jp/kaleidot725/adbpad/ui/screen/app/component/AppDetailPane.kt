@@ -74,10 +74,6 @@ fun AppDetailPane(
                     value = app.packageName,
                 )
                 AppDetailPropertyRow(
-                    label = Language.appSourceDir,
-                    value = app.sourceDir ?: "",
-                )
-                AppDetailPropertyRow(
                     label = Language.appDataDirectory,
                     value = app.dataDir,
                 )

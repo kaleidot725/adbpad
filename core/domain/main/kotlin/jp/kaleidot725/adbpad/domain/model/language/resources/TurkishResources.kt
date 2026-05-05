@@ -30,7 +30,6 @@ object TurkishResources : StringResources {
     override val appListLoadFailed: String = "Uygulamalar yüklenemedi"
     override val appDetailsTitle: String = "Uygulama bilgileri"
     override val appPackageName: String = "Paket adı"
-    override val appSourceDir: String = "APK yolu"
     override val appDataDirectory: String = "Veri dizini"
     override val installApp: String = "Yükle"
     override val selectInstallPackage: String = "Yüklenecek APK'yı seç"

@@ -29,7 +29,6 @@ interface StringResources {
     val appListLoadFailed: String
     val appDetailsTitle: String
     val appPackageName: String
-    val appSourceDir: String
     val appDataDirectory: String
     val installApp: String
     val selectInstallPackage: String

@@ -39,10 +39,9 @@ internal fun filterInstalledApps(
             apps
         } else {
             apps.filter { app ->
-                listOfNotNull(
+                listOf(
                     app.displayName,
                     app.packageName,
-                    app.sourceDir,
                 ).any { it.contains(normalized, ignoreCase = true) }
             }
         }

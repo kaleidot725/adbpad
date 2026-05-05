@@ -61,8 +61,6 @@ object Language : StringResources {
         get() = getCurrentResources().appDetailsTitle
     override val appPackageName: String
         get() = getCurrentResources().appPackageName
-    override val appSourceDir: String
-        get() = getCurrentResources().appSourceDir
     override val appDataDirectory: String
         get() = getCurrentResources().appDataDirectory
     override val installApp: String

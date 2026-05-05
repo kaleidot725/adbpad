@@ -30,7 +30,6 @@ object EnglishResources : StringResources {
     override val appListLoadFailed: String = "Failed to load apps"
     override val appDetailsTitle: String = "App information"
     override val appPackageName: String = "Package name"
-    override val appSourceDir: String = "APK path"
     override val appDataDirectory: String = "Data directory"
     override val installApp: String = "Install"
     override val selectInstallPackage: String = "Select APK to install"

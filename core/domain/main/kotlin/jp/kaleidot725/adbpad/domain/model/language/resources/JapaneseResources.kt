@@ -30,7 +30,6 @@ object JapaneseResources : StringResources {
     override val appListLoadFailed: String = "アプリ一覧を取得できません"
     override val appDetailsTitle: String = "アプリ情報"
     override val appPackageName: String = "パッケージ名"
-    override val appSourceDir: String = "APKパス"
     override val appDataDirectory: String = "データ領域"
     override val installApp: String = "インストール"
     override val selectInstallPackage: String = "インストールするAPKを選択"

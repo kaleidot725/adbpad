@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.component.text
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,13 +27,15 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.CircleAlert
 import com.composables.icons.lucide.Lucide
+import java.util.UUID
 
 @Composable
 fun DefaultTextField(
-    id: Any? = null,
+    id: Any? = remember { UUID.randomUUID().toString() },
     initialText: String,
     placeHolder: String,
     onUpdateText: (String) -> Unit,

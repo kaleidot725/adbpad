@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.app
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
@@ -85,11 +85,9 @@ private fun AppScreenPreview() {
                     listOf(
                         InstalledApp(
                             packageName = "com.example.notes",
-                            sourceDir = "/data/app/com.example.notes/base.apk",
                         ),
                         InstalledApp(
                             packageName = "com.example.calendar",
-                            sourceDir = "/data/app/com.example.calendar/base.apk",
                         ),
                     ),
                 selectedAppPackageName = "com.example.notes",

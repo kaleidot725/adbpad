@@ -17,7 +17,7 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
 
     override suspend fun getInstalledApps(device: Device): List<InstalledApp> =
         withContext(Dispatchers.IO) {
-            val result = adbClient.execute(ShellCommandRequest("pm list packages -f -3"), device.serial)
+            val result = adbClient.execute(ShellCommandRequest("pm list packages -3"), device.serial)
             if (result.exitCode != 0) {
                 error(result.output.ifBlank { "pm list packages failed with exit code ${result.exitCode}" })
             }
@@ -62,21 +62,12 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
         }
     }
 
-    // Parses `pm list packages -f` lines like `package:/path/base.apk=com.example.app`.
+    // Parses `pm list packages` lines like `package:com.example.app`.
     private fun String.toInstalledApp(): InstalledApp? {
         val line = trim()
         if (!line.startsWith(PACKAGE_PREFIX)) return null
 
-        val value = line.removePrefix(PACKAGE_PREFIX)
-        val separatorIndex = value.lastIndexOf('=')
-        return if (separatorIndex > 0 && separatorIndex < value.lastIndex) {
-            InstalledApp(
-                packageName = value.substring(separatorIndex + 1),
-                sourceDir = value.substring(0, separatorIndex),
-            )
-        } else {
-            InstalledApp(packageName = value)
-        }
+        return InstalledApp(packageName = line.removePrefix(PACKAGE_PREFIX))
     }
 
     companion object {
