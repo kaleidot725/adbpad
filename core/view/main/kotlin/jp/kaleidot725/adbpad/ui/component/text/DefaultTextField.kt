@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,10 @@ fun DefaultTextField(
     modifier: Modifier = Modifier,
 ) {
     var localText by remember(id) { mutableStateOf(initialText) }
+
+    LaunchedEffect(id, initialText) {
+        localText = initialText
+    }
 
     Box(modifier) {
         Row(
