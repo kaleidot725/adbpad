@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,10 @@ fun DefaultOutlineTextField(
     modifier: Modifier = Modifier,
 ) {
     var localText by remember(id) { mutableStateOf(initialText) }
+    LaunchedEffect(id, initialText) {
+        localText = initialText
+    }
+
     val textStyle = MaterialTheme.typography.bodySmall
     OutlinedTextField(
         label = { Text(label, style = textStyle) },
