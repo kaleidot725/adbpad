@@ -35,6 +35,7 @@ object TurkishResources : StringResources {
     override val uninstallApp: String = "Kaldır"
 
     override val textCommandUnTitle: String = "başlıksız metin komutu"
+    override val textCommandTextPlaceholder: String = "Gönderilecek metni gir"
 
     override val screenshotTakeByCurrentTheme = "Mevcut tema ile al"
     override val screenshotTakeByDarkTheme = "Koyu tema ile al"

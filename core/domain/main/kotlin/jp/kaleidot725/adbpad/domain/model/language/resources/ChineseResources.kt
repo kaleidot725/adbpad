@@ -35,6 +35,7 @@ object ChineseResources : StringResources {
     override val uninstallApp: String = "卸载"
 
     override val textCommandUnTitle: String = "取消文本标题命令"
+    override val textCommandTextPlaceholder: String = "输入要发送的文本"
 
     override val screenshotTakeByCurrentTheme = "按当前主题截图"
     override val screenshotTakeByDarkTheme = "按深色主题截图"

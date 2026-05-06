@@ -34,6 +34,7 @@ interface StringResources {
     val uninstallApp: String
 
     val textCommandUnTitle: String
+    val textCommandTextPlaceholder: String
     val screenshotTakeByCurrentTheme: String
     val screenshotTakeByDarkTheme: String
     val screenshotTakeByLightTheme: String

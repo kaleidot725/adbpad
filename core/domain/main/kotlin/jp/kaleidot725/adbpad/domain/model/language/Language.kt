@@ -69,6 +69,8 @@ object Language : StringResources {
         get() = getCurrentResources().uninstallApp
     override val textCommandUnTitle: String
         get() = getCurrentResources().textCommandUnTitle
+    override val textCommandTextPlaceholder: String
+        get() = getCurrentResources().textCommandTextPlaceholder
     override val screenshotTakeByCurrentTheme: String
         get() = getCurrentResources().screenshotTakeByCurrentTheme
     override val screenshotTakeByDarkTheme: String

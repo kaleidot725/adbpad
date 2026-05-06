@@ -1,19 +1,23 @@
 package jp.kaleidot725.adbpad.ui.screen.text.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -59,6 +63,7 @@ fun TextCommandEditor(
             mutableStateOf(LineBreakTransformation(option, primaryColor))
         }
         var commandText by remember(command.id) { mutableStateOf(command.text) }
+
         BasicTextField(
             value = commandText,
             onValueChange = { textValue ->
@@ -69,7 +74,20 @@ fun TextCommandEditor(
             maxLines = Int.MAX_VALUE,
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 12.dp),
+            decorationBox = { innerTextField ->
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if (commandText.isEmpty()) {
+                        Text(
+                            text = Language.textCommandTextPlaceholder,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                            modifier = Modifier.align(Alignment.TopStart),
+                        )
+                    }
+                    innerTextField()
+                }
+            },
+            modifier = Modifier.weight(1.0f).fillMaxWidth().padding(vertical = 12.dp, horizontal = 12.dp),
         )
     }
 }
