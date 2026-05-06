@@ -67,6 +67,9 @@ fun AppScreen(
             AppDetailPane(
                 app = state.selectedApp,
                 isProcessing = state.selectedApp?.let { state.isProcessing(it) } ?: false,
+                fileTrees = state.fileTrees,
+                selectedFile = state.selectedFile,
+                onSelectFileNode = { directory, entry -> onAction(AppAction.SelectAppFileNode(directory, entry)) },
                 modifier = Modifier.fillMaxSize(),
             )
         },

@@ -1,5 +1,7 @@
 package jp.kaleidot725.adbpad.ui.screen.app
 
+import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
+import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -8,8 +10,11 @@ import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
+import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileSelection
+import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppSideEffect
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppState
+import jp.kaleidot725.adbpad.ui.screen.app.state.createDefaultFileTrees
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +53,8 @@ class AppStateHolder(
                 is AppAction.UninstallApp -> uninstallApp(uiAction.app)
                 AppAction.SelectNextApp -> selectNextApp()
                 AppAction.SelectPreviousApp -> selectPreviousApp()
+                is AppAction.RefreshAppFileTree -> refreshAppFileTree(uiAction.directory)
+                is AppAction.SelectAppFileNode -> selectAppFileNode(uiAction.directory, uiAction.entry)
             }
         }
     }
@@ -68,6 +75,8 @@ class AppStateHolder(
                     filteredApps = emptyList(),
                     selectedAppPackageName = null,
                     isLoading = false,
+                    fileTrees = createDefaultFileTrees(),
+                    selectedFile = null,
                 )
             }
             return
@@ -76,24 +85,31 @@ class AppStateHolder(
         update { copy(isLoading = true) }
 
         val apps = installedAppRepository.getInstalledApps(device)
+        val filteredApps = filterInstalledApps(apps, currentState.searchText, currentState.sortType)
+        val nextSelection =
+            when {
+                filteredApps.any { it.packageName == currentState.selectedAppPackageName } -> currentState.selectedAppPackageName
+                else -> filteredApps.firstOrNull()?.packageName
+            }
+        val selectedApp = filteredApps.firstOrNull { it.packageName == nextSelection }
         update {
-            val filteredApps = filterInstalledApps(apps, searchText, sortType)
-            val nextSelection =
-                when {
-                    filteredApps.any { it.packageName == selectedAppPackageName } -> selectedAppPackageName
-                    else -> filteredApps.firstOrNull()?.packageName
-                }
-
             copy(
                 apps = apps,
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
                 isLoading = false,
+                fileTrees = createDefaultFileTrees(),
+                selectedFile = null,
             )
+        }
+        if (selectedApp != null) {
+            loadAppFileTreeRoots(device, selectedApp)
         }
     }
 
-    private fun updateSearchText(text: String) {
+    private suspend fun updateSearchText(text: String) {
+        var nextSelectedApp: InstalledApp? = null
+        var shouldLoadFileTrees = false
         update {
             val filteredApps = filterInstalledApps(apps, text, sortType)
             val nextSelection =
@@ -101,16 +117,27 @@ class AppStateHolder(
                     filteredApps.any { it.packageName == selectedAppPackageName } -> selectedAppPackageName
                     else -> filteredApps.firstOrNull()?.packageName
                 }
+            nextSelectedApp = filteredApps.firstOrNull { it.packageName == nextSelection }
+            shouldLoadFileTrees = nextSelection != selectedAppPackageName
 
             copy(
                 searchText = text,
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
+                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
+                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
             )
+        }
+        val device = currentState.selectedDevice
+        val app = nextSelectedApp
+        if (shouldLoadFileTrees && device != null && app != null) {
+            loadAppFileTreeRoots(device, app)
         }
     }
 
-    private fun updateSortType(sortType: SortType) {
+    private suspend fun updateSortType(sortType: SortType) {
+        var nextSelectedApp: InstalledApp? = null
+        var shouldLoadFileTrees = false
         update {
             val filteredApps = filterInstalledApps(apps, searchText, sortType)
             val nextSelection =
@@ -118,17 +145,37 @@ class AppStateHolder(
                     filteredApps.any { it.packageName == selectedAppPackageName } -> selectedAppPackageName
                     else -> filteredApps.firstOrNull()?.packageName
                 }
+            nextSelectedApp = filteredApps.firstOrNull { it.packageName == nextSelection }
+            shouldLoadFileTrees = nextSelection != selectedAppPackageName
 
             copy(
                 sortType = sortType,
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
+                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
+                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
             )
+        }
+        val device = currentState.selectedDevice
+        val app = nextSelectedApp
+        if (shouldLoadFileTrees && device != null && app != null) {
+            loadAppFileTreeRoots(device, app)
         }
     }
 
-    private fun selectApp(app: InstalledApp) {
-        update { copy(selectedAppPackageName = app.packageName) }
+    private suspend fun selectApp(app: InstalledApp) {
+        val shouldLoadFileTrees = currentState.selectedAppPackageName != app.packageName
+        update {
+            copy(
+                selectedAppPackageName = app.packageName,
+                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
+                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
+            )
+        }
+        val device = currentState.selectedDevice
+        if (shouldLoadFileTrees && device != null) {
+            loadAppFileTreeRoots(device, app)
+        }
     }
 
     private suspend fun installPackage() {
@@ -177,7 +224,7 @@ class AppStateHolder(
         if (isUninstalled) loadApps(device)
     }
 
-    private fun selectNextApp() {
+    private suspend fun selectNextApp() {
         val filteredApps = currentState.filteredApps
         if (filteredApps.isEmpty()) return
 
@@ -190,10 +237,10 @@ class AppStateHolder(
                 else -> return
             }
 
-        update { copy(selectedAppPackageName = filteredApps[nextIndex].packageName) }
+        selectApp(filteredApps[nextIndex])
     }
 
-    private fun selectPreviousApp() {
+    private suspend fun selectPreviousApp() {
         val filteredApps = currentState.filteredApps
         if (filteredApps.isEmpty()) return
 
@@ -201,7 +248,93 @@ class AppStateHolder(
         val currentIndex = filteredApps.indexOfFirst { it.packageName == currentPackageName }
         if (currentIndex <= 0) return
 
-        update { copy(selectedAppPackageName = filteredApps[currentIndex - 1].packageName) }
+        selectApp(filteredApps[currentIndex - 1])
+    }
+
+    private suspend fun refreshAppFileTree(directory: AppDataDirectory) {
+        val device = currentState.selectedDevice ?: return
+        val app = currentState.selectedApp ?: return
+        update {
+            copy(
+                fileTrees = fileTrees + (directory to AppFileTreeState(directory = directory)),
+                selectedFile = selectedFile?.takeUnless { it.directory == directory },
+            )
+        }
+        loadAppFileTreeNode(device, app, directory, directory.getRootPath(app))
+    }
+
+    private suspend fun selectAppFileNode(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        update { copy(selectedFile = AppFileSelection(directory, entry)) }
+        if (!entry.isDirectory) return
+
+        val tree = currentState.getFileTree(directory)
+        if (tree.expandedPaths.contains(entry.path)) {
+            updateFileTree(directory) { copy(expandedPaths = expandedPaths - entry.path) }
+            return
+        }
+
+        updateFileTree(directory) { copy(expandedPaths = expandedPaths + entry.path) }
+        if (!tree.childrenByPath.containsKey(entry.path)) {
+            val device = currentState.selectedDevice ?: return
+            val app = currentState.selectedApp ?: return
+            loadAppFileTreeNode(device, app, directory, entry.path)
+        }
+    }
+
+    private suspend fun loadAppFileTreeRoots(
+        device: Device,
+        app: InstalledApp,
+    ) {
+        AppDataDirectory.values().forEach { directory ->
+            loadAppFileTreeNode(device, app, directory, directory.getRootPath(app))
+        }
+    }
+
+    private suspend fun loadAppFileTreeNode(
+        device: Device,
+        app: InstalledApp,
+        directory: AppDataDirectory,
+        path: String,
+    ) {
+        updateFileTree(directory) {
+            copy(
+                expandedPaths = expandedPaths + path,
+                loadingPaths = loadingPaths + path,
+                errorMessages = errorMessages - path,
+            )
+        }
+
+        val result = installedAppRepository.getAppFiles(device, app, directory, path)
+        if (currentState.selectedAppPackageName != app.packageName) return
+
+        updateFileTree(directory) {
+            if (result.isSuccess) {
+                copy(
+                    childrenByPath = childrenByPath + (path to result.entries),
+                    loadingPaths = loadingPaths - path,
+                    errorMessages = errorMessages - path,
+                )
+            } else {
+                copy(
+                    loadingPaths = loadingPaths - path,
+                    errorMessages = errorMessages + (path to (result.errorMessage ?: "")),
+                )
+            }
+        }
+    }
+
+    private fun updateFileTree(
+        directory: AppDataDirectory,
+        transform: AppFileTreeState.() -> AppFileTreeState,
+    ) {
+        update {
+            copy(
+                fileTrees = fileTrees + (directory to getFileTree(directory).transform()),
+            )
+        }
     }
 
     private fun filterInstalledApps(

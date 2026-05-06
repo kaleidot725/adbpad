@@ -59,8 +59,18 @@ object Language : StringResources {
         get() = getCurrentResources().appDetailsTitle
     override val appPackageName: String
         get() = getCurrentResources().appPackageName
+    override val appPathInfo: String
+        get() = getCurrentResources().appPathInfo
     override val appDataDirectory: String
         get() = getCurrentResources().appDataDirectory
+    override val appSdCardDataDirectory: String
+        get() = getCurrentResources().appSdCardDataDirectory
+    override val appFileTreeTitle: String
+        get() = getCurrentResources().appFileTreeTitle
+    override val appFileTreeEmpty: String
+        get() = getCurrentResources().appFileTreeEmpty
+    override val loadingAppFiles: String
+        get() = getCurrentResources().loadingAppFiles
     override val installApp: String
         get() = getCurrentResources().installApp
     override val selectInstallPackage: String

@@ -8,4 +8,7 @@ data class InstalledApp(
 
     val dataDir: String
         get() = "/data/data/$packageName"
+
+    val sdCardDataDir: String
+        get() = "/sdcard/Android/data/$packageName"
 }

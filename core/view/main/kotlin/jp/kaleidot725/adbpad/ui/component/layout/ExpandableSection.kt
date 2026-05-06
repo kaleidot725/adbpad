@@ -62,7 +62,10 @@ fun ExpandableSection(
             exit = fadeOut() + shrinkVertically(),
         ) {
             Column(
-                modifier = Modifier.padding(top = 8.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .padding(horizontal = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 content()

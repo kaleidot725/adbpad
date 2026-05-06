@@ -1,5 +1,7 @@
 package jp.kaleidot725.adbpad.domain.repository
 
+import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
+import jp.kaleidot725.adbpad.domain.model.app.AppFileListResult
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import java.io.File
@@ -16,4 +18,11 @@ interface InstalledAppRepository {
         device: Device,
         app: InstalledApp,
     ): Boolean
+
+    suspend fun getAppFiles(
+        device: Device,
+        app: InstalledApp,
+        directory: AppDataDirectory,
+        path: String,
+    ): AppFileListResult
 }
