@@ -13,8 +13,8 @@ import com.composables.icons.lucide.Clock3
 import com.composables.icons.lucide.Diamond
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Monitor
-import com.composables.icons.lucide.Palette
 import com.composables.icons.lucide.Navigation
+import com.composables.icons.lucide.Palette
 import com.composables.icons.lucide.Smartphone
 import com.composables.icons.lucide.Wifi
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandCategory

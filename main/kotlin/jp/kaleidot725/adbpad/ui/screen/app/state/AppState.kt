@@ -27,8 +27,7 @@ data class AppState(
 
     fun isProcessing(app: InstalledApp): Boolean = isUninstalling(app)
 
-    fun getFileTree(directory: AppDataDirectory): AppFileTreeState =
-        fileTrees[directory] ?: AppFileTreeState(directory = directory)
+    fun getFileTree(directory: AppDataDirectory): AppFileTreeState = fileTrees[directory] ?: AppFileTreeState(directory = directory)
 }
 
 data class AppFileTreeState(

@@ -1,9 +1,9 @@
 package jp.kaleidot725.adbpad.ui.screen.text.state
 
-import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.command.TextCommand
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
+import jp.kaleidot725.pulse.mvi.PulseState
 
 data class TextCommandState(
     val selectedCommandId: String? = null,

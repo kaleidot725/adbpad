@@ -147,24 +147,27 @@ private fun AppFileTreeNode(
 
         if (isExpanded) {
             when {
-                errorMessage != null -> AppFileTreeMessageRow(
-                    message = errorMessage.ifBlank { Language.appFileTreeEmpty },
-                    depth = depth + 1,
-                )
-                childEntries.isEmpty() && !isLoading -> AppFileTreeMessageRow(
-                    message = Language.appFileTreeEmpty,
-                    depth = depth + 1,
-                )
-                else -> childEntries.forEach { child ->
-                    AppFileTreeNode(
-                        directory = directory,
-                        entry = child,
-                        tree = tree,
+                errorMessage != null ->
+                    AppFileTreeMessageRow(
+                        message = errorMessage.ifBlank { Language.appFileTreeEmpty },
                         depth = depth + 1,
-                        selectedFile = selectedFile,
-                        onSelectNode = onSelectNode,
                     )
-                }
+                childEntries.isEmpty() && !isLoading ->
+                    AppFileTreeMessageRow(
+                        message = Language.appFileTreeEmpty,
+                        depth = depth + 1,
+                    )
+                else ->
+                    childEntries.forEach { child ->
+                        AppFileTreeNode(
+                            directory = directory,
+                            entry = child,
+                            tree = tree,
+                            depth = depth + 1,
+                            selectedFile = selectedFile,
+                            onSelectNode = onSelectNode,
+                        )
+                    }
             }
         }
     }

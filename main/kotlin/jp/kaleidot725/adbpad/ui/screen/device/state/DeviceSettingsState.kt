@@ -1,9 +1,9 @@
 package jp.kaleidot725.adbpad.ui.screen.device.state
 
-import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.device.DeviceSettings
 import jp.kaleidot725.adbpad.ui.screen.device.model.DeviceSettingCategory
+import jp.kaleidot725.pulse.mvi.PulseState
 
 data class DeviceSettingsState(
     val device: Device? = null,

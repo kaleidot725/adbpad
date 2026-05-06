@@ -1,11 +1,11 @@
 package jp.kaleidot725.adbpad.ui.screen.command.state
 
-import jp.kaleidot725.pulse.mvi.PulseState
 import jp.kaleidot725.adbpad.domain.model.command.CommandExecutionHistory
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandCategory
 import jp.kaleidot725.adbpad.domain.model.command.NormalCommandGroup
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.ui.screen.command.model.CommandLayoutMode
+import jp.kaleidot725.pulse.mvi.PulseState
 
 data class CommandState(
     val commands: NormalCommandGroup = NormalCommandGroup.Empty,

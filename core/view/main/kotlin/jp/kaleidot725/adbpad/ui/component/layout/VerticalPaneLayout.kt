@@ -26,8 +26,7 @@ import org.jetbrains.compose.splitpane.SplitPaneState
 import org.jetbrains.compose.splitpane.VerticalSplitPane
 import java.awt.Cursor
 
-fun Modifier.cursorForVerticalResize(): Modifier =
-    pointerHoverIcon(PointerIcon(Cursor(Cursor.N_RESIZE_CURSOR)))
+fun Modifier.cursorForVerticalResize(): Modifier = pointerHoverIcon(PointerIcon(Cursor(Cursor.N_RESIZE_CURSOR)))
 
 @OptIn(ExperimentalSplitPaneApi::class)
 @Composable
