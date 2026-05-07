@@ -23,27 +23,23 @@ import com.composables.icons.lucide.File
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.FolderOpen
 import com.composables.icons.lucide.Lucide
-import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.ui.common.resource.clickableBackground
 import jp.kaleidot725.adbpad.ui.component.indicator.RunningIndicator
-import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileSelection
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 
 @Composable
 fun AppFileTreeView(
     rootPath: String,
-    directory: AppDataDirectory,
     tree: AppFileTreeState,
-    selectedFile: AppFileSelection?,
-    onSelectNode: (AppDataDirectory, AppFileEntry) -> Unit,
+    selectedFile: AppFileEntry?,
+    onSelectNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
         AppFileTreeRoot(
             rootPath = rootPath,
-            directory = directory,
             tree = tree,
             selectedFile = selectedFile,
             onSelectNode = onSelectNode,
@@ -54,10 +50,9 @@ fun AppFileTreeView(
 @Composable
 private fun AppFileTreeRoot(
     rootPath: String,
-    directory: AppDataDirectory,
     tree: AppFileTreeState,
-    selectedFile: AppFileSelection?,
-    onSelectNode: (AppDataDirectory, AppFileEntry) -> Unit,
+    selectedFile: AppFileEntry?,
+    onSelectNode: (AppFileEntry) -> Unit,
 ) {
     val entries = tree.childrenByPath[rootPath]
     val isLoading = tree.loadingPaths.contains(rootPath)
@@ -71,7 +66,6 @@ private fun AppFileTreeRoot(
             else -> {
                 entries.forEach { entry ->
                     AppFileTreeNode(
-                        directory = directory,
                         entry = entry,
                         tree = tree,
                         depth = 0,
@@ -86,18 +80,17 @@ private fun AppFileTreeRoot(
 
 @Composable
 private fun AppFileTreeNode(
-    directory: AppDataDirectory,
     entry: AppFileEntry,
     tree: AppFileTreeState,
     depth: Int,
-    selectedFile: AppFileSelection?,
-    onSelectNode: (AppDataDirectory, AppFileEntry) -> Unit,
+    selectedFile: AppFileEntry?,
+    onSelectNode: (AppFileEntry) -> Unit,
 ) {
     val isExpanded = tree.expandedPaths.contains(entry.path)
     val isLoading = tree.loadingPaths.contains(entry.path)
     val childEntries = tree.childrenByPath[entry.path].orEmpty()
     val errorMessage = tree.errorMessages[entry.path]
-    val isSelected = selectedFile?.directory == directory && selectedFile.entry.path == entry.path
+    val isSelected = selectedFile?.path == entry.path
 
     Column {
         Row(
@@ -107,7 +100,7 @@ private fun AppFileTreeNode(
                     .clickableBackground(
                         isSelected = isSelected,
                         shape = RoundedCornerShape(4.dp),
-                    ).clickable { onSelectNode(directory, entry) }
+                    ).clickable { onSelectNode(entry) }
                     .padding(start = (depth * 16).dp, top = 4.dp, end = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -157,7 +150,6 @@ private fun AppFileTreeNode(
                 )
                 else -> childEntries.forEach { child ->
                     AppFileTreeNode(
-                        directory = directory,
                         entry = child,
                         tree = tree,
                         depth = depth + 1,

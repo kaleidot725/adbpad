@@ -10,11 +10,9 @@ import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
-import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileSelection
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppSideEffect
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppState
-import jp.kaleidot725.adbpad.ui.screen.app.state.createDefaultFileTrees
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -53,8 +51,8 @@ class AppStateHolder(
                 is AppAction.UninstallApp -> uninstallApp(uiAction.app)
                 AppAction.SelectNextApp -> selectNextApp()
                 AppAction.SelectPreviousApp -> selectPreviousApp()
-                is AppAction.RefreshAppFileTree -> refreshAppFileTree(uiAction.directory)
-                is AppAction.SelectAppFileNode -> selectAppFileNode(uiAction.directory, uiAction.entry)
+                is AppAction.SelectDataFileNode -> selectDataFileNode(uiAction.entry)
+                is AppAction.SelectSdCardDataFileNode -> selectSdCardDataFileNode(uiAction.entry)
             }
         }
     }
@@ -75,8 +73,10 @@ class AppStateHolder(
                     filteredApps = emptyList(),
                     selectedAppPackageName = null,
                     isLoading = false,
-                    fileTrees = createDefaultFileTrees(),
-                    selectedFile = null,
+                    dataFileTree = AppFileTreeState(),
+                    sdCardDataFileTree = AppFileTreeState(),
+                    selectedDataFile = null,
+                    selectedSdCardDataFile = null,
                 )
             }
             return
@@ -98,8 +98,10 @@ class AppStateHolder(
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
                 isLoading = false,
-                fileTrees = createDefaultFileTrees(),
-                selectedFile = null,
+                dataFileTree = AppFileTreeState(),
+                sdCardDataFileTree = AppFileTreeState(),
+                selectedDataFile = null,
+                selectedSdCardDataFile = null,
             )
         }
         if (selectedApp != null) {
@@ -124,8 +126,10 @@ class AppStateHolder(
                 searchText = text,
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
-                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
-                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
+                dataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else dataFileTree,
+                sdCardDataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else sdCardDataFileTree,
+                selectedDataFile = if (shouldLoadFileTrees) null else selectedDataFile,
+                selectedSdCardDataFile = if (shouldLoadFileTrees) null else selectedSdCardDataFile,
             )
         }
         val device = currentState.selectedDevice
@@ -152,8 +156,10 @@ class AppStateHolder(
                 sortType = sortType,
                 filteredApps = filteredApps,
                 selectedAppPackageName = nextSelection,
-                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
-                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
+                dataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else dataFileTree,
+                sdCardDataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else sdCardDataFileTree,
+                selectedDataFile = if (shouldLoadFileTrees) null else selectedDataFile,
+                selectedSdCardDataFile = if (shouldLoadFileTrees) null else selectedSdCardDataFile,
             )
         }
         val device = currentState.selectedDevice
@@ -168,8 +174,10 @@ class AppStateHolder(
         update {
             copy(
                 selectedAppPackageName = app.packageName,
-                fileTrees = if (shouldLoadFileTrees) createDefaultFileTrees() else fileTrees,
-                selectedFile = if (shouldLoadFileTrees) null else selectedFile,
+                dataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else dataFileTree,
+                sdCardDataFileTree = if (shouldLoadFileTrees) AppFileTreeState() else sdCardDataFileTree,
+                selectedDataFile = if (shouldLoadFileTrees) null else selectedDataFile,
+                selectedSdCardDataFile = if (shouldLoadFileTrees) null else selectedSdCardDataFile,
             )
         }
         val device = currentState.selectedDevice
@@ -251,26 +259,25 @@ class AppStateHolder(
         selectApp(filteredApps[currentIndex - 1])
     }
 
-    private suspend fun refreshAppFileTree(directory: AppDataDirectory) {
-        val device = currentState.selectedDevice ?: return
-        val app = currentState.selectedApp ?: return
-        update {
-            copy(
-                fileTrees = fileTrees + (directory to AppFileTreeState(directory = directory)),
-                selectedFile = selectedFile?.takeUnless { it.directory == directory },
-            )
-        }
-        loadAppFileTreeNode(device, app, directory, directory.getRootPath(app))
+    private suspend fun selectDataFileNode(entry: AppFileEntry) {
+        val tree = currentState.dataFileTree
+        update { copy(selectedDataFile = entry) }
+        selectAppFileNode(AppDataDirectory.Data, tree, entry)
+    }
+
+    private suspend fun selectSdCardDataFileNode(entry: AppFileEntry) {
+        val tree = currentState.sdCardDataFileTree
+        update { copy(selectedSdCardDataFile = entry) }
+        selectAppFileNode(AppDataDirectory.SdCardData, tree, entry)
     }
 
     private suspend fun selectAppFileNode(
         directory: AppDataDirectory,
+        tree: AppFileTreeState,
         entry: AppFileEntry,
     ) {
-        update { copy(selectedFile = AppFileSelection(directory, entry)) }
         if (!entry.isDirectory) return
 
-        val tree = currentState.getFileTree(directory)
         if (tree.expandedPaths.contains(entry.path)) {
             updateFileTree(directory) { copy(expandedPaths = expandedPaths - entry.path) }
             return
@@ -288,9 +295,8 @@ class AppStateHolder(
         device: Device,
         app: InstalledApp,
     ) {
-        AppDataDirectory.values().forEach { directory ->
-            loadAppFileTreeNode(device, app, directory, directory.getRootPath(app))
-        }
+        loadAppFileTreeNode(device, app, AppDataDirectory.Data, app.dataDir)
+        loadAppFileTreeNode(device, app, AppDataDirectory.SdCardData, app.sdCardDataDir)
     }
 
     private suspend fun loadAppFileTreeNode(
@@ -320,7 +326,7 @@ class AppStateHolder(
             } else {
                 copy(
                     loadingPaths = loadingPaths - path,
-                    errorMessages = errorMessages + (path to result.error),
+                    errorMessages = errorMessages + (path to (result.error.message ?: "Failed to load files")),
                 )
             }
         }
@@ -331,9 +337,10 @@ class AppStateHolder(
         transform: AppFileTreeState.() -> AppFileTreeState,
     ) {
         update {
-            copy(
-                fileTrees = fileTrees + (directory to getFileTree(directory).transform()),
-            )
+            when (directory) {
+                AppDataDirectory.Data -> copy(dataFileTree = dataFileTree.transform())
+                AppDataDirectory.SdCardData -> copy(sdCardDataFileTree = sdCardDataFileTree.transform())
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package jp.kaleidot725.adbpad.ui.screen.app.state
 
-import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
@@ -31,12 +30,11 @@ sealed class AppAction : PulseAction {
 
     data object SelectPreviousApp : AppAction()
 
-    data class RefreshAppFileTree(
-        val directory: AppDataDirectory,
+    data class SelectDataFileNode(
+        val entry: AppFileEntry,
     ) : AppAction()
 
-    data class SelectAppFileNode(
-        val directory: AppDataDirectory,
+    data class SelectSdCardDataFileNode(
         val entry: AppFileEntry,
     ) : AppAction()
 }

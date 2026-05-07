@@ -16,21 +16,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.ui.component.layout.ExpandableSection
-import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileSelection
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 
 @Composable
 fun AppDetailPane(
     app: InstalledApp?,
     isProcessing: Boolean,
-    fileTrees: Map<AppDataDirectory, AppFileTreeState>,
-    selectedFile: AppFileSelection?,
-    onSelectFileNode: (AppDataDirectory, AppFileEntry) -> Unit,
+    dataFileTree: AppFileTreeState,
+    sdCardDataFileTree: AppFileTreeState,
+    selectedDataFile: AppFileEntry?,
+    selectedSdCardDataFile: AppFileEntry?,
+    onSelectDataFileNode: (AppFileEntry) -> Unit,
+    onSelectSdCardDataFileNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
@@ -89,10 +90,9 @@ fun AppDetailPane(
                 )
                 AppFileTreeView(
                     rootPath = app.dataDir,
-                    directory = AppDataDirectory.Data,
-                    tree = fileTrees[AppDataDirectory.Data] ?: AppFileTreeState(AppDataDirectory.Data),
-                    selectedFile = selectedFile,
-                    onSelectNode = onSelectFileNode,
+                    tree = dataFileTree,
+                    selectedFile = selectedDataFile,
+                    onSelectNode = onSelectDataFileNode,
                 )
             }
 
@@ -103,10 +103,9 @@ fun AppDetailPane(
                 )
                 AppFileTreeView(
                     rootPath = app.sdCardDataDir,
-                    directory = AppDataDirectory.SdCardData,
-                    tree = fileTrees[AppDataDirectory.SdCardData] ?: AppFileTreeState(AppDataDirectory.SdCardData),
-                    selectedFile = selectedFile,
-                    onSelectNode = onSelectFileNode,
+                    tree = sdCardDataFileTree,
+                    selectedFile = selectedSdCardDataFile,
+                    onSelectNode = onSelectSdCardDataFileNode,
                 )
             }
         }

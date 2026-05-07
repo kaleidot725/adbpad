@@ -67,9 +67,12 @@ fun AppScreen(
             AppDetailPane(
                 app = state.selectedApp,
                 isProcessing = state.selectedApp?.let { state.isProcessing(it) } ?: false,
-                fileTrees = state.fileTrees,
-                selectedFile = state.selectedFile,
-                onSelectFileNode = { directory, entry -> onAction(AppAction.SelectAppFileNode(directory, entry)) },
+                dataFileTree = state.dataFileTree,
+                sdCardDataFileTree = state.sdCardDataFileTree,
+                selectedDataFile = state.selectedDataFile,
+                selectedSdCardDataFile = state.selectedSdCardDataFile,
+                onSelectDataFileNode = { onAction(AppAction.SelectDataFileNode(it)) },
+                onSelectSdCardDataFileNode = { onAction(AppAction.SelectSdCardDataFileNode(it)) },
                 modifier = Modifier.fillMaxSize(),
             )
         },
