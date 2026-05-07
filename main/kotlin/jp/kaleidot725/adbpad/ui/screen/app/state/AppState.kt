@@ -30,8 +30,7 @@ data class AppState(
 }
 
 data class AppFileTreeState(
-    val expandedPaths: Set<String> = emptySet(),
-    val childrenByPath: Map<String, List<AppFileEntry>> = emptyMap(),
-    val loadingPaths: Set<String> = emptySet(),
-    val errorMessages: Map<String, String> = emptyMap(),
+    val entries: List<AppFileEntry> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 )

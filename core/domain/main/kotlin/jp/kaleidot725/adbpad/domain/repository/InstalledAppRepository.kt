@@ -24,6 +24,5 @@ interface InstalledAppRepository {
         device: Device,
         app: InstalledApp,
         directory: AppDataDirectory,
-        path: String,
     ): Result<List<AppFileEntry>, Exception>
 }

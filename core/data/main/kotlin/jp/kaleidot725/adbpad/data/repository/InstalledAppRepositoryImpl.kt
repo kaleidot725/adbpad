@@ -83,13 +83,11 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
         device: Device,
         app: InstalledApp,
         directory: AppDataDirectory,
-        path: String,
     ): Result<List<AppFileEntry>, Exception> =
         withContext(Dispatchers.IO) {
             try {
                 val rootPath = getRootPath(app, directory)
-                val targetPath = if (path == rootPath || path.startsWith("$rootPath/")) path else rootPath
-                val files = adbClient.execute(ListFilesRequest(targetPath), device.serial)
+                val files = adbClient.execute(ListFilesRequest(rootPath), device.serial)
                 Ok(files.toAppFileEntries())
             } catch (exception: Exception) {
                 if (exception is CancellationException) throw exception

@@ -89,7 +89,6 @@ fun AppDetailPane(
                     value = app.dataDir,
                 )
                 AppFileTreeView(
-                    rootPath = app.dataDir,
                     tree = dataFileTree,
                     selectedFile = selectedDataFile,
                     onSelectNode = onSelectDataFileNode,
@@ -102,7 +101,6 @@ fun AppDetailPane(
                     value = app.sdCardDataDir,
                 )
                 AppFileTreeView(
-                    rootPath = app.sdCardDataDir,
                     tree = sdCardDataFileTree,
                     selectedFile = selectedSdCardDataFile,
                     onSelectNode = onSelectSdCardDataFileNode,

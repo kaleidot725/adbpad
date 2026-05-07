@@ -260,73 +260,47 @@ class AppStateHolder(
     }
 
     private suspend fun selectDataFileNode(entry: AppFileEntry) {
-        val tree = currentState.dataFileTree
         update { copy(selectedDataFile = entry) }
-        selectAppFileNode(AppDataDirectory.Data, tree, entry)
     }
 
     private suspend fun selectSdCardDataFileNode(entry: AppFileEntry) {
-        val tree = currentState.sdCardDataFileTree
         update { copy(selectedSdCardDataFile = entry) }
-        selectAppFileNode(AppDataDirectory.SdCardData, tree, entry)
-    }
-
-    private suspend fun selectAppFileNode(
-        directory: AppDataDirectory,
-        tree: AppFileTreeState,
-        entry: AppFileEntry,
-    ) {
-        if (!entry.isDirectory) return
-
-        if (tree.expandedPaths.contains(entry.path)) {
-            updateFileTree(directory) { copy(expandedPaths = expandedPaths - entry.path) }
-            return
-        }
-
-        updateFileTree(directory) { copy(expandedPaths = expandedPaths + entry.path) }
-        if (!tree.childrenByPath.containsKey(entry.path)) {
-            val device = currentState.selectedDevice ?: return
-            val app = currentState.selectedApp ?: return
-            loadAppFileTreeNode(device, app, directory, entry.path)
-        }
     }
 
     private suspend fun loadAppFileTreeRoots(
         device: Device,
         app: InstalledApp,
     ) {
-        loadAppFileTreeNode(device, app, AppDataDirectory.Data, app.dataDir)
-        loadAppFileTreeNode(device, app, AppDataDirectory.SdCardData, app.sdCardDataDir)
+        loadAppFileTree(device, app, AppDataDirectory.Data)
+        loadAppFileTree(device, app, AppDataDirectory.SdCardData)
     }
 
-    private suspend fun loadAppFileTreeNode(
+    private suspend fun loadAppFileTree(
         device: Device,
         app: InstalledApp,
         directory: AppDataDirectory,
-        path: String,
     ) {
         updateFileTree(directory) {
             copy(
-                expandedPaths = expandedPaths + path,
-                loadingPaths = loadingPaths + path,
-                errorMessages = errorMessages - path,
+                isLoading = true,
+                errorMessage = null,
             )
         }
 
-        val result = installedAppRepository.getAppFiles(device, app, directory, path)
+        val result = installedAppRepository.getAppFiles(device, app, directory)
         if (currentState.selectedAppPackageName != app.packageName) return
 
         updateFileTree(directory) {
             if (result.isOk) {
                 copy(
-                    childrenByPath = childrenByPath + (path to result.value),
-                    loadingPaths = loadingPaths - path,
-                    errorMessages = errorMessages - path,
+                    entries = result.value,
+                    isLoading = false,
+                    errorMessage = null,
                 )
             } else {
                 copy(
-                    loadingPaths = loadingPaths - path,
-                    errorMessages = errorMessages + (path to (result.error.message ?: "Failed to load files")),
+                    isLoading = false,
+                    errorMessage = result.error.message ?: "Failed to load files",
                 )
             }
         }
