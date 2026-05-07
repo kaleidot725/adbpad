@@ -1,7 +1,8 @@
 package jp.kaleidot725.adbpad.domain.repository
 
+import com.github.michaelbull.result.Result
 import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
-import jp.kaleidot725.adbpad.domain.model.app.AppFileListResult
+import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import java.io.File
@@ -24,5 +25,5 @@ interface InstalledAppRepository {
         app: InstalledApp,
         directory: AppDataDirectory,
         path: String,
-    ): AppFileListResult
+    ): Result<List<AppFileEntry>, Exception>
 }

@@ -25,6 +25,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(libs.adam)
                 implementation(libs.kotlin.coroutines)
+                api(libs.kotlin.result)
                 implementation(libs.kotlin.serialization)
                 implementation(libs.scrcpy.kt)
                 implementation(libs.ktor.core)

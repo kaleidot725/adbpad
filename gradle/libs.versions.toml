@@ -2,6 +2,7 @@
 kotlin="2.3.10"
 kotlin_serialization="1.10.0"
 kotlin_coroutines="1.10.2"
+kotlin_result = "2.0.1"
 compose_hot_reload = "1.0.0"
 compose="1.10.1"
 ktlint_plugin="14.0.1"
@@ -21,6 +22,7 @@ adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
 kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlin_coroutines" }
 kotlin_serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin_serialization" }
+kotlin-result = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlin_result" }
 junit5 = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 jSystemThemeDetectorVer = { module = "com.github.Dansoftowner:jSystemThemeDetector", version.ref = "system_theme_detector" }

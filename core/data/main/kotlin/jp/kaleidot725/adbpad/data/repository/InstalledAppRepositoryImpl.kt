@@ -1,5 +1,8 @@
 package jp.kaleidot725.adbpad.data.repository
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import com.malinskiy.adam.AndroidDebugBridgeClientFactory
 import com.malinskiy.adam.request.device.FetchDeviceFeaturesRequest
 import com.malinskiy.adam.request.pkg.StreamingPackageInstallRequest
@@ -9,7 +12,6 @@ import com.malinskiy.adam.request.sync.AndroidFileType
 import com.malinskiy.adam.request.sync.ListFilesRequest
 import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
-import jp.kaleidot725.adbpad.domain.model.app.AppFileListResult
 import jp.kaleidot725.adbpad.domain.model.app.AppFileType
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
@@ -82,16 +84,16 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
         app: InstalledApp,
         directory: AppDataDirectory,
         path: String,
-    ): AppFileListResult =
+    ): Result<List<AppFileEntry>, Exception> =
         withContext(Dispatchers.IO) {
             try {
                 val rootPath = directory.getRootPath(app)
                 val targetPath = if (path == rootPath || path.startsWith("$rootPath/")) path else rootPath
                 val files = adbClient.execute(ListFilesRequest(targetPath), device.serial)
-                AppFileListResult(entries = files.toAppFileEntries())
+                Ok(files.toAppFileEntries())
             } catch (exception: Exception) {
                 if (exception is CancellationException) throw exception
-                AppFileListResult(errorMessage = exception.message ?: "Failed to load files")
+                Err(exception)
             }
         }
 

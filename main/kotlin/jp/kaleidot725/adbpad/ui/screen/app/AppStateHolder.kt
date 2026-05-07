@@ -311,16 +311,16 @@ class AppStateHolder(
         if (currentState.selectedAppPackageName != app.packageName) return
 
         updateFileTree(directory) {
-            if (result.isSuccess) {
+            if (result.isOk) {
                 copy(
-                    childrenByPath = childrenByPath + (path to result.entries),
+                    childrenByPath = childrenByPath + (path to result.value),
                     loadingPaths = loadingPaths - path,
                     errorMessages = errorMessages - path,
                 )
             } else {
                 copy(
                     loadingPaths = loadingPaths - path,
-                    errorMessages = errorMessages + (path to (result.errorMessage ?: "")),
+                    errorMessages = errorMessages + (path to result.error),
                 )
             }
         }
