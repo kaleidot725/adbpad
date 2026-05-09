@@ -66,9 +66,14 @@ class AppStateHolder(
         if (currentState.processState != AppProcessState.Idle) return
 
         update { copy(processState = AppProcessState.Loading) }
-        refreshApps()
-        refreshAppFileTreeRoots()
-        update { copy(processState = AppProcessState.Idle) }
+        try {
+            refreshApps()
+            refreshAppFileTreeRoots()
+        } finally {
+            if (currentState.processState == AppProcessState.Loading) {
+                update { copy(processState = AppProcessState.Idle) }
+            }
+        }
     }
 
     private suspend fun reduceUpdateSearchText(text: String) {
@@ -94,8 +99,8 @@ class AppStateHolder(
 
         update { copy(processState = AppProcessState.Installing) }
         val isInstalled = installedAppRepository.installPackage(device, packageFile)
-        if (isInstalled) reduceRefreshApps()
         update { copy(processState = AppProcessState.Idle) }
+        if (isInstalled) reduceRefreshApps()
     }
 
     private suspend fun reduceUninstallApp(app: InstalledApp) {
@@ -104,8 +109,8 @@ class AppStateHolder(
 
         update { copy(processState = AppProcessState.Uninstalling) }
         val isUninstalled = installedAppRepository.uninstallInstalledApp(device, app)
-        if (isUninstalled) reduceRefreshApps()
         update { copy(processState = AppProcessState.Idle) }
+        if (isUninstalled) reduceRefreshApps()
     }
 
     private suspend fun reduceSelectNextApp() {
@@ -214,10 +219,11 @@ class AppStateHolder(
         val app = currentState.selectedApp ?: return false
         val deviceSerial = device.serial
         val packageName = app.packageName
+        var isLoadingFinished = false
 
         update {
             when (directory) {
-                AppDataDirectory.Data ->
+                AppDataDirectory.Data -> {
                     copy(
                         dataFileTree =
                             dataFileTree.copy(
@@ -225,8 +231,9 @@ class AppStateHolder(
                                 errorMessage = null,
                             ),
                     )
+                }
 
-                AppDataDirectory.SdCardData ->
+                AppDataDirectory.SdCardData -> {
                     copy(
                         sdCardDataFileTree =
                             sdCardDataFileTree.copy(
@@ -234,40 +241,62 @@ class AppStateHolder(
                                 errorMessage = null,
                             ),
                     )
+                }
             }
         }
 
-        val result = installedAppRepository.getAppFiles(device, app, directory)
-        if (currentState.selectedDevice?.serial != deviceSerial || currentState.selectedApp?.packageName != packageName) {
-            return false
-        }
+        try {
+            val result = installedAppRepository.getAppFiles(device, app, directory)
+            if (currentState.selectedDevice?.serial != deviceSerial || currentState.selectedApp?.packageName != packageName) {
+                return false
+            }
 
-        update {
-            val tree =
+            update {
+                val tree =
+                    when (directory) {
+                        AppDataDirectory.Data -> dataFileTree
+                        AppDataDirectory.SdCardData -> sdCardDataFileTree
+                    }
+                val nextTree =
+                    if (result.isOk) {
+                        tree.copy(
+                            entries = result.value,
+                            isLoading = false,
+                            errorMessage = null,
+                        )
+                    } else {
+                        tree.copy(
+                            isLoading = false,
+                            errorMessage = result.error.message ?: "Failed to load files",
+                        )
+                    }
+
                 when (directory) {
-                    AppDataDirectory.Data -> dataFileTree
-                    AppDataDirectory.SdCardData -> sdCardDataFileTree
+                    AppDataDirectory.Data -> copy(dataFileTree = nextTree)
+                    AppDataDirectory.SdCardData -> copy(sdCardDataFileTree = nextTree)
                 }
-            val nextTree =
-                if (result.isOk) {
-                    tree.copy(
-                        entries = result.value,
-                        isLoading = false,
-                        errorMessage = null,
-                    )
-                } else {
-                    tree.copy(
-                        isLoading = false,
-                        errorMessage = result.error.message ?: "Failed to load files",
-                    )
-                }
+            }
+            isLoadingFinished = true
+            return result.isOk
+        } finally {
+            if (
+                !isLoadingFinished &&
+                currentState.selectedDevice?.serial == deviceSerial &&
+                currentState.selectedApp?.packageName == packageName
+            ) {
+                update {
+                    when (directory) {
+                        AppDataDirectory.Data -> {
+                            copy(dataFileTree = dataFileTree.copy(isLoading = false))
+                        }
 
-            when (directory) {
-                AppDataDirectory.Data -> copy(dataFileTree = nextTree)
-                AppDataDirectory.SdCardData -> copy(sdCardDataFileTree = nextTree)
+                        AppDataDirectory.SdCardData -> {
+                            copy(sdCardDataFileTree = sdCardDataFileTree.copy(isLoading = false))
+                        }
+                    }
+                }
             }
         }
-        return result.isOk
     }
 
     private fun selectNextOrPreviousApp(offset: Int) {
@@ -302,16 +331,18 @@ class AppStateHolder(
         if (tree.expandedPaths.contains(entry.path)) {
             update {
                 when (directory) {
-                    AppDataDirectory.Data ->
+                    AppDataDirectory.Data -> {
                         copy(dataFileTree = dataFileTree.copy(expandedPaths = dataFileTree.expandedPaths - entry.path))
+                    }
 
-                    AppDataDirectory.SdCardData ->
+                    AppDataDirectory.SdCardData -> {
                         copy(
                             sdCardDataFileTree =
                                 sdCardDataFileTree.copy(
                                     expandedPaths = sdCardDataFileTree.expandedPaths - entry.path,
                                 ),
                         )
+                    }
                 }
             }
             return
@@ -319,36 +350,24 @@ class AppStateHolder(
 
         update {
             when (directory) {
-                AppDataDirectory.Data ->
+                AppDataDirectory.Data -> {
                     copy(dataFileTree = dataFileTree.copy(expandedPaths = dataFileTree.expandedPaths + entry.path))
+                }
 
-                AppDataDirectory.SdCardData ->
+                AppDataDirectory.SdCardData -> {
                     copy(
                         sdCardDataFileTree =
                             sdCardDataFileTree.copy(
                                 expandedPaths = sdCardDataFileTree.expandedPaths + entry.path,
                             ),
                     )
+                }
             }
         }
         if (!tree.childrenByPath.containsKey(entry.path)) {
             loadAppFileTreeChildren(directory, entry)
         }
     }
-
-    private suspend fun selectInstallApplication(): File? =
-        withContext(Dispatchers.Swing) {
-            val chooser =
-                JFileChooser().apply {
-                    dialogTitle = Language.selectInstallPackage
-                    fileSelectionMode = JFileChooser.FILES_ONLY
-                    isAcceptAllFileFilterUsed = false
-                    fileFilter = FileNameExtensionFilter("APK", "apk")
-                }
-            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
-            val result = chooser.showOpenDialog(parent)
-            if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
-        }
 
     private suspend fun loadAppFileTreeChildren(
         directory: AppDataDirectory,
@@ -359,7 +378,7 @@ class AppStateHolder(
 
         update {
             when (directory) {
-                AppDataDirectory.Data ->
+                AppDataDirectory.Data -> {
                     copy(
                         dataFileTree =
                             dataFileTree.copy(
@@ -367,8 +386,9 @@ class AppStateHolder(
                                 errorMessages = dataFileTree.errorMessages - entry.path,
                             ),
                     )
+                }
 
-                AppDataDirectory.SdCardData ->
+                AppDataDirectory.SdCardData -> {
                     copy(
                         sdCardDataFileTree =
                             sdCardDataFileTree.copy(
@@ -376,6 +396,7 @@ class AppStateHolder(
                                 errorMessages = sdCardDataFileTree.errorMessages - entry.path,
                             ),
                     )
+                }
             }
         }
 
@@ -409,6 +430,20 @@ class AppStateHolder(
             }
         }
     }
+
+    private suspend fun selectInstallApplication(): File? =
+        withContext(Dispatchers.Swing) {
+            val chooser =
+                JFileChooser().apply {
+                    dialogTitle = Language.selectInstallPackage
+                    fileSelectionMode = JFileChooser.FILES_ONLY
+                    isAcceptAllFileFilterUsed = false
+                    fileFilter = FileNameExtensionFilter("APK", "apk")
+                }
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val result = chooser.showOpenDialog(parent)
+            if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
+        }
 
     private fun collectSelectedDevice() {
         coroutineScope.launch {
