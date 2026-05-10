@@ -85,7 +85,6 @@ fun main() {
                 MainScreen(
                     state = state,
                     onAction = onAction,
-                    onRefresh = { onBroadcast(AppBroadCast.Refresh) },
                     onExitApplication = { exitApplication() },
                     topContent = {
                         PulseContent(

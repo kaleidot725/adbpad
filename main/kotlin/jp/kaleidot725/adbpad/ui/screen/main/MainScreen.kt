@@ -1,6 +1,7 @@
 package jp.kaleidot725.adbpad.ui.screen.main
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -10,10 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -117,7 +124,6 @@ private fun createDarkColorScheme(accentColor: AccentColor) =
 fun MainScreen(
     state: MainState,
     onAction: (MainAction) -> Unit,
-    onRefresh: () -> Unit,
     onExitApplication: () -> Unit,
     topContent: @Composable () -> Unit,
     commandContent: @Composable (SplitPaneState) -> Unit,
@@ -261,6 +267,43 @@ private fun App(
         )
 
     Crossfade(state.language) {
+        val commandCategoryContent =
+            remember {
+                movableContentOf {
+                    commandContent(commandSplitPaneState)
+                }
+            }
+        val textCommandCategoryContent =
+            remember {
+                movableContentOf {
+                    textCommandContent(textSplitPaneState, textRightSplitPaneState)
+                }
+            }
+        val screenshotCategoryContent =
+            remember {
+                movableContentOf {
+                    screenshotContent(screenshotSplitPaneState, screenshotRightSplitPaneState)
+                }
+            }
+        val scrcpyNewDisplayCategoryContent =
+            remember {
+                movableContentOf {
+                    scrcpyNewDisplayContent(scrcpyNewDisplaySplitPaneState, scrcpyNewDisplayRightSplitPaneState)
+                }
+            }
+        val appCategoryContent =
+            remember {
+                movableContentOf {
+                    appContent(appSplitPaneState, appRightSplitPaneState)
+                }
+            }
+        val fileCategoryContent =
+            remember {
+                movableContentOf {
+                    Text("TEST")
+                }
+            }
+
         Surface {
             ScreenLayout(
                 top = topContent,
@@ -273,30 +316,31 @@ private fun App(
                     )
                 },
                 content = {
-                    when (state.category) {
-                        MainCategory.Command -> {
-                            commandContent(commandSplitPaneState)
-                        }
-
-                        MainCategory.Text -> {
-                            textCommandContent(textSplitPaneState, textRightSplitPaneState)
-                        }
-
-                        MainCategory.Screenshot -> {
-                            screenshotContent(screenshotSplitPaneState, screenshotRightSplitPaneState)
-                        }
-
-                        MainCategory.ScrcpyNewDisplay -> {
-                            scrcpyNewDisplayContent(scrcpyNewDisplaySplitPaneState, scrcpyNewDisplayRightSplitPaneState)
-                        }
-
-                        MainCategory.App -> {
-                            appContent(appSplitPaneState, appRightSplitPaneState)
-                        }
-
-                        MainCategory.File -> {
-                            Text("TEST")
-                        }
+                    Box(Modifier.fillMaxSize()) {
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.Command,
+                            content = commandCategoryContent,
+                        )
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.Text,
+                            content = textCommandCategoryContent,
+                        )
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.Screenshot,
+                            content = screenshotCategoryContent,
+                        )
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.ScrcpyNewDisplay,
+                            content = scrcpyNewDisplayCategoryContent,
+                        )
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.App,
+                            content = appCategoryContent,
+                        )
+                        CategoryContentLayer(
+                            isSelected = state.category == MainCategory.File,
+                            content = fileCategoryContent,
+                        )
                     }
                 },
                 dialog = {
@@ -322,5 +366,37 @@ private fun App(
                 modifier = Modifier.fillMaxSize(),
             )
         }
+    }
+}
+
+@Composable
+private fun CategoryContentLayer(
+    isSelected: Boolean,
+    content: @Composable () -> Unit,
+) {
+    val inactiveModifier =
+        if (isSelected) {
+            Modifier
+        } else {
+            Modifier.pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        event.changes.forEach { it.consume() }
+                    }
+                }
+            }
+        }
+
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .alpha(if (isSelected) 1f else 0f)
+                .zIndex(if (isSelected) 1f else 0f)
+                .focusProperties { canFocus = isSelected }
+                .then(inactiveModifier),
+    ) {
+        content()
     }
 }
