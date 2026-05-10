@@ -36,6 +36,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 implementation(libs.lucide)
                 implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.kotlin.result)
                 implementation(libs.koin)
                 implementation(libs.ktor.core)
                 implementation(libs.ktor.client.okhttp)

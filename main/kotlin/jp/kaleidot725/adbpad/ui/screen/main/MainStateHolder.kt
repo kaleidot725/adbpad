@@ -81,6 +81,8 @@ class MainStateHolder(
     }
 
     private fun clickCategory(category: MainCategory) {
+        if (currentState.category == category) return
+
         update { copy(category = category) }
     }
 

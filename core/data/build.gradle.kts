@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(libs.adam)
                 implementation(libs.kotlin.coroutines)
+                implementation(libs.kotlin.result)
                 implementation(libs.kotlin.serialization)
                 implementation(project(":core:domain"))
             }

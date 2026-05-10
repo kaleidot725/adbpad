@@ -16,14 +16,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.ui.component.layout.ExpandableSection
+import jp.kaleidot725.adbpad.ui.screen.app.component.tree.AppFileTreeView
+import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 
 @Composable
 fun AppDetailPane(
     app: InstalledApp?,
     isProcessing: Boolean,
+    dataFileTree: AppFileTreeState,
+    sdCardDataFileTree: AppFileTreeState,
+    selectedDataFile: AppFileEntry?,
+    selectedSdCardDataFile: AppFileEntry?,
+    onSelectDataFileNode: (AppFileEntry) -> Unit,
+    onSelectSdCardDataFileNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
@@ -73,9 +82,29 @@ fun AppDetailPane(
                     label = Language.appPackageName,
                     value = app.packageName,
                 )
+            }
+
+            ExpandableSection(title = Language.appDataDirectory) {
                 AppDetailPropertyRow(
-                    label = Language.appDataDirectory,
+                    label = Language.appPathInfo,
                     value = app.dataDir,
+                )
+                AppFileTreeView(
+                    tree = dataFileTree,
+                    selectedFile = selectedDataFile,
+                    onSelectNode = onSelectDataFileNode,
+                )
+            }
+
+            ExpandableSection(title = Language.appSdCardDataDirectory) {
+                AppDetailPropertyRow(
+                    label = Language.appPathInfo,
+                    value = app.sdCardDataDir,
+                )
+                AppFileTreeView(
+                    tree = sdCardDataFileTree,
+                    selectedFile = selectedSdCardDataFile,
+                    onSelectNode = onSelectSdCardDataFileNode,
                 )
             }
         }

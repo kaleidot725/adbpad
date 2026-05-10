@@ -27,7 +27,7 @@ fun AppList(
     apps: List<InstalledApp>,
     selectedDevice: Device?,
     isLoading: Boolean,
-    isProcessing: (InstalledApp) -> Boolean,
+    isProcessing: Boolean,
     onSelectApp: (InstalledApp) -> Unit,
     onUninstallApp: (InstalledApp) -> Unit,
     onNextApp: () -> Unit,
@@ -76,7 +76,7 @@ fun AppList(
                         ) {
                             AppListItem(
                                 app = app,
-                                isProcessing = isProcessing(app),
+                                isProcessing = isProcessing,
                                 isSelected = selectedApp?.packageName == app.packageName,
                                 onClick = { onSelectApp(app) },
                             )

@@ -28,7 +28,12 @@ interface StringResources {
     val loadingAppList: String
     val appDetailsTitle: String
     val appPackageName: String
+    val appPathInfo: String
     val appDataDirectory: String
+    val appSdCardDataDirectory: String
+    val appFileTreeTitle: String
+    val appFileTreeEmpty: String
+    val loadingAppFiles: String
     val installApp: String
     val selectInstallPackage: String
     val uninstallApp: String

@@ -1,5 +1,6 @@
 package jp.kaleidot725.adbpad.ui.screen.app.state
 
+import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import jp.kaleidot725.pulse.mvi.PulseAction
@@ -28,4 +29,12 @@ sealed class AppAction : PulseAction {
     data object SelectNextApp : AppAction()
 
     data object SelectPreviousApp : AppAction()
+
+    data class SelectDataFileNode(
+        val entry: AppFileEntry,
+    ) : AppAction()
+
+    data class SelectSdCardDataFileNode(
+        val entry: AppFileEntry,
+    ) : AppAction()
 }
