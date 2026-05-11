@@ -34,6 +34,8 @@ object TurkishResources : StringResources {
     override val appSdCardDataDirectory: String = "SD kart veri dizini"
     override val appFileTreeTitle: String = "Dosyalar"
     override val appFileTreeEmpty: String = "Dosya yok"
+    override val appFilePreviewTitle: String = "Önizleme"
+    override val appFilePreviewNoImage: String = "No image"
     override val loadingAppFiles: String = "Dosyalar yükleniyor"
     override val installApp: String = "Yükle"
     override val selectInstallPackage: String = "Yüklenecek APK'yı seç"

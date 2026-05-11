@@ -33,6 +33,8 @@ interface StringResources {
     val appSdCardDataDirectory: String
     val appFileTreeTitle: String
     val appFileTreeEmpty: String
+    val appFilePreviewTitle: String
+    val appFilePreviewNoImage: String
     val loadingAppFiles: String
     val installApp: String
     val selectInstallPackage: String

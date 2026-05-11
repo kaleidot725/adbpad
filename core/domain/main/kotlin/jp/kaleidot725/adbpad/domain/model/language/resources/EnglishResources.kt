@@ -34,6 +34,8 @@ object EnglishResources : StringResources {
     override val appSdCardDataDirectory: String = "SD card data directory"
     override val appFileTreeTitle: String = "Files"
     override val appFileTreeEmpty: String = "No files"
+    override val appFilePreviewTitle: String = "Preview"
+    override val appFilePreviewNoImage: String = "No image"
     override val loadingAppFiles: String = "Loading files"
     override val installApp: String = "Install"
     override val selectInstallPackage: String = "Select APK to install"

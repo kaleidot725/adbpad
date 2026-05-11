@@ -69,6 +69,10 @@ object Language : StringResources {
         get() = getCurrentResources().appFileTreeTitle
     override val appFileTreeEmpty: String
         get() = getCurrentResources().appFileTreeEmpty
+    override val appFilePreviewTitle: String
+        get() = getCurrentResources().appFilePreviewTitle
+    override val appFilePreviewNoImage: String
+        get() = getCurrentResources().appFilePreviewNoImage
     override val loadingAppFiles: String
         get() = getCurrentResources().loadingAppFiles
     override val installApp: String

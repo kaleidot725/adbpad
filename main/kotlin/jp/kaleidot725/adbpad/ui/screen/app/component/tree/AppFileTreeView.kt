@@ -17,6 +17,7 @@ fun AppFileTreeView(
     tree: AppFileTreeState,
     selectedFile: AppFileEntry?,
     onSelectNode: (AppFileEntry) -> Unit,
+    onPreviewNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -32,6 +33,7 @@ fun AppFileTreeView(
                         depth = 0,
                         selectedFile = selectedFile,
                         onSelectNode = onSelectNode,
+                        onPreviewNode = onPreviewNode,
                     )
                 }
             }
@@ -53,6 +55,7 @@ private fun AppFileTreeViewPreview() {
             ),
         selectedFile = directory,
         onSelectNode = {},
+        onPreviewNode = {},
         modifier = Modifier.width(280.dp).padding(16.dp),
     )
 }

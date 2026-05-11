@@ -10,8 +10,10 @@ import com.malinskiy.adam.request.shell.v1.ShellCommandRequest
 import com.malinskiy.adam.request.sync.AndroidFile
 import com.malinskiy.adam.request.sync.AndroidFileType
 import com.malinskiy.adam.request.sync.ListFilesRequest
+import com.malinskiy.adam.request.sync.PullRequest
 import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
+import jp.kaleidot725.adbpad.domain.model.app.AppFilePreview
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
@@ -19,7 +21,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 import java.util.Locale
+import kotlin.io.path.createTempFile
 
 class InstalledAppRepositoryImpl : InstalledAppRepository {
     private val adbClient = AndroidDebugBridgeClientFactory().build()
@@ -108,6 +112,46 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
             }
         }
 
+    override suspend fun getAppFilePreview(
+        device: Device,
+        entry: AppFileEntry,
+    ): Result<AppFilePreview, Exception> =
+        withContext(Dispatchers.IO) {
+            try {
+                if (entry !is AppFileEntry.File) return@withContext Ok(AppFilePreview.Unsupported(entry))
+
+                when {
+                    entry.size == 0L && entry.isTextFile() -> Ok(AppFilePreview.Text(entry, ""))
+                    entry.size == 0L -> Ok(AppFilePreview.Unsupported(entry))
+                    entry.isImageFile() -> Ok(AppFilePreview.Image(entry, pullAppFile(device, entry)))
+                    entry.isTextFile() -> Ok(AppFilePreview.Text(entry, pullAppFile(device, entry).readText()))
+                    else -> Ok(AppFilePreview.Unsupported(entry))
+                }
+            } catch (exception: Exception) {
+                if (exception is CancellationException) throw exception
+                Err(exception)
+            }
+        }
+
+    private suspend fun pullAppFile(
+        device: Device,
+        entry: AppFileEntry.File,
+    ): File {
+        val supportedFeatures = adbClient.execute(FetchDeviceFeaturesRequest(device.serial), device.serial)
+        val localFile = createPreviewFile(entry)
+        val isPulled = adbClient.execute(PullRequest(entry.path, localFile, supportedFeatures), device.serial)
+        if (!isPulled) throw IOException("Failed to load ${entry.name}")
+        return localFile
+    }
+
+    private fun createPreviewFile(entry: AppFileEntry.File): File {
+        val extension = entry.extension()
+        val suffix = if (extension.isBlank()) ".tmp" else ".$extension"
+        return createTempFile(prefix = "adbpad-preview-", suffix = suffix)
+            .toFile()
+            .apply { deleteOnExit() }
+    }
+
     private fun getRootPath(
         app: InstalledApp,
         directory: AppDataDirectory,
@@ -182,7 +226,46 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
             "$this/$name"
         }
 
+    private fun AppFileEntry.File.isImageFile(): Boolean = extension() in IMAGE_FILE_EXTENSIONS
+
+    private fun AppFileEntry.File.isTextFile(): Boolean {
+        val normalizedName = name.lowercase(Locale.getDefault())
+        return extension() in TEXT_FILE_EXTENSIONS || normalizedName in TEXT_FILE_NAMES
+    }
+
+    private fun AppFileEntry.File.extension(): String =
+        name
+            .substringAfterLast('.', missingDelimiterValue = "")
+            .lowercase(Locale.getDefault())
+
     companion object {
         private const val PACKAGE_PREFIX = "package:"
+        private val IMAGE_FILE_EXTENSIONS = setOf("bmp", "gif", "jpeg", "jpg", "png", "webp")
+        private val TEXT_FILE_EXTENSIONS =
+            setOf(
+                "cfg",
+                "conf",
+                "css",
+                "csv",
+                "gradle",
+                "htm",
+                "html",
+                "ini",
+                "java",
+                "js",
+                "json",
+                "kt",
+                "kts",
+                "log",
+                "md",
+                "properties",
+                "sh",
+                "toml",
+                "txt",
+                "xml",
+                "yaml",
+                "yml",
+            )
+        private val TEXT_FILE_NAMES = setOf("changelog", "license", "notice", "readme")
     }
 }

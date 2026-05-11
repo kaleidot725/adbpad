@@ -34,6 +34,8 @@ object JapaneseResources : StringResources {
     override val appSdCardDataDirectory: String = "SDカードデータ領域"
     override val appFileTreeTitle: String = "ファイル"
     override val appFileTreeEmpty: String = "ファイルがありません"
+    override val appFilePreviewTitle: String = "プレビュー"
+    override val appFilePreviewNoImage: String = "No image"
     override val loadingAppFiles: String = "ファイルを取得中"
     override val installApp: String = "インストール"
     override val selectInstallPackage: String = "インストールするAPKを選択"

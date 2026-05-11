@@ -1,6 +1,7 @@
 package jp.kaleidot725.adbpad.ui.screen.app.component.tree
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,12 +30,14 @@ import jp.kaleidot725.adbpad.ui.component.indicator.RunningIndicator
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 internal fun AppFileTreeNode(
     entry: AppFileEntry,
     tree: AppFileTreeState,
     depth: Int,
     selectedFile: AppFileEntry?,
     onSelectNode: (AppFileEntry) -> Unit,
+    onPreviewNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isExpanded = tree.expandedPaths.contains(entry.path)
@@ -51,7 +54,16 @@ internal fun AppFileTreeNode(
                     .clickableBackground(
                         isSelected = isSelected,
                         shape = RoundedCornerShape(4.dp),
-                    ).clickable { onSelectNode(entry) }
+                    ).combinedClickable(
+                        onClick = { onSelectNode(entry) },
+                        onDoubleClick = {
+                            if (entry.isDirectory) {
+                                onSelectNode(entry)
+                            } else {
+                                onPreviewNode(entry)
+                            }
+                        },
+                    )
                     .padding(start = (depth * 16).dp, top = 4.dp, end = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -110,6 +122,7 @@ internal fun AppFileTreeNode(
                             depth = depth + 1,
                             selectedFile = selectedFile,
                             onSelectNode = onSelectNode,
+                            onPreviewNode = onPreviewNode,
                         )
                     }
                 }
@@ -133,6 +146,7 @@ private fun AppFileTreeNodePreview() {
         depth = 0,
         selectedFile = directory,
         onSelectNode = {},
+        onPreviewNode = {},
         modifier = Modifier.width(280.dp).padding(16.dp),
     )
 }

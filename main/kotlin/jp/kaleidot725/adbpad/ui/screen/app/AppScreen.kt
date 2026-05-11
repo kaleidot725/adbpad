@@ -13,6 +13,7 @@ import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
 import jp.kaleidot725.adbpad.ui.component.layout.ThreePaneLayout
 import jp.kaleidot725.adbpad.ui.screen.app.component.AppDetailPane
+import jp.kaleidot725.adbpad.ui.screen.app.component.AppFilePreviewPane
 import jp.kaleidot725.adbpad.ui.screen.app.component.AppHeader
 import jp.kaleidot725.adbpad.ui.screen.app.component.AppList
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
@@ -73,6 +74,14 @@ fun AppScreen(
                 selectedSdCardDataFile = state.selectedSdCardDataFile,
                 onSelectDataFileNode = { onAction(AppAction.SelectDataFileNode(it)) },
                 onSelectSdCardDataFileNode = { onAction(AppAction.SelectSdCardDataFileNode(it)) },
+                onPreviewDataFileNode = { onAction(AppAction.PreviewDataFileNode(it)) },
+                onPreviewSdCardDataFileNode = { onAction(AppAction.PreviewSdCardDataFileNode(it)) },
+                modifier = Modifier.fillMaxSize(),
+            )
+        },
+        right = {
+            AppFilePreviewPane(
+                state = state.filePreview,
                 modifier = Modifier.fillMaxSize(),
             )
         },

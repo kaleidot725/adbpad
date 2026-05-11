@@ -1,6 +1,7 @@
 package jp.kaleidot725.adbpad.ui.screen.app.state
 
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
+import jp.kaleidot725.adbpad.domain.model.app.AppFilePreview
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.device.Device
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
@@ -18,6 +19,7 @@ data class AppState(
     val selectedDataFile: AppFileEntry? = null,
     val sdCardDataFileTree: AppFileTreeState = AppFileTreeState(),
     val selectedSdCardDataFile: AppFileEntry? = null,
+    val filePreview: AppFilePreviewState = AppFilePreviewState(),
 ) : PulseState {
     val isLoading: Boolean = processState == AppProcessState.Loading
     val isUninstalling: Boolean = processState == AppProcessState.Uninstalling
@@ -65,6 +67,13 @@ data class AppFileTreeState(
     val childrenByPath: Map<String, List<AppFileEntry>> = emptyMap(),
     val loadingPaths: Set<String> = emptySet(),
     val errorMessages: Map<String, String> = emptyMap(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+)
+
+data class AppFilePreviewState(
+    val entry: AppFileEntry? = null,
+    val preview: AppFilePreview? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

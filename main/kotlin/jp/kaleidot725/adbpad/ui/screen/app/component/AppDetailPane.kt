@@ -33,6 +33,8 @@ fun AppDetailPane(
     selectedSdCardDataFile: AppFileEntry?,
     onSelectDataFileNode: (AppFileEntry) -> Unit,
     onSelectSdCardDataFileNode: (AppFileEntry) -> Unit,
+    onPreviewDataFileNode: (AppFileEntry) -> Unit,
+    onPreviewSdCardDataFileNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
@@ -93,6 +95,7 @@ fun AppDetailPane(
                     tree = dataFileTree,
                     selectedFile = selectedDataFile,
                     onSelectNode = onSelectDataFileNode,
+                    onPreviewNode = onPreviewDataFileNode,
                 )
             }
 
@@ -105,6 +108,7 @@ fun AppDetailPane(
                     tree = sdCardDataFileTree,
                     selectedFile = selectedSdCardDataFile,
                     onSelectNode = onSelectSdCardDataFileNode,
+                    onPreviewNode = onPreviewSdCardDataFileNode,
                 )
             }
         }
