@@ -368,18 +368,32 @@ class AppStateHolder(
 
         update {
             val currentTree = selectTree()
-            val expandedPaths =
+            val nextTree =
                 if (isExpanded) {
-                    currentTree.expandedPaths - entry.path
+                    currentTree.clearDirectoryCache(entry.path)
                 } else {
-                    currentTree.expandedPaths + entry.path
+                    currentTree.copy(expandedPaths = currentTree.expandedPaths + entry.path)
                 }
-            updateTree(currentTree.copy(expandedPaths = expandedPaths))
+            updateTree(nextTree)
         }
 
         if (!isExpanded && !isLoaded) {
             loadAppFileTreeChildren(entry, selectTree, updateTree)
         }
+    }
+
+    private fun AppFileTreeState.clearDirectoryCache(path: String): AppFileTreeState =
+        copy(
+            expandedPaths = expandedPaths.filterNot { it.isSameOrChildPath(path) }.toSet(),
+            childrenByPath = childrenByPath.filterKeys { !it.isSameOrChildPath(path) },
+            loadingPaths = loadingPaths.filterNot { it.isSameOrChildPath(path) }.toSet(),
+            errorMessages = errorMessages.filterKeys { !it.isSameOrChildPath(path) },
+        )
+
+    private fun String.isSameOrChildPath(parentPath: String): Boolean {
+        val parent = parentPath.trimEnd('/')
+        val current = trimEnd('/')
+        return current == parent || current.startsWith("$parent/")
     }
 
     private suspend fun loadAppFileTreeChildren(
@@ -402,6 +416,7 @@ class AppStateHolder(
 
         val result = installedAppRepository.getAppFileChildren(device, entry)
         if (currentState.selectedApp?.packageName != packageName) return
+        if (!currentState.selectTree().loadingPaths.contains(entry.path)) return
 
         update {
             val tree = selectTree()
