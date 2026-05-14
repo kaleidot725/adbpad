@@ -12,6 +12,8 @@ object TurkishResources : StringResources {
     override val execute = "Çalıştır"
     override val save = "Kaydet"
     override val delete = "Sil"
+    override val upload = "Karşıya yükle"
+    override val download = "İndir"
     override val tab = "Sekme"
     override val send = "Gönder"
     override val cancel = "İptal"

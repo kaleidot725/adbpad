@@ -76,5 +76,6 @@ data class AppFilePreviewState(
     val preview: AppFilePreview? = null,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
+    val isOverwriting: Boolean = false,
     val errorMessage: String? = null,
 )

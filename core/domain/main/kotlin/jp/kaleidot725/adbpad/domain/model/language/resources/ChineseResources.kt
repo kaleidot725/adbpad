@@ -12,6 +12,8 @@ object ChineseResources : StringResources {
     override val execute = "运行"
     override val save = "保存"
     override val delete = "删除"
+    override val upload = "上传"
+    override val download = "下载"
     override val tab = "标签"
     override val send = "发送"
     override val cancel = "取消"

@@ -11,6 +11,7 @@ import com.malinskiy.adam.request.sync.AndroidFile
 import com.malinskiy.adam.request.sync.AndroidFileType
 import com.malinskiy.adam.request.sync.ListFilesRequest
 import com.malinskiy.adam.request.sync.PullRequest
+import com.malinskiy.adam.request.sync.PushRequest
 import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.AppFilePreview
@@ -146,6 +147,25 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
                 } else {
                     pullAppFile(device, entry, target)
                 }
+                Ok(Unit)
+            } catch (exception: Exception) {
+                if (exception is CancellationException) throw exception
+                Err(exception)
+            }
+        }
+
+    override suspend fun overwriteAppFile(
+        device: Device,
+        source: File,
+        destination: AppFileEntry.File,
+    ): Result<Unit, Exception> =
+        withContext(Dispatchers.IO) {
+            try {
+                if (!source.isFile) throw IOException("${source.name} is not a file")
+
+                val supportedFeatures = adbClient.execute(FetchDeviceFeaturesRequest(device.serial), device.serial)
+                val isPushed = adbClient.execute(PushRequest(source, destination.path, supportedFeatures), device.serial)
+                if (!isPushed) throw IOException("Failed to overwrite ${destination.name}")
                 Ok(Unit)
             } catch (exception: Exception) {
                 if (exception is CancellationException) throw exception

@@ -12,6 +12,8 @@ object JapaneseResources : StringResources {
     override val execute = "実行"
     override val save = "保存"
     override val delete = "削除"
+    override val upload = "アップロード"
+    override val download = "ダウンロード"
     override val tab = "Tab"
     override val send = "送信"
     override val cancel = "キャンセル"

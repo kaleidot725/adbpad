@@ -83,6 +83,7 @@ fun AppScreen(
             AppFilePreviewPane(
                 state = state.filePreview,
                 onSaveFile = { onAction(AppAction.SavePreviewFile) },
+                onOverwriteFile = { onAction(AppAction.OverwritePreviewFile) },
                 modifier = Modifier.fillMaxSize(),
             )
         },

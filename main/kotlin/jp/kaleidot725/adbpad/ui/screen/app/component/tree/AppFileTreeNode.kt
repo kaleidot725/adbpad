@@ -27,6 +27,7 @@ import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.language.Language
 import jp.kaleidot725.adbpad.ui.common.resource.clickableBackground
 import jp.kaleidot725.adbpad.ui.component.indicator.RunningIndicator
+import jp.kaleidot725.adbpad.ui.screen.app.component.formatAppFileSize
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
 
 @Composable
@@ -96,6 +97,14 @@ internal fun AppFileTreeNode(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
+            if (!entry.isDirectory) {
+                Text(
+                    text = formatAppFileSize(entry.size),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
+            }
             if (isLoading) {
                 RunningIndicator(
                     color = MaterialTheme.colorScheme.primary,

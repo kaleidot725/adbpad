@@ -42,4 +42,10 @@ interface InstalledAppRepository {
         entry: AppFileEntry.File,
         destination: File,
     ): Result<Unit, Exception>
+
+    suspend fun overwriteAppFile(
+        device: Device,
+        source: File,
+        destination: AppFileEntry.File,
+    ): Result<Unit, Exception>
 }

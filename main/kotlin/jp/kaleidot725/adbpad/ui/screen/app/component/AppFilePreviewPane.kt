@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,8 +17,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,16 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Download
 import com.composables.icons.lucide.Minus
 import com.composables.icons.lucide.Plus
-import com.composables.icons.lucide.Save
+import com.composables.icons.lucide.Upload
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.AppFilePreview
 import jp.kaleidot725.adbpad.domain.model.language.Language
@@ -52,19 +58,18 @@ import net.engawapg.lib.zoomable.zoomable
 fun AppFilePreviewPane(
     state: AppFilePreviewState,
     onSaveFile: () -> Unit,
+    onOverwriteFile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         AppFilePreviewHeader(
             entry = state.entry,
-            canSave = state.entry is AppFileEntry.File && !state.isLoading && !state.isSaving,
-            onSaveFile = onSaveFile,
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         )
 
         HorizontalDivider(color = UserColor.getSplitterColor())
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -92,37 +97,35 @@ fun AppFilePreviewPane(
                 }
             }
         }
+
+        HorizontalDivider(color = UserColor.getSplitterColor())
+
+        AppFilePreviewActions(
+            canOverwrite = state.entry is AppFileEntry.File && !state.isBusy,
+            canSave = state.entry is AppFileEntry.File && !state.isBusy,
+            isOverwriting = state.isOverwriting,
+            isSaving = state.isSaving,
+            onOverwriteFile = onOverwriteFile,
+            onSaveFile = onSaveFile,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
 @Composable
 private fun AppFilePreviewHeader(
     entry: AppFileEntry?,
-    canSave: Boolean,
-    onSaveFile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = Language.appFilePreviewTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.weight(1f),
-            )
-            CommandIconButton(
-                image = Lucide.Save,
-                onClick = onSaveFile,
-                enabled = canSave,
-                modifier = Modifier.size(32.dp),
-            )
-        }
+        Text(
+            text = Language.appFilePreviewTitle,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
         if (entry != null) {
             Text(
                 text = entry.name,
@@ -137,6 +140,113 @@ private fun AppFilePreviewHeader(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            AppFilePreviewMetadata(entry)
+        }
+    }
+}
+
+@Composable
+private fun AppFilePreviewMetadata(entry: AppFileEntry) {
+    val type =
+        when (entry) {
+            is AppFileEntry.Directory -> "Directory"
+            is AppFileEntry.File -> "File"
+            is AppFileEntry.Link -> "Link"
+            is AppFileEntry.Other -> "Other"
+        }
+    Text(
+        text = "$type · ${formatAppFileSize(entry.size)} · ${entry.permissions}",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+    Text(
+        text = "${entry.date} ${entry.time}",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+@Composable
+private fun AppFilePreviewActions(
+    canOverwrite: Boolean,
+    canSave: Boolean,
+    isOverwriting: Boolean,
+    isSaving: Boolean,
+    onOverwriteFile: () -> Unit,
+    onSaveFile: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End),
+        modifier =
+            modifier.padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                bottom = 12.dp,
+            ),
+    ) {
+        AppFilePreviewActionButton(
+            text = Language.upload,
+            icon = Lucide.Upload,
+            onClick = onOverwriteFile,
+            enabled = canOverwrite,
+            isLoading = isOverwriting,
+            modifier = Modifier.weight(1f),
+        )
+        AppFilePreviewActionButton(
+            text = Language.download,
+            icon = Lucide.Download,
+            onClick = onSaveFile,
+            enabled = canSave,
+            isLoading = isSaving,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun AppFilePreviewActionButton(
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+        modifier = modifier,
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(12.dp),
+            )
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
@@ -306,6 +416,10 @@ private fun AppFilePreviewPanePreview() {
                     ),
             ),
         onSaveFile = {},
+        onOverwriteFile = {},
         modifier = Modifier.fillMaxSize(),
     )
 }
+
+private val AppFilePreviewState.isBusy: Boolean
+    get() = isLoading || isSaving || isOverwriting

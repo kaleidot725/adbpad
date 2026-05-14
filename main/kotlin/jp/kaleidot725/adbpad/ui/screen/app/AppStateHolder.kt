@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 import java.awt.KeyboardFocusManager
 import java.io.File
 import javax.swing.JFileChooser
+import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
 
 class AppStateHolder(
@@ -55,6 +56,7 @@ class AppStateHolder(
                 is AppAction.PreviewDataFileNode -> reducePreviewDataFileNode(uiAction.entry)
                 is AppAction.PreviewSdCardDataFileNode -> reducePreviewSdCardDataFileNode(uiAction.entry)
                 AppAction.SavePreviewFile -> reduceSavePreviewFile()
+                AppAction.OverwritePreviewFile -> reduceOverwritePreviewFile()
             }
         }
     }
@@ -66,6 +68,50 @@ class AppStateHolder(
             }
         }
     }
+
+    private suspend fun reduceOverwritePreviewFile() {
+        val device = currentState.selectedDevice ?: return
+        val entry = currentState.filePreview.entry as? AppFileEntry.File ?: return
+        if (currentState.filePreview.isOverwriting) return
+
+        val source = selectConfirmedOverwriteAppFile(entry) ?: return
+
+        update {
+            copy(
+                filePreview =
+                    filePreview.copy(
+                        isOverwriting = true,
+                        errorMessage = null,
+                    ),
+            )
+        }
+
+        val result = installedAppRepository.overwriteAppFile(device, source, entry)
+        if (result.isOk) {
+            val updatedEntry = entry.copy(size = source.length())
+            reloadCurrentAppFileTrees()
+            update {
+                copy(
+                    selectedDataFile = selectedDataFile.replaceIfSamePath(updatedEntry),
+                    selectedSdCardDataFile = selectedSdCardDataFile.replaceIfSamePath(updatedEntry),
+                )
+            }
+            previewAppFile(updatedEntry)
+        } else {
+            update {
+                copy(
+                    filePreview =
+                        filePreview.copy(
+                            isOverwriting = false,
+                            errorMessage = result.error.message ?: "Failed to overwrite file",
+                        ),
+                )
+            }
+        }
+    }
+
+    private fun AppFileEntry?.replaceIfSamePath(entry: AppFileEntry): AppFileEntry? =
+        if (this?.path == entry.path) entry else this
 
     private suspend fun reduceRefreshApps() {
         if (currentState.processState != AppProcessState.Idle) return
@@ -228,13 +274,47 @@ class AppStateHolder(
         withContext(Dispatchers.Swing) {
             val chooser =
                 JFileChooser().apply {
-                    dialogTitle = Language.save
+                    dialogTitle = Language.download
                     fileSelectionMode = JFileChooser.FILES_ONLY
                     selectedFile = File(entry.name)
                 }
             val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
             val result = chooser.showSaveDialog(parent)
             if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
+        }
+
+    private suspend fun selectOverwriteAppFile(entry: AppFileEntry.File): File? =
+        withContext(Dispatchers.Swing) {
+            val chooser =
+                JFileChooser().apply {
+                    dialogTitle = "Overwrite ${entry.name}"
+                    fileSelectionMode = JFileChooser.FILES_ONLY
+                }
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val result = chooser.showOpenDialog(parent)
+            if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
+        }
+
+    private suspend fun selectConfirmedOverwriteAppFile(entry: AppFileEntry.File): File? {
+        val source = selectOverwriteAppFile(entry) ?: return null
+        return if (confirmOverwriteAppFile(entry, source)) source else null
+    }
+
+    private suspend fun confirmOverwriteAppFile(
+        entry: AppFileEntry.File,
+        source: File,
+    ): Boolean =
+        withContext(Dispatchers.Swing) {
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val result =
+                JOptionPane.showConfirmDialog(
+                    parent,
+                    "Overwrite ${entry.name} with ${source.name}?",
+                    "Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                )
+            result == JOptionPane.YES_OPTION
         }
 
     private fun selectNextOrPreviousApp(offset: Int): Int {
@@ -281,6 +361,21 @@ class AppStateHolder(
             refreshDataAppFileTree(device, app)
             refreshSdCardDataAppFileTree(device, app)
         }
+    }
+
+    private suspend fun reloadCurrentAppFileTrees() {
+        val device = currentState.selectedDevice ?: return
+        val app = currentState.selectedApp ?: return
+
+        update {
+            copy(
+                dataFileTree = AppFileTreeState(),
+                sdCardDataFileTree = AppFileTreeState(),
+            )
+        }
+
+        refreshDataAppFileTree(device, app)
+        refreshSdCardDataAppFileTree(device, app)
     }
 
     private suspend fun refreshDataAppFileTree(

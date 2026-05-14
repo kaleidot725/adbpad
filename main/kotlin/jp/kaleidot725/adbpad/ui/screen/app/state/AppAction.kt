@@ -47,4 +47,6 @@ sealed class AppAction : PulseAction {
     ) : AppAction()
 
     data object SavePreviewFile : AppAction()
+
+    data object OverwritePreviewFile : AppAction()
 }

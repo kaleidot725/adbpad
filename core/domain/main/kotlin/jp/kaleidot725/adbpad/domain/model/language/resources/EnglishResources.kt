@@ -12,6 +12,8 @@ object EnglishResources : StringResources {
     override val execute = "Run"
     override val save = "Save"
     override val delete = "Delete"
+    override val upload = "Upload"
+    override val download = "Download"
     override val tab = "Tab"
     override val send = "Send"
     override val cancel = "Cancel"

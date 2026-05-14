@@ -11,6 +11,8 @@ interface StringResources {
     val execute: String
     val save: String
     val delete: String
+    val upload: String
+    val download: String
     val tab: String
     val send: String
     val cancel: String
