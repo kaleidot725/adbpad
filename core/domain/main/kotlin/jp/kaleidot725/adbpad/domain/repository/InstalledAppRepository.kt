@@ -48,4 +48,21 @@ interface InstalledAppRepository {
         source: File,
         destination: AppFileEntry.File,
     ): Result<Unit, Exception>
+
+    suspend fun uploadAppFile(
+        device: Device,
+        source: File,
+        destination: AppFileEntry,
+    ): Result<Unit, Exception>
+
+    suspend fun deleteAppFile(
+        device: Device,
+        entry: AppFileEntry,
+    ): Result<Unit, Exception>
+
+    suspend fun renameAppFile(
+        device: Device,
+        entry: AppFileEntry,
+        name: String,
+    ): Result<Unit, Exception>
 }

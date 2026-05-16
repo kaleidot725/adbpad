@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.ui.common.resource.UserColor
 import jp.kaleidot725.adbpad.ui.component.layout.ThreePaneLayout
@@ -76,6 +77,14 @@ fun AppScreen(
                 onSelectSdCardDataFileNode = { onAction(AppAction.SelectSdCardDataFileNode(it)) },
                 onPreviewDataFileNode = { onAction(AppAction.PreviewDataFileNode(it)) },
                 onPreviewSdCardDataFileNode = { onAction(AppAction.PreviewSdCardDataFileNode(it)) },
+                onUploadDataFileNode = { onAction(AppAction.UploadAppFileNode(AppDataDirectory.Data, it)) },
+                onUploadSdCardDataFileNode = { onAction(AppAction.UploadAppFileNode(AppDataDirectory.SdCardData, it)) },
+                onDeleteDataFileNode = { onAction(AppAction.DeleteAppFileNode(AppDataDirectory.Data, it)) },
+                onDeleteSdCardDataFileNode = { onAction(AppAction.DeleteAppFileNode(AppDataDirectory.SdCardData, it)) },
+                onRefreshDataFileNode = { onAction(AppAction.RefreshAppFileNode(AppDataDirectory.Data, it)) },
+                onRefreshSdCardDataFileNode = { onAction(AppAction.RefreshAppFileNode(AppDataDirectory.SdCardData, it)) },
+                onRenameDataFileNode = { onAction(AppAction.RenameAppFileNode(AppDataDirectory.Data, it)) },
+                onRenameSdCardDataFileNode = { onAction(AppAction.RenameAppFileNode(AppDataDirectory.SdCardData, it)) },
                 modifier = Modifier.fillMaxSize(),
             )
         },

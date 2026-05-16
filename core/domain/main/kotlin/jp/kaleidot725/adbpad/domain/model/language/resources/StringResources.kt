@@ -13,6 +13,7 @@ interface StringResources {
     val delete: String
     val upload: String
     val download: String
+    val rename: String
     val tab: String
     val send: String
     val cancel: String

@@ -55,6 +55,10 @@ class AppStateHolder(
                 is AppAction.SelectSdCardDataFileNode -> reduceSelectSdCardDataFileNode(uiAction.entry)
                 is AppAction.PreviewDataFileNode -> reducePreviewDataFileNode(uiAction.entry)
                 is AppAction.PreviewSdCardDataFileNode -> reducePreviewSdCardDataFileNode(uiAction.entry)
+                is AppAction.UploadAppFileNode -> reduceUploadAppFileNode(uiAction.directory, uiAction.entry)
+                is AppAction.DeleteAppFileNode -> reduceDeleteAppFileNode(uiAction.directory, uiAction.entry)
+                is AppAction.RefreshAppFileNode -> reduceRefreshAppFileNode(uiAction.directory, uiAction.entry)
+                is AppAction.RenameAppFileNode -> reduceRenameAppFileNode(uiAction.directory, uiAction.entry)
                 AppAction.SavePreviewFile -> reduceSavePreviewFile()
                 AppAction.OverwritePreviewFile -> reduceOverwritePreviewFile()
             }
@@ -112,6 +116,89 @@ class AppStateHolder(
 
     private fun AppFileEntry?.replaceIfSamePath(entry: AppFileEntry): AppFileEntry? =
         if (this?.path == entry.path) entry else this
+
+    private suspend fun reduceUploadAppFileNode(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        val device = currentState.selectedDevice ?: return
+        val source = selectUploadAppFile(entry) ?: return
+        if (entry !is AppFileEntry.Directory && !confirmOverwriteAppFile(entry, source)) return
+
+        val result = installedAppRepository.uploadAppFile(device, source, entry)
+        if (result.isOk) {
+            if (entry is AppFileEntry.Directory) {
+                refreshAppFileTreeDirectory(directory, entry, expand = true)
+            } else {
+                val updatedEntry = entry.withUpdatedSize(source.length())
+                update {
+                    updateSelectedFile(
+                        directory = directory,
+                        selectedFile = selectedFile(directory).replaceIfSamePath(updatedEntry),
+                    )
+                }
+                refreshAppFileTreeParent(directory, entry)
+                if (currentState.filePreview.entry?.path == entry.path) {
+                    previewAppFile(updatedEntry)
+                }
+            }
+        } else {
+            showAppFileOperationError(Language.upload, result.error)
+        }
+    }
+
+    private suspend fun reduceDeleteAppFileNode(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        val device = currentState.selectedDevice ?: return
+        if (!confirmDeleteAppFile(entry)) return
+
+        val result = installedAppRepository.deleteAppFile(device, entry)
+        if (result.isOk) {
+            update {
+                updateFileTree(directory, selectFileTree(directory).clearDirectoryCache(entry.path))
+                    .clearAppFileSelection(directory, entry)
+            }
+            refreshAppFileTreeParent(directory, entry)
+        } else {
+            showAppFileOperationError(Language.delete, result.error)
+        }
+    }
+
+    private suspend fun reduceRefreshAppFileNode(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        if (entry is AppFileEntry.Directory) {
+            refreshAppFileTreeDirectory(directory, entry, expand = true)
+        } else {
+            refreshAppFileTreeParent(directory, entry)
+            if (currentState.filePreview.entry?.path == entry.path) {
+                previewAppFile(entry)
+            }
+        }
+    }
+
+    private suspend fun reduceRenameAppFileNode(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        val device = currentState.selectedDevice ?: return
+        val newName = inputAppFileName(entry) ?: return
+        if (newName == entry.name) return
+
+        val result = installedAppRepository.renameAppFile(device, entry, newName)
+        if (result.isOk) {
+            update {
+                updateFileTree(directory, selectFileTree(directory).clearDirectoryCache(entry.path))
+                    .clearAppFileSelection(directory, entry)
+            }
+            refreshAppFileTreeParent(directory, entry)
+        } else {
+            showAppFileOperationError(Language.rename, result.error)
+        }
+    }
 
     private suspend fun reduceRefreshApps() {
         if (currentState.processState != AppProcessState.Idle) return
@@ -283,6 +370,23 @@ class AppStateHolder(
             if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
         }
 
+    private suspend fun selectUploadAppFile(entry: AppFileEntry): File? =
+        withContext(Dispatchers.Swing) {
+            val chooser =
+                JFileChooser().apply {
+                    dialogTitle =
+                        if (entry is AppFileEntry.Directory) {
+                            "Upload file to ${entry.name}"
+                        } else {
+                            "Upload file to replace ${entry.name}"
+                        }
+                    fileSelectionMode = JFileChooser.FILES_ONLY
+                }
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val result = chooser.showOpenDialog(parent)
+            if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile else null
+        }
+
     private suspend fun selectOverwriteAppFile(entry: AppFileEntry.File): File? =
         withContext(Dispatchers.Swing) {
             val chooser =
@@ -301,7 +405,7 @@ class AppStateHolder(
     }
 
     private suspend fun confirmOverwriteAppFile(
-        entry: AppFileEntry.File,
+        entry: AppFileEntry,
         source: File,
     ): Boolean =
         withContext(Dispatchers.Swing) {
@@ -316,6 +420,77 @@ class AppStateHolder(
                 )
             result == JOptionPane.YES_OPTION
         }
+
+    private suspend fun confirmDeleteAppFile(entry: AppFileEntry): Boolean =
+        withContext(Dispatchers.Swing) {
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val targetType = if (entry is AppFileEntry.Directory) "directory" else "file"
+            val result =
+                JOptionPane.showConfirmDialog(
+                    parent,
+                    "Delete $targetType ${entry.name}?",
+                    Language.delete,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                )
+            result == JOptionPane.YES_OPTION
+        }
+
+    private suspend fun inputAppFileName(entry: AppFileEntry): String? =
+        withContext<String?>(Dispatchers.Swing) {
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            var selectedName: String? = null
+            var isSelecting = true
+            while (isSelecting) {
+                val input =
+                    JOptionPane.showInputDialog(
+                        parent,
+                        "New name",
+                        Language.rename,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        entry.name,
+                    ) as? String
+
+                if (input == null) {
+                    isSelecting = false
+                } else {
+                    val name = input.trim()
+                    when {
+                        name.isBlank() -> isSelecting = false
+                        name.contains("/") -> {
+                            JOptionPane.showMessageDialog(
+                                parent,
+                                "Name cannot contain /",
+                                Language.rename,
+                                JOptionPane.ERROR_MESSAGE,
+                            )
+                        }
+                        else -> {
+                            selectedName = name
+                            isSelecting = false
+                        }
+                    }
+                }
+            }
+            selectedName
+        }
+
+    private suspend fun showAppFileOperationError(
+        title: String,
+        exception: Exception,
+    ) {
+        withContext(Dispatchers.Swing) {
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            JOptionPane.showMessageDialog(
+                parent,
+                exception.message ?: "Failed to update file",
+                title,
+                JOptionPane.ERROR_MESSAGE,
+            )
+        }
+    }
 
     private fun selectNextOrPreviousApp(offset: Int): Int {
         val filteredApps = currentState.filteredApps
@@ -376,6 +551,79 @@ class AppStateHolder(
 
         refreshDataAppFileTree(device, app)
         refreshSdCardDataAppFileTree(device, app)
+    }
+
+    private suspend fun refreshCurrentAppFileTree(directory: AppDataDirectory) {
+        val device = currentState.selectedDevice ?: return
+        val app = currentState.selectedApp ?: return
+
+        when (directory) {
+            AppDataDirectory.Data -> refreshDataAppFileTree(device, app)
+            AppDataDirectory.SdCardData -> refreshSdCardDataAppFileTree(device, app)
+        }
+    }
+
+    private suspend fun refreshAppFileTreeParent(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ) {
+        val app = currentState.selectedApp ?: return
+        val parentPath = entry.parentPath() ?: return
+        val rootPath = app.rootPath(directory).trimEnd('/')
+
+        if (parentPath.trimEnd('/') == rootPath) {
+            refreshCurrentAppFileTree(directory)
+        } else {
+            refreshAppFileTreeDirectory(
+                directory = directory,
+                entry = parentPath.toDirectoryEntry(),
+                expand = false,
+            )
+        }
+    }
+
+    private suspend fun refreshAppFileTreeDirectory(
+        directory: AppDataDirectory,
+        entry: AppFileEntry.Directory,
+        expand: Boolean,
+    ) {
+        val device = currentState.selectedDevice ?: return
+        val packageName = currentState.selectedApp?.packageName ?: return
+
+        update {
+            val tree = selectFileTree(directory)
+            updateFileTree(
+                directory = directory,
+                tree =
+                    tree.copy(
+                        expandedPaths = if (expand) tree.expandedPaths + entry.path else tree.expandedPaths,
+                        loadingPaths = tree.loadingPaths + entry.path,
+                        errorMessages = tree.errorMessages - entry.path,
+                    ),
+            )
+        }
+
+        val result = installedAppRepository.getAppFileChildren(device, entry)
+        if (currentState.selectedApp?.packageName != packageName) return
+
+        update {
+            val tree = selectFileTree(directory)
+            val nextTree =
+                if (result.isOk) {
+                    tree.copy(
+                        childrenByPath = tree.childrenByPath + (entry.path to result.value),
+                        loadingPaths = tree.loadingPaths - entry.path,
+                        errorMessages = tree.errorMessages - entry.path,
+                    )
+                } else {
+                    tree.copy(
+                        loadingPaths = tree.loadingPaths - entry.path,
+                        errorMessages =
+                            tree.errorMessages + (entry.path to (result.error.message ?: "Failed to load files")),
+                    )
+                }
+            updateFileTree(directory, nextTree)
+        }
     }
 
     private suspend fun refreshDataAppFileTree(
@@ -476,6 +724,81 @@ class AppStateHolder(
             loadAppFileTreeChildren(entry, selectTree, updateTree)
         }
     }
+
+    private fun AppState.selectFileTree(directory: AppDataDirectory): AppFileTreeState =
+        when (directory) {
+            AppDataDirectory.Data -> dataFileTree
+            AppDataDirectory.SdCardData -> sdCardDataFileTree
+        }
+
+    private fun AppState.updateFileTree(
+        directory: AppDataDirectory,
+        tree: AppFileTreeState,
+    ): AppState =
+        when (directory) {
+            AppDataDirectory.Data -> copy(dataFileTree = tree)
+            AppDataDirectory.SdCardData -> copy(sdCardDataFileTree = tree)
+        }
+
+    private fun AppState.selectedFile(directory: AppDataDirectory): AppFileEntry? =
+        when (directory) {
+            AppDataDirectory.Data -> selectedDataFile
+            AppDataDirectory.SdCardData -> selectedSdCardDataFile
+        }
+
+    private fun AppState.updateSelectedFile(
+        directory: AppDataDirectory,
+        selectedFile: AppFileEntry?,
+    ): AppState =
+        when (directory) {
+            AppDataDirectory.Data -> copy(selectedDataFile = selectedFile)
+            AppDataDirectory.SdCardData -> copy(selectedSdCardDataFile = selectedFile)
+        }
+
+    private fun AppState.clearAppFileSelection(
+        directory: AppDataDirectory,
+        entry: AppFileEntry,
+    ): AppState {
+        val nextSelectedFile =
+            selectedFile(directory)
+                ?.takeUnless { it.path.isSameOrChildPath(entry.path) }
+        val nextFilePreview =
+            filePreview
+                .takeUnless { it.entry?.path?.isSameOrChildPath(entry.path) == true }
+                ?: AppFilePreviewState()
+
+        return updateSelectedFile(directory, nextSelectedFile).copy(filePreview = nextFilePreview)
+    }
+
+    private fun AppFileEntry.withUpdatedSize(size: Long): AppFileEntry =
+        when (this) {
+            is AppFileEntry.Directory -> copy(size = size)
+            is AppFileEntry.File -> copy(size = size)
+            is AppFileEntry.Link -> copy(size = size)
+            is AppFileEntry.Other -> copy(size = size)
+        }
+
+    private fun AppFileEntry.parentPath(): String? =
+        path
+            .trimEnd('/')
+            .substringBeforeLast('/', missingDelimiterValue = "")
+            .takeIf { it.isNotBlank() }
+
+    private fun String.toDirectoryEntry(): AppFileEntry.Directory =
+        AppFileEntry.Directory(
+            name = substringAfterLast('/'),
+            path = this,
+            permissions = "",
+            size = 0L,
+            date = "",
+            time = "",
+        )
+
+    private fun InstalledApp.rootPath(directory: AppDataDirectory): String =
+        when (directory) {
+            AppDataDirectory.Data -> dataDir
+            AppDataDirectory.SdCardData -> sdCardDataDir
+        }
 
     private fun AppFileTreeState.clearDirectoryCache(path: String): AppFileTreeState =
         copy(
