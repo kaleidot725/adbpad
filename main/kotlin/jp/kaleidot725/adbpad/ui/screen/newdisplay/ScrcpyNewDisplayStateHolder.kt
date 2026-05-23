@@ -9,6 +9,7 @@ import jp.kaleidot725.adbpad.domain.usecase.scrcpy.GetScrcpyNewDisplayProfilesUs
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.LaunchScrcpyNewDisplayUseCase
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.SaveScrcpyNewDisplayProfileUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayAction
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayFailureReason
 import jp.kaleidot725.adbpad.ui.screen.newdisplay.state.ScrcpyNewDisplayFeedback
@@ -25,7 +26,7 @@ class ScrcpyNewDisplayStateHolder(
     private val launchScrcpyNewDisplayUseCase: LaunchScrcpyNewDisplayUseCase,
     private val saveScrcpyNewDisplayProfileUseCase: SaveScrcpyNewDisplayProfileUseCase,
     private val deleteScrcpyNewDisplayProfileUseCase: DeleteScrcpyNewDisplayProfileUseCase,
-) : PulseStore<ScrcpyNewDisplayState, ScrcpyNewDisplayAction, ScrcpyNewDisplaySideEffect, AppBroadCast>(
+) : PulseStore<ScrcpyNewDisplayState, ScrcpyNewDisplayAction, ScrcpyNewDisplaySideEffect, AppBroadCast, AppUnicast>(
         initialUiState = ScrcpyNewDisplayState(),
     ) {
     override fun onSetup() {

@@ -9,6 +9,7 @@ import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import jp.kaleidot725.adbpad.domain.repository.InstalledAppRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppAction
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFilePreviewState
 import jp.kaleidot725.adbpad.ui.screen.app.state.AppFileTreeState
@@ -32,7 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 class AppStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val installedAppRepository: InstalledAppRepository,
-) : PulseStore<AppState, AppAction, AppSideEffect, AppBroadCast>(
+) : PulseStore<AppState, AppAction, AppSideEffect, AppBroadCast, AppUnicast>(
         initialUiState = AppState(),
     ) {
     override fun onSetup() {

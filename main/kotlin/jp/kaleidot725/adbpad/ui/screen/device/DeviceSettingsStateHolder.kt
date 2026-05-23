@@ -4,6 +4,7 @@ import jp.kaleidot725.adbpad.domain.model.device.DeviceSettings
 import jp.kaleidot725.adbpad.domain.repository.DeviceSettingsRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.device.model.DeviceSettingCategory
 import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsAction
 import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsSideEffect
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 class DeviceSettingsStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val deviceSettingsRepository: DeviceSettingsRepository,
-) : PulseStore<DeviceSettingsState, DeviceSettingsAction, DeviceSettingsSideEffect, AppBroadCast>(
+) : PulseStore<DeviceSettingsState, DeviceSettingsAction, DeviceSettingsSideEffect, AppBroadCast, AppUnicast>(
         initialUiState = DeviceSettingsState(),
     ) {
     override fun onSetup() {

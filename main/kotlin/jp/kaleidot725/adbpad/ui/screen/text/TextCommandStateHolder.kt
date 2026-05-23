@@ -7,6 +7,7 @@ import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.ExecuteTextCommandUseCase
 import jp.kaleidot725.adbpad.domain.usecase.text.GetTextCommandUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandAction
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandSideEffect
 import jp.kaleidot725.adbpad.ui.screen.text.state.TextCommandState
@@ -18,7 +19,7 @@ class TextCommandStateHolder(
     private val getTextCommandUseCase: GetTextCommandUseCase,
     private val executeTextCommandUseCase: ExecuteTextCommandUseCase,
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
-) : PulseStore<TextCommandState, TextCommandAction, TextCommandSideEffect, AppBroadCast>(initialUiState = TextCommandState()) {
+) : PulseStore<TextCommandState, TextCommandAction, TextCommandSideEffect, AppBroadCast, AppUnicast>(initialUiState = TextCommandState()) {
     override fun onSetup() {
         coroutineScope.launch {
             getSelectedDeviceFlowUseCase().collect {
