@@ -17,7 +17,6 @@ import jp.kaleidot725.adbpad.domain.usecase.sdkpath.SaveSdkPathUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
 import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingAction
-import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingSideEffect
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingState
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.launch
@@ -34,7 +33,7 @@ class SettingStateHolder(
     private val restartAdbUseCase: RestartAdbUseCase,
     private val getAccentColorUseCase: GetAccentColorUseCase,
     private val saveAccentColorUseCase: SaveAccentColorUseCase,
-) : PulseStore<SettingState, SettingAction, SettingSideEffect, AppBroadCast, AppUnicast>(initialUiState = SettingState()) {
+) : PulseStore<SettingState, SettingAction, Nothing, AppBroadCast, AppUnicast>(initialUiState = SettingState()) {
     private var oldAdbDirectoryPath: String = ""
     private var oldAdbPortNumber: Int = 0
 
