@@ -65,7 +65,7 @@ class DeviceSettingsStateHolder(
 
             val success = deviceSettingsRepository.saveDeviceSettings(currentState.device, currentState.deviceSettings)
             if (success) {
-                event(DeviceSettingsSideEffect.Saved)
+                unicast(AppUnicast.Refresh)
             }
 
             update { copy(isSaving = false) }
@@ -73,7 +73,7 @@ class DeviceSettingsStateHolder(
     }
 
     private fun dismiss() {
-        event(DeviceSettingsSideEffect.Cancelled)
+        unicast(AppUnicast.Refresh)
     }
 
     private fun selectCategory(category: DeviceSettingCategory) {

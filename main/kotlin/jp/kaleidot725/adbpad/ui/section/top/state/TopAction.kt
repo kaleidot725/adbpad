@@ -14,4 +14,6 @@ sealed class TopAction : PulseAction {
     ) : TopAction()
 
     data object LaunchScrcpy : TopAction()
+
+    data object Refresh : TopAction()
 }

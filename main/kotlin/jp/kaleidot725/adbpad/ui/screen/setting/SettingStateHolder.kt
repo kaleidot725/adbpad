@@ -70,6 +70,7 @@ class SettingStateHolder(
         coroutineScope.launch {
             when (uiAction) {
                 SettingAction.Save -> save()
+                SettingAction.Cancel -> dismiss()
                 is SettingAction.SelectCategory -> selectCategory(uiAction.category)
                 is SettingAction.UpdateAdbDirectoryPath -> updateAdbDirectoryPath(uiAction.value)
                 is SettingAction.UpdateAdbPortNumberPath -> updateAdbPortNumberPath(uiAction.value)
@@ -95,8 +96,12 @@ class SettingStateHolder(
         saveSdkPathUseCase(currentState.adbDirectoryPath, currentState.adbPortNumber.toIntOrNull())
         saveScrcpySettingsUseCase(currentState.scrcpyBinaryPath)
         restartAdbUseCase(oldAdbDirectory = oldAdbDirectoryPath, oldServerPort = oldAdbPortNumber)
-        event(SettingSideEffect.Saved)
+        unicast(AppUnicast.Refresh)
         update { this.copy(isSaving = false) }
+    }
+
+    private fun dismiss() {
+        unicast(AppUnicast.Refresh)
     }
 
     private fun updateLanguage(value: Language.Type) {

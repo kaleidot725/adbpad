@@ -7,4 +7,6 @@ sealed interface AppBroadCast : PulseBroadcast {
     data object Refresh : AppBroadCast
 }
 
-sealed interface AppUnicast : PulseUnicast
+sealed interface AppUnicast : PulseUnicast {
+    data object Refresh : AppUnicast
+}

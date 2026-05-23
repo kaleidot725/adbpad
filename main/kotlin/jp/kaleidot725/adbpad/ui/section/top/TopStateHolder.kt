@@ -38,6 +38,7 @@ class TopStateHolder(
                 is TopAction.ExecuteCommand -> executeCommand(uiAction.command)
                 is TopAction.SelectDevice -> selectDevice(uiAction.device)
                 TopAction.LaunchScrcpy -> launchScrcpy()
+                TopAction.Refresh -> unicast(AppUnicast.Refresh)
             }
         }
     }

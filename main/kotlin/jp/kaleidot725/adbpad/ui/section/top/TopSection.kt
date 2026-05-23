@@ -70,7 +70,6 @@ fun TopSection(
     topState: TopState,
     onTopAction: (TopAction) -> Unit,
     onOpenDeviceSettings: (Device) -> Unit,
-    onRefreshDevices: () -> Unit,
     onToggleNavigationRail: () -> Unit,
 ) {
     Box(
@@ -102,7 +101,7 @@ fun TopSection(
                 TopSectionIconButton(
                     tooltip = Language.tooltipRefresh,
                     icon = Lucide.RefreshCcw,
-                    onClick = onRefreshDevices,
+                    onClick = { onTopAction(TopAction.Refresh) },
                     rotateOnPress = true,
                 )
 
@@ -304,7 +303,6 @@ private fun Preview() {
             ),
         onTopAction = {},
         onOpenDeviceSettings = {},
-        onRefreshDevices = {},
         onToggleNavigationRail = {},
     )
 }

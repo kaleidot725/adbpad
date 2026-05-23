@@ -9,6 +9,8 @@ import jp.kaleidot725.adbpad.ui.screen.setting.model.SettingCategory
 sealed class SettingAction : PulseAction {
     data object Save : SettingAction()
 
+    data object Cancel : SettingAction()
+
     data class SelectCategory(
         val category: SettingCategory,
     ) : SettingAction()
