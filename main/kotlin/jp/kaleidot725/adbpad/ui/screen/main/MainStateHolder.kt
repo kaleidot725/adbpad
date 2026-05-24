@@ -13,6 +13,7 @@ import jp.kaleidot725.adbpad.domain.usecase.theme.GetDarkModeFlowUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.GetWindowSizeUseCase
 import jp.kaleidot725.adbpad.domain.usecase.window.SaveWindowSizeUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainAction
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainDialog
 import jp.kaleidot725.adbpad.ui.screen.main.state.MainSideEffect
@@ -31,7 +32,7 @@ class MainStateHolder(
     private val getAccentColorUseCase: GetAccentColorUseCase,
     private val refreshUseCase: RefreshUseCase,
     private val shutdownAppUseCase: ShutdownAppUseCase,
-) : PulseStore<MainState, MainAction, MainSideEffect, AppBroadCast>(initialUiState = MainState()) {
+) : PulseStore<MainState, MainAction, MainSideEffect, AppBroadCast, AppUnicast>(initialUiState = MainState()) {
     override fun onSetup() {
         restoreWindowSize()
         startSyncDarkMode()

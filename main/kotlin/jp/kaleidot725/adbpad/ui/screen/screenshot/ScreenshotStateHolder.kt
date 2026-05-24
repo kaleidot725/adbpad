@@ -12,6 +12,7 @@ import jp.kaleidot725.adbpad.domain.usecase.screenshot.GetScreenshotCommandUseCa
 import jp.kaleidot725.adbpad.domain.usecase.screenshot.RenameScreenshotUseCase
 import jp.kaleidot725.adbpad.domain.usecase.screenshot.TakeScreenshotUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotAction
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotSideEffect
 import jp.kaleidot725.adbpad.ui.screen.screenshot.state.ScreenshotState
@@ -29,7 +30,7 @@ class ScreenshotStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val screenshotCommandRepository: ScreenshotCommandRepository,
     private val renameScreenshotUseCase: RenameScreenshotUseCase,
-) : PulseStore<ScreenshotState, ScreenshotAction, ScreenshotSideEffect, AppBroadCast>(initialUiState = ScreenshotState()) {
+) : PulseStore<ScreenshotState, ScreenshotAction, ScreenshotSideEffect, AppBroadCast, AppUnicast>(initialUiState = ScreenshotState()) {
     override fun onSetup() {
         coroutineScope.launch {
             val commands = getScreenshotCommandUseCase()

@@ -8,6 +8,7 @@ import jp.kaleidot725.adbpad.domain.usecase.command.GetNormalCommandGroup
 import jp.kaleidot725.adbpad.domain.usecase.command.ToggleNormalCommandFavorite
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.command.model.CommandLayoutMode
 import jp.kaleidot725.adbpad.ui.screen.command.state.CommandAction
 import jp.kaleidot725.adbpad.ui.screen.command.state.CommandSideEffect
@@ -21,7 +22,7 @@ class CommandStateHolder(
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val normalCommandOutputRepository: NormalCommandOutputRepository,
-) : PulseStore<CommandState, CommandAction, CommandSideEffect, AppBroadCast>(initialUiState = CommandState()) {
+) : PulseStore<CommandState, CommandAction, CommandSideEffect, AppBroadCast, AppUnicast>(initialUiState = CommandState()) {
     override fun onSetup() {
         coroutineScope.launch {
             getSelectedDeviceFlowUseCase().collect {

@@ -4,9 +4,9 @@ import jp.kaleidot725.adbpad.domain.model.device.DeviceSettings
 import jp.kaleidot725.adbpad.domain.repository.DeviceSettingsRepository
 import jp.kaleidot725.adbpad.domain.usecase.device.GetSelectedDeviceFlowUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.device.model.DeviceSettingCategory
 import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsAction
-import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsSideEffect
 import jp.kaleidot725.adbpad.ui.screen.device.state.DeviceSettingsState
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.flow.firstOrNull
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class DeviceSettingsStateHolder(
     private val getSelectedDeviceFlowUseCase: GetSelectedDeviceFlowUseCase,
     private val deviceSettingsRepository: DeviceSettingsRepository,
-) : PulseStore<DeviceSettingsState, DeviceSettingsAction, DeviceSettingsSideEffect, AppBroadCast>(
+) : PulseStore<DeviceSettingsState, DeviceSettingsAction, Nothing, AppBroadCast, AppUnicast>(
         initialUiState = DeviceSettingsState(),
     ) {
     override fun onSetup() {
@@ -64,7 +64,7 @@ class DeviceSettingsStateHolder(
 
             val success = deviceSettingsRepository.saveDeviceSettings(currentState.device, currentState.deviceSettings)
             if (success) {
-                event(DeviceSettingsSideEffect.Saved)
+                unicast(AppUnicast.Refresh)
             }
 
             update { copy(isSaving = false) }
@@ -72,7 +72,7 @@ class DeviceSettingsStateHolder(
     }
 
     private fun dismiss() {
-        event(DeviceSettingsSideEffect.Cancelled)
+        unicast(AppUnicast.Refresh)
     }
 
     private fun selectCategory(category: DeviceSettingCategory) {

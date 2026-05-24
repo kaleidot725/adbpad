@@ -8,6 +8,7 @@ import jp.kaleidot725.adbpad.domain.usecase.device.SelectDeviceUseCase
 import jp.kaleidot725.adbpad.domain.usecase.device.UpdateDevicesUseCase
 import jp.kaleidot725.adbpad.domain.usecase.scrcpy.LaunchScrcpyUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.section.top.state.TopAction
 import jp.kaleidot725.adbpad.ui.section.top.state.TopSideEffect
 import jp.kaleidot725.adbpad.ui.section.top.state.TopState
@@ -23,7 +24,7 @@ class TopStateHolder(
     private val selectDeviceUseCase: SelectDeviceUseCase,
     private val executeDeviceControlCommandUseCase: ExecuteDeviceControlCommandUseCase,
     private val launchScrcpyUseCase: LaunchScrcpyUseCase,
-) : PulseStore<TopState, TopAction, TopSideEffect, AppBroadCast>(TopState()) {
+) : PulseStore<TopState, TopAction, TopSideEffect, AppBroadCast, AppUnicast>(TopState()) {
     private var deviceJob: Job? = null
     private var selectedDeviceJob: Job? = null
 
@@ -37,6 +38,7 @@ class TopStateHolder(
                 is TopAction.ExecuteCommand -> executeCommand(uiAction.command)
                 is TopAction.SelectDevice -> selectDevice(uiAction.device)
                 TopAction.LaunchScrcpy -> launchScrcpy()
+                TopAction.Refresh -> unicast(AppUnicast.Refresh)
             }
         }
     }

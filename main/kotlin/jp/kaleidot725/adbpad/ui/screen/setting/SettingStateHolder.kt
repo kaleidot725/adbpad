@@ -15,8 +15,8 @@ import jp.kaleidot725.adbpad.domain.usecase.scrcpy.SaveScrcpySettingsUseCase
 import jp.kaleidot725.adbpad.domain.usecase.sdkpath.GetSdkPathUseCase
 import jp.kaleidot725.adbpad.domain.usecase.sdkpath.SaveSdkPathUseCase
 import jp.kaleidot725.adbpad.ui.container.AppBroadCast
+import jp.kaleidot725.adbpad.ui.container.AppUnicast
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingAction
-import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingSideEffect
 import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingState
 import jp.kaleidot725.pulse.mvi.PulseStore
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class SettingStateHolder(
     private val restartAdbUseCase: RestartAdbUseCase,
     private val getAccentColorUseCase: GetAccentColorUseCase,
     private val saveAccentColorUseCase: SaveAccentColorUseCase,
-) : PulseStore<SettingState, SettingAction, SettingSideEffect, AppBroadCast>(initialUiState = SettingState()) {
+) : PulseStore<SettingState, SettingAction, Nothing, AppBroadCast, AppUnicast>(initialUiState = SettingState()) {
     private var oldAdbDirectoryPath: String = ""
     private var oldAdbPortNumber: Int = 0
 
@@ -69,6 +69,7 @@ class SettingStateHolder(
         coroutineScope.launch {
             when (uiAction) {
                 SettingAction.Save -> save()
+                SettingAction.Cancel -> dismiss()
                 is SettingAction.SelectCategory -> selectCategory(uiAction.category)
                 is SettingAction.UpdateAdbDirectoryPath -> updateAdbDirectoryPath(uiAction.value)
                 is SettingAction.UpdateAdbPortNumberPath -> updateAdbPortNumberPath(uiAction.value)
@@ -94,8 +95,12 @@ class SettingStateHolder(
         saveSdkPathUseCase(currentState.adbDirectoryPath, currentState.adbPortNumber.toIntOrNull())
         saveScrcpySettingsUseCase(currentState.scrcpyBinaryPath)
         restartAdbUseCase(oldAdbDirectory = oldAdbDirectoryPath, oldServerPort = oldAdbPortNumber)
-        event(SettingSideEffect.Saved)
+        unicast(AppUnicast.Refresh)
         update { this.copy(isSaving = false) }
+    }
+
+    private fun dismiss() {
+        unicast(AppUnicast.Refresh)
     }
 
     private fun updateLanguage(value: Language.Type) {

@@ -35,10 +35,9 @@ import jp.kaleidot725.adbpad.ui.screen.setting.state.SettingState
 fun SettingScreen(
     state: SettingState,
     onAction: (SettingAction) -> Unit,
-    onMainRefresh: () -> Unit,
 ) {
     FloatingDialog(
-        onDismiss = onMainRefresh,
+        onDismiss = { onAction(SettingAction.Cancel) },
         modifier =
             Modifier
                 .width(960.dp)
@@ -123,7 +122,7 @@ fun SettingScreen(
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp),
                     ) {
                         Button(
-                            onClick = onMainRefresh,
+                            onClick = { onAction(SettingAction.Cancel) },
                             enabled = state.canCancel,
                         ) {
                             Text(
