@@ -38,10 +38,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Download
+import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Minus
 import com.composables.icons.lucide.Plus
+import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.Upload
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
 import jp.kaleidot725.adbpad.domain.model.app.AppFilePreview
@@ -59,6 +60,7 @@ fun AppFilePreviewPane(
     state: AppFilePreviewState,
     onSaveFile: () -> Unit,
     onOverwriteFile: () -> Unit,
+    onDeleteFile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -103,10 +105,13 @@ fun AppFilePreviewPane(
         AppFilePreviewActions(
             canOverwrite = state.entry is AppFileEntry.File && !state.isBusy,
             canSave = state.entry is AppFileEntry.File && !state.isBusy,
+            canDelete = state.entry is AppFileEntry.File && !state.isBusy,
             isOverwriting = state.isOverwriting,
             isSaving = state.isSaving,
+            isDeleting = state.isDeleting,
             onOverwriteFile = onOverwriteFile,
             onSaveFile = onSaveFile,
+            onDeleteFile = onDeleteFile,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -174,10 +179,13 @@ private fun AppFilePreviewMetadata(entry: AppFileEntry) {
 private fun AppFilePreviewActions(
     canOverwrite: Boolean,
     canSave: Boolean,
+    canDelete: Boolean,
     isOverwriting: Boolean,
     isSaving: Boolean,
+    isDeleting: Boolean,
     onOverwriteFile: () -> Unit,
     onSaveFile: () -> Unit,
+    onDeleteFile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -190,6 +198,14 @@ private fun AppFilePreviewActions(
                 bottom = 12.dp,
             ),
     ) {
+        AppFilePreviewActionButton(
+            text = Language.delete,
+            icon = Lucide.Trash2,
+            onClick = onDeleteFile,
+            enabled = canDelete,
+            isLoading = isDeleting,
+            modifier = Modifier.weight(1f),
+        )
         AppFilePreviewActionButton(
             text = Language.upload,
             icon = Lucide.Upload,
@@ -417,9 +433,10 @@ private fun AppFilePreviewPanePreview() {
             ),
         onSaveFile = {},
         onOverwriteFile = {},
+        onDeleteFile = {},
         modifier = Modifier.fillMaxSize(),
     )
 }
 
 private val AppFilePreviewState.isBusy: Boolean
-    get() = isLoading || isSaving || isOverwriting
+    get() = isLoading || isSaving || isOverwriting || isDeleting

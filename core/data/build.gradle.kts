@@ -29,6 +29,14 @@ kotlin {
         val jvmTest by getting {
             kotlin.srcDirs("test/kotlin")
             resources.srcDirs("test/resources")
+            dependencies {
+                implementation(libs.junit5)
+                runtimeOnly(libs.junit.platform.launcher)
+            }
         }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

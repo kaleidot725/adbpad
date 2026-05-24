@@ -48,4 +48,9 @@ interface InstalledAppRepository {
         source: File,
         destination: AppFileEntry.File,
     ): Result<Unit, Exception>
+
+    suspend fun deleteAppFile(
+        device: Device,
+        entry: AppFileEntry.File,
+    ): Result<Unit, Exception>
 }
