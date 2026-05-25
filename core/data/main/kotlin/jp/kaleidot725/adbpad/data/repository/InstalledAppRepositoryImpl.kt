@@ -173,6 +173,79 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
             }
         }
 
+    override suspend fun uploadAppFile(
+        device: Device,
+        source: File,
+        destination: AppFileEntry,
+    ): Result<Unit, Exception> =
+        withContext(Dispatchers.IO) {
+            try {
+                if (!source.isFile) throw IOException("${source.name} is not a file")
+
+                val destinationPath =
+                    when (destination) {
+                        is AppFileEntry.Directory -> destination.path.resolveChildPath(source.name)
+                        else -> destination.path
+                    }
+                val supportedFeatures = adbClient.execute(FetchDeviceFeaturesRequest(device.serial), device.serial)
+                val isPushed = adbClient.execute(PushRequest(source, destinationPath, supportedFeatures), device.serial)
+                if (!isPushed) throw IOException("Failed to upload ${source.name}")
+                Ok(Unit)
+            } catch (exception: Exception) {
+                if (exception is CancellationException) throw exception
+                Err(exception)
+            }
+        }
+
+    override suspend fun deleteAppFile(
+        device: Device,
+        entry: AppFileEntry,
+    ): Result<Unit, Exception> =
+        withContext(Dispatchers.IO) {
+            try {
+                val command =
+                    if (entry is AppFileEntry.Directory) {
+                        "rm -rf ${entry.path.toShellArgument()}"
+                    } else {
+                        "rm -f ${entry.path.toShellArgument()}"
+                    }
+                val result = adbClient.execute(ShellCommandRequest(command), device.serial)
+                if (result.exitCode != 0) {
+                    throw IOException(result.output.ifBlank { "Failed to delete ${entry.name}" })
+                }
+                Ok(Unit)
+            } catch (exception: Exception) {
+                if (exception is CancellationException) throw exception
+                Err(exception)
+            }
+        }
+
+    override suspend fun renameAppFile(
+        device: Device,
+        entry: AppFileEntry,
+        name: String,
+    ): Result<Unit, Exception> =
+        withContext(Dispatchers.IO) {
+            try {
+                val normalizedName = name.trim()
+                if (normalizedName.isBlank() || normalizedName.contains("/")) {
+                    throw IOException("Invalid name")
+                }
+
+                val parentPath = entry.parentPath() ?: throw IOException("Cannot rename ${entry.name}")
+                val destinationPath = parentPath.resolveChildPath(normalizedName)
+                val command = "mv ${entry.path.toShellArgument()} ${destinationPath.toShellArgument()}"
+                val result = adbClient.execute(ShellCommandRequest(command), device.serial)
+                if (result.exitCode != 0) {
+                    throw IOException(result.output.ifBlank { "Failed to rename ${entry.name}" })
+                }
+                Ok(Unit)
+            } catch (exception: Exception) {
+                if (exception is CancellationException) throw exception
+                Err(exception)
+            }
+        }
+
     private suspend fun pullAppFile(
         device: Device,
         entry: AppFileEntry.File,
@@ -293,6 +366,14 @@ class InstalledAppRepositoryImpl : InstalledAppRepository {
         } else {
             "$this/$name"
         }
+
+    private fun AppFileEntry.parentPath(): String? =
+        path
+            .trimEnd('/')
+            .substringBeforeLast('/', missingDelimiterValue = "")
+            .takeIf { it.isNotBlank() }
+
+    private fun String.toShellArgument(): String = "'${replace("'", "'\"'\"'")}'"
 
     private fun AppFileEntry.File.isImageFile(): Boolean = extension() in IMAGE_FILE_EXTENSIONS
 

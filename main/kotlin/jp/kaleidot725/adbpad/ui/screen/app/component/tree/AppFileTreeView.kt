@@ -18,6 +18,10 @@ fun AppFileTreeView(
     selectedFile: AppFileEntry?,
     onSelectNode: (AppFileEntry) -> Unit,
     onPreviewNode: (AppFileEntry) -> Unit,
+    onUploadNode: (AppFileEntry) -> Unit,
+    onDeleteNode: (AppFileEntry) -> Unit,
+    onRefreshNode: (AppFileEntry) -> Unit,
+    onRenameNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -34,6 +38,10 @@ fun AppFileTreeView(
                         selectedFile = selectedFile,
                         onSelectNode = onSelectNode,
                         onPreviewNode = onPreviewNode,
+                        onUploadNode = onUploadNode,
+                        onDeleteNode = onDeleteNode,
+                        onRefreshNode = onRefreshNode,
+                        onRenameNode = onRenameNode,
                     )
                 }
             }
@@ -56,6 +64,10 @@ private fun AppFileTreeViewPreview() {
         selectedFile = directory,
         onSelectNode = {},
         onPreviewNode = {},
+        onUploadNode = {},
+        onDeleteNode = {},
+        onRefreshNode = {},
+        onRenameNode = {},
         modifier = Modifier.width(280.dp).padding(16.dp),
     )
 }

@@ -1,6 +1,7 @@
 package jp.kaleidot725.adbpad.ui.screen.app.state
 
 import jp.kaleidot725.adbpad.domain.model.app.AppFileEntry
+import jp.kaleidot725.adbpad.domain.model.app.AppDataDirectory
 import jp.kaleidot725.adbpad.domain.model.app.InstalledApp
 import jp.kaleidot725.adbpad.domain.model.sort.SortType
 import jp.kaleidot725.pulse.mvi.PulseAction
@@ -43,6 +44,26 @@ sealed class AppAction : PulseAction {
     ) : AppAction()
 
     data class PreviewSdCardDataFileNode(
+        val entry: AppFileEntry,
+    ) : AppAction()
+
+    data class UploadAppFileNode(
+        val directory: AppDataDirectory,
+        val entry: AppFileEntry,
+    ) : AppAction()
+
+    data class DeleteAppFileNode(
+        val directory: AppDataDirectory,
+        val entry: AppFileEntry,
+    ) : AppAction()
+
+    data class RefreshAppFileNode(
+        val directory: AppDataDirectory,
+        val entry: AppFileEntry,
+    ) : AppAction()
+
+    data class RenameAppFileNode(
+        val directory: AppDataDirectory,
         val entry: AppFileEntry,
     ) : AppAction()
 

@@ -31,6 +31,8 @@ object Language : StringResources {
         get() = getCurrentResources().upload
     override val download: String
         get() = getCurrentResources().download
+    override val rename: String
+        get() = getCurrentResources().rename
     override val send: String
         get() = getCurrentResources().send
     override val cancel: String

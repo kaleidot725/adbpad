@@ -35,6 +35,14 @@ fun AppDetailPane(
     onSelectSdCardDataFileNode: (AppFileEntry) -> Unit,
     onPreviewDataFileNode: (AppFileEntry) -> Unit,
     onPreviewSdCardDataFileNode: (AppFileEntry) -> Unit,
+    onUploadDataFileNode: (AppFileEntry) -> Unit,
+    onUploadSdCardDataFileNode: (AppFileEntry) -> Unit,
+    onDeleteDataFileNode: (AppFileEntry) -> Unit,
+    onDeleteSdCardDataFileNode: (AppFileEntry) -> Unit,
+    onRefreshDataFileNode: (AppFileEntry) -> Unit,
+    onRefreshSdCardDataFileNode: (AppFileEntry) -> Unit,
+    onRenameDataFileNode: (AppFileEntry) -> Unit,
+    onRenameSdCardDataFileNode: (AppFileEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (app == null) {
@@ -96,6 +104,10 @@ fun AppDetailPane(
                     selectedFile = selectedDataFile,
                     onSelectNode = onSelectDataFileNode,
                     onPreviewNode = onPreviewDataFileNode,
+                    onUploadNode = onUploadDataFileNode,
+                    onDeleteNode = onDeleteDataFileNode,
+                    onRefreshNode = onRefreshDataFileNode,
+                    onRenameNode = onRenameDataFileNode,
                 )
             }
 
@@ -109,6 +121,10 @@ fun AppDetailPane(
                     selectedFile = selectedSdCardDataFile,
                     onSelectNode = onSelectSdCardDataFileNode,
                     onPreviewNode = onPreviewSdCardDataFileNode,
+                    onUploadNode = onUploadSdCardDataFileNode,
+                    onDeleteNode = onDeleteSdCardDataFileNode,
+                    onRefreshNode = onRefreshSdCardDataFileNode,
+                    onRenameNode = onRenameSdCardDataFileNode,
                 )
             }
         }
