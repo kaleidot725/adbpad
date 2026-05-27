@@ -105,7 +105,7 @@ fun ScreenshotExplorer(
             )
         } else {
             Text(
-                text = "Not Found Screenshot",
+                text = Language.notFoundScreenshot,
                 modifier = Modifier.align(Alignment.Center),
             )
         }
