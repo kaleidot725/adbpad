@@ -58,6 +58,7 @@ class AppStateHolder(
                 is AppAction.PreviewSdCardDataFileNode -> reducePreviewSdCardDataFileNode(uiAction.entry)
                 AppAction.SavePreviewFile -> reduceSavePreviewFile()
                 AppAction.OverwritePreviewFile -> reduceOverwritePreviewFile()
+                AppAction.DeletePreviewFile -> reduceDeletePreviewFile()
             }
         }
     }
@@ -111,8 +112,50 @@ class AppStateHolder(
         }
     }
 
+    private suspend fun reduceDeletePreviewFile() {
+        val device = currentState.selectedDevice ?: return
+        val entry = currentState.filePreview.entry as? AppFileEntry.File ?: return
+        if (currentState.filePreview.isDeleting) return
+        if (!confirmDeleteAppFile(entry)) return
+
+        update {
+            copy(
+                filePreview =
+                    filePreview.copy(
+                        isDeleting = true,
+                        errorMessage = null,
+                    ),
+            )
+        }
+
+        val result = installedAppRepository.deleteAppFile(device, entry)
+        if (result.isOk) {
+            reloadCurrentAppFileTrees()
+            update {
+                copy(
+                    selectedDataFile = selectedDataFile.removeIfSamePath(entry),
+                    selectedSdCardDataFile = selectedSdCardDataFile.removeIfSamePath(entry),
+                    filePreview = AppFilePreviewState(),
+                )
+            }
+        } else {
+            update {
+                copy(
+                    filePreview =
+                        filePreview.copy(
+                            isDeleting = false,
+                            errorMessage = result.error.message ?: "Failed to delete file",
+                        ),
+                )
+            }
+        }
+    }
+
     private fun AppFileEntry?.replaceIfSamePath(entry: AppFileEntry): AppFileEntry? =
         if (this?.path == entry.path) entry else this
+
+    private fun AppFileEntry?.removeIfSamePath(entry: AppFileEntry): AppFileEntry? =
+        if (this?.path == entry.path) null else this
 
     private suspend fun reduceRefreshApps() {
         if (currentState.processState != AppProcessState.Idle) return
@@ -312,6 +355,20 @@ class AppStateHolder(
                     parent,
                     "Overwrite ${entry.name} with ${source.name}?",
                     "Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                )
+            result == JOptionPane.YES_OPTION
+        }
+
+    private suspend fun confirmDeleteAppFile(entry: AppFileEntry.File): Boolean =
+        withContext(Dispatchers.Swing) {
+            val parent = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+            val result =
+                JOptionPane.showConfirmDialog(
+                    parent,
+                    "Delete ${entry.name}?",
+                    Language.delete,
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE,
                 )
